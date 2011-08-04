@@ -1,0 +1,139 @@
+@import "compass"
+
+/* Галерея изображений «Фоторама» */
+/* Версия 0.4 */
+
+.fotorama__wrap
+	position: relative
+	overflow: hidden
+	*zoom: 1
+	white-space: nowrap
+	//padding: 10px 0
+	//margin: -10px 0
+	background: #222120
+	//background: url(black_linen_v2.png)
+	//background: url(brushed_alu_dark.png)
+	//background: url(carbon_fibre-1.png)
+	//background: url(carbon_fibre.png);
+	//background: url(crossed_stripes-1.png)
+	//background: url(crossed_stripes.png) /*!*/
+	//background: url(gray_sand.png)
+	//background: url(inflicted.png)
+	//background: url(random_grey_variations.png)
+.fotorama__shadow
+	content: ''
+	display: block
+	position: absolute
+	text-decoration: none
+	top: 10px
+	width: 10px
+	+box-shadow(#000, 0, 0, 10px)
+	+transition(all, .4s)
+	*display: none
+.fotorama__shadow_left
+	left: -20px
+.fotorama__shadow_right
+	right: -20px
+.fotorama__wrap_shadow
+	.fotorama__shadow
+		z-index: 10
+	.fotorama__shadow_left
+		left: -10px
+	.fotorama__shadow_right
+		right: -10px
+.fotorama__wrap_shadow_no-left
+	.fotorama__shadow_left
+		left: -20px
+.fotorama__wrap_shadow_no-right
+	.fotorama__shadow_right
+		right: -20px
+.fotorama__shaft
+	position: absolute
+	white-space: nowrap
+	top: 0
+	left: 0
+	cursor: move
+	cursor: -webkit-grab
+	cursor: -moz-grab
+	cursor: -o-grab
+	cursor: -ms-grab
+	cursor: -khtml-grab
+	*cursor: move !important
+.fotorama__wrap_grabbing
+	.fotorama__shaft
+		cursor: -webkit-grabbing
+		cursor: -moz-grabbing
+		cursor: -o-grabbing
+		cursor: -ms-grabbing
+		cursor: -khtml-grabbing
+.fotorama__wrap_with-div
+	border: 1px solid mix(#000, #fff)
+.fotorama__thumbs
+	font-size: 0
+	line-height: 0
+	text-align: center
+	position: relative
+.fotorama__thumb
+	+inline-block
+	cursor: pointer
+	position: relative
+	width: 18px
+	height: 18px
+	margin-right: -.33em
+	i
+		+transition(all, .15s)
+		display: block
+		width: 6px
+		height: 6px
+		position: relative
+		top: 6px
+		left: 6px
+		+border-radius(6px)
+		background: mix(#000,#fff)
+		+opacity(.44)
+	&:hover
+		i
+			+opacity(.77)
+.fotorama__thumb_selected, .fotorama__thumb_selected:hover
+	cursor: default
+	i
+		+opacity(.99)
+.fotorama__thumb_disabled
+	visibility: hidden
+	cursor: default
+
+.fotorama__frame
+	+inline-block
+	vertical-align: top
+	//margin-right: -.33em
+	text-align: center
+	position: relative
+	font-size: 16px
+.fotorama__frame_active
+	z-index: 5
+
+.fotorama__img, .fotorama__div
+	position: relative
+	max-width: 100%
+	background: #fff
+	text-align: center
+	margin: 0 auto
+	white-space: normal
+	*
+		text-align: left
+	iframe, img, object, audio, video
+		max-width: 100%
+		margin: auto
+	iframe, object, audio, video
+		cursor: pointer
+.fotorama__wrap_shadow, .fotorama__frame_active
+	.fotorama__img, .fotorama__div
+		+box-shadow(#000, 0, 0, 10px)
+.fotorama__frame_div
+	background: #fff
+	overflow: auto
+	.fotorama__div
+		+box-shadow(none)
+
+//.fotorama__frame__img_shadow
+//	+box-shadow(rgba(0,0,0,.75), 0, 0, 10px)
