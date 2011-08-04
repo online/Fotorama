@@ -27,6 +27,7 @@
   -webkit-transition-duration: 0.4s;
   -o-transition-duration: 0.4s;
   transition-duration: 0.4s;
+  z-index: 10;
   *display: none;
 }
 
@@ -105,14 +106,6 @@
   *display: inline;
 }
 .fotorama__thumb i {
-  -moz-transition-property: all;
-  -webkit-transition-property: all;
-  -o-transition-property: all;
-  transition-property: all;
-  -moz-transition-duration: 0.15s;
-  -webkit-transition-duration: 0.15s;
-  -o-transition-duration: 0.15s;
-  transition-duration: 0.15s;
   display: block;
   width: 6px;
   height: 6px;
@@ -172,7 +165,6 @@
 .fotorama__img, .fotorama__div {
   position: relative;
   max-width: 100%;
-  background: white;
   text-align: center;
   margin: 0 auto;
   white-space: normal;
