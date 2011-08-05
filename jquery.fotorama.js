@@ -46,7 +46,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 			}
 
 			// Скрываем все картинки, кроме первой
-			img.not(":first").hide();
+			img.not(":first").css('visibility', 'hidden');
 
 			var imgWrap = $();
 			var thumb = $();
@@ -94,7 +94,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 					//alert(i);
 					img
 							.data({'loaded': true})
-							.show();
+							.css('visibility', 'visible');
 					_thumb.removeClass("fotorama__thumb_disabled");
 
 					if ((!wrapWidth || !wrapHeight) && i == 0 && isImg) {
@@ -172,6 +172,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 						imgWidth = thisImg.width();
 						imgHeight = thisImg.height();
 						if (!imgWidth || !imgHeight) {
+							//console.log(img.index(thisImg));
 							setTimeout(checkIfLoaded, 1000);
 						} else {
 							//alert(i);
