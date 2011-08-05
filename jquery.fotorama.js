@@ -91,6 +91,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 				var imgHeight;
 
 				function onLoad(img) {
+					//alert(i);
 					img
 							.data({'loaded': true})
 							.show();
@@ -172,14 +173,15 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 						imgHeight = thisImg.height();
 						if (!imgWidth || !imgHeight) {
 							setTimeout(checkIfLoaded, 1000);
-							//console.log("check");
 						} else {
+							//alert(i);
 							onLoad(thisImg);
 						}
 					}
 
-					checkIfLoaded();
+					checkIfLoaded(thisImg);
 				} else {
+					//alert(i);
 					onLoad(thisImg);
 				}
 			});
@@ -271,10 +273,10 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 						y = e.targetTouches[0].pageY;
 						act();
 						multi = false;
-						console.log(e.targetTouches.length);
+						////alert(e.targetTouches.length);
 					} else if (TOUCH && e.targetTouches.length > 1) {
 						multi = true;
-						console.log(e.targetTouches.length);
+						////alert(e.targetTouches.length);
 					}
 					function act() {
 						jTweener.removeTween(shaft);
@@ -323,19 +325,19 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 					var wrapLeft;
 
 					if (newLeft > 0) {
-						newLeft = Math.round(newLeft - (newLeft/1.05));
-						wrapLeft = newLeft;
+						newLeft = 0;
+						wrapLeft = Math.round((startShaftLeft-left) - ((startShaftLeft-left)/1.1));
 						limit = true;
 						wrap
-								.addClass('fotorama__wrap_shadow_no-left')
-								.removeClass('fotorama__wrap_shadow_no-right');
+								.addClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right')
+								//.removeClass('fotorama__wrap_shadow_no-right');
 					} else if (newLeft < minLeft ) {
-						newLeft = Math.round(newLeft + ((minLeft - newLeft) / 1.05));
-						wrapLeft = Math.round((left/1.05)-left);
+						newLeft = minLeft;
+						wrapLeft = Math.round((left/1.1)-left);
 						limit = true;
 						wrap
-								.addClass('fotorama__wrap_shadow_no-right')
-								.removeClass('fotorama__wrap_shadow_no-left');
+								.addClass('fotorama__wrap_shadow_no-right fotorama__wrap_shadow_no-left')
+								//.removeClass('fotorama__wrap_shadow_no-left');
 					} else {
 						wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
 						wrapLeft = 0;
@@ -357,6 +359,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 					shaftEl.removeEventListener('touchmove', onMouseMove, false);
 					shaftEl.removeEventListener('touchend', onMouseUp, false);
 				}
+				wrap.removeClass('fotorama__wrap_grabbing fotorama__wrap_shadow fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
 				var activeImg = wrap.data('activeImg');
 				if (activeImg) {
 					showImg(activeImg, true);
@@ -472,7 +475,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 					});
 				shadow
 					.css({
-						height: wrapHeight - 20
+						height: wrapHeight - 10
 					});
 
 				var activeImg = wrap.data('activeImg');
@@ -485,21 +488,22 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 })(jQuery);
 
 function wmodeOpaque(target) {
-	var iframe = $("iframe", target);
+	var iframe = $("iframe:not(.js-opaque)", target);
 	if (iframe.size()) {
 		iframe.each(function(){
 			var clone = $(this).clone();
 			var src = clone.attr('src');
 			var q = src.indexOf("?") > 0 ? '&' : '?';
-			clone.attr('src', src+q+'wmode=opaque');
+			clone.attr('src', src+q+'wmode=opaque').addClass("js-opaque");
 			$(this).after(clone).remove();
 		});
 	}
 
-	var object = $("object", target);
+	var object = $("object:not(.js-opaque)", target);
 	if (object.size()) {
 		object.each(function(){
 			var clone = $(this).clone();
+			clone.addClass("js-opaque");
 			$('<param name="wmode" value="opaque">').appendTo(clone);
 			$("embed", clone).attr({'wmode': 'opaque'});
 			$(this).after(clone).remove();

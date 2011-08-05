@@ -25,10 +25,11 @@
 	display: block
 	position: absolute
 	text-decoration: none
-	top: 10px
+	top: 5px
 	width: 10px
 	+box-shadow(#000, 0, 0, 10px)
 	+transition(all, .4s)
+	z-index: 10
 	*display: none
 .fotorama__shadow_left
 	left: -20px
@@ -81,7 +82,7 @@
 	height: 18px
 	margin-right: -.33em
 	i
-		+transition(all, .15s)
+		//+transition(all, .15s)
 		display: block
 		width: 6px
 		height: 6px
@@ -115,7 +116,6 @@
 .fotorama__img, .fotorama__div
 	position: relative
 	max-width: 100%
-	background: #fff
 	text-align: center
 	margin: 0 auto
 	white-space: normal
