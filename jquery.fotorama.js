@@ -16,7 +16,7 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 			transitionDuration: .33,
 			touchStyle: true,
 			arrows: false,
-			thumbColor: false
+			thumbsColor: false
 		}, options);
 
 		var TOUCH = ('ontouchstart' in document);
@@ -239,9 +239,9 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 			thumbs.wrapInner('<div class="fotorama__thumbs-wrap"></div>')
 
 
-			if (o.thumbColor) {
+			if (o.thumbsColor) {
 				// Если переназначен цвет тумбсов
-				$('i', thumb).css('background', o.thumbColor);
+				$('i', thumb).css('background', o.thumbsColor);
 			}
 
 			// Биндим хендлеры
@@ -374,16 +374,20 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 			}
 
 			if (o.touchStyle) {
-				if (!TOUCH) {
-					shaft.mousedown(onMouseDown);
-				} else {
-					shaftEl.addEventListener('touchstart', onMouseDown, false);
-				}
 
 				function onMouseDown(e) {
 					var t = $(e.target);
 
 					if (!t.is("embed") && !t.is("iframe")) {
+						function act() {
+							inProcess = false;
+							jTweener.removeTween(shaft);
+							downTime = new Date().getTime();
+							downLeft = x;
+							downTop = y;
+							shaftLeft = shaft.position().left;
+							downShaftLeft = shaftLeft;
+						}
 						if (!TOUCH) {
 							x = e.pageX;
 							e.preventDefault();
@@ -402,39 +406,11 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 						} else if (TOUCH && e.targetTouches.length > 1) {
 							multi = true;
 						}
-						function act() {
-							inProcess = false;
-							jTweener.removeTween(shaft);
-							downTime = new Date().getTime();
-							downLeft = x;
-							downTop = y;
-							shaftLeft = shaft.position().left;
-							downShaftLeft = shaftLeft;
-						}
 					}
 
 				}
 
 				function onMouseMove(e) {
-					if (!TOUCH) {
-						x = e.pageX;
-						act();
-					} else if (TOUCH && e.targetTouches.length == 1 && !multi) {
-						x = e.targetTouches[0].pageX;
-						y = e.targetTouches[0].pageY;
-
-						if (!movable && !checkedDirection) {
-							if (Math.abs(x-downLeft) > Math.abs(y-downTop)) {
-								movable = true;
-								e.preventDefault();
-							}
-							checkedDirection = true;
-						} else if (!movable && checkedDirection) {
-							//original event
-						} else {
-							act();
-						}
-					}
 					function act() {
 						e.preventDefault();
 						if (!inProcess) {
@@ -469,7 +445,25 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 
 						shaft.css('left', shaftLeft);
 					}
+					if (!TOUCH) {
+						x = e.pageX;
+						act();
+					} else if (TOUCH && e.targetTouches.length == 1 && !multi) {
+						x = e.targetTouches[0].pageX;
+						y = e.targetTouches[0].pageY;
 
+						if (!movable && !checkedDirection) {
+							if (Math.abs(x-downLeft) > Math.abs(y-downTop)) {
+								movable = true;
+								e.preventDefault();
+							}
+							checkedDirection = true;
+						} else if (!movable && checkedDirection) {
+							//original event
+						} else {
+							act();
+						}
+					}
 				}
 
 				function onBreak() {
@@ -572,6 +566,11 @@ return this;},addOptions:function(){var G=Array.prototype.slice.call(arguments,0
 
 				function onClickFix(e) {
 					e.preventDefault();
+				}
+				if (!TOUCH) {
+					shaft.mousedown(onMouseDown);
+				} else {
+					shaftEl.addEventListener('touchstart', onMouseDown, false);
 				}
 			}
 			function onResize() {
