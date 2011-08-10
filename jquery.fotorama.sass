@@ -1,7 +1,9 @@
 @import "compass"
 
 /* Галерея изображений «Фоторама» */
-/* Версия 0.4 */
+/* Версия 0.5 */
+
+$transtionDuration: .33s
 
 .fotorama__wrap
 	position: relative
@@ -21,14 +23,13 @@
 	//background: url(inflicted.png)
 	//background: url(random_grey_variations.png)
 .fotorama__shadow
-	content: ''
 	display: block
 	position: absolute
 	text-decoration: none
 	top: 5px
 	width: 10px
 	+box-shadow(#000, 0, 0, 10px)
-	+transition(all, .4s)
+	+transition(all, $transtionDuration)
 	z-index: 10
 	*display: none
 .fotorama__shadow_left
@@ -53,15 +54,17 @@
 	white-space: nowrap
 	top: 0
 	left: 0
-	cursor: move
-	cursor: -webkit-grab
-	cursor: -moz-grab
-	cursor: -o-grab
-	cursor: -ms-grab
-	cursor: -khtml-grab
-	*cursor: move !important
-.fotorama__wrap_grabbing
+
+.fotorama__wrap_style_touch
 	.fotorama__shaft
+		cursor: move
+		cursor: -webkit-grab
+		cursor: -moz-grab
+		cursor: -o-grab
+		cursor: -ms-grab
+		cursor: -khtml-grab
+		*cursor: move !important
+	.fotorama__shaft_grabbing
 		cursor: -webkit-grabbing
 		cursor: -moz-grabbing
 		cursor: -o-grabbing
@@ -74,6 +77,9 @@
 	line-height: 0
 	text-align: center
 	position: relative
+.fotorama__thumbs-wrap
+	text-align: left
+	+inline-block
 .fotorama__thumb
 	+inline-block
 	cursor: pointer
@@ -113,6 +119,13 @@
 .fotorama__frame_active
 	z-index: 5
 
+.fotorama__wrap_style_fade
+	.fotorama__frame
+		display: block
+		position: absolute
+		top: 0
+		left: 0
+
 .fotorama__img, .fotorama__div
 	position: relative
 	max-width: 100%
@@ -135,5 +148,45 @@
 	.fotorama__div
 		+box-shadow(none)
 
-//.fotorama__frame__img_shadow
-//	+box-shadow(rgba(0,0,0,.75), 0, 0, 10px)
+.fotorama__arr
+	display: block
+	position: absolute
+	width: 2em
+	text-align: center
+	z-index: 10
+	color: #fff
+	+transition(all, $transtionDuration)
+	font-size: 24px
+	line-height: 24px
+	margin-top: -12px
+	text-shadow: #000 0 0 5px
+	cursor: pointer
+	opacity: 0
+
+.fotorama__arr_prev
+	left: 0
+	margin-left: -2em
+	*margin-left: 0
+.fotorama__arr_next
+	left: 100%
+	margin-left: 0
+	*margin-left: -2em
+.fotorama__arr_disabled
+	cursor: default
+.fotorama__wrap:hover, .fotorama__wrap_touch
+	.fotorama__arr
+		opacity: .77
+		&:hover
+			opacity: .99
+.fotorama__wrap:hover, .fotorama__wrap_touch, .fotorama__wrap_style_fade
+	.fotorama__arr_prev
+		margin-left: 0
+	.fotorama__arr_next
+		margin-left: -2em
+	.fotorama__arr_disabled
+		opacity: .11
+
+.fotorama__wrap_style_fade
+	.fotorama__arr
+		+transition(opacity, $transtionDuration)
+		opacity: 0
