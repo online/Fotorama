@@ -1,8 +1,4 @@
-/**
- * Галерея изображений «Фоторама». Использует jQuery для работы с DOM и анимаций.
- * @author Артём Поликарпов (artpolikarpov@gmail.com)
- * Версия 1.0
- */
+/* Fotorama v1.0 (1151) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Contains: csstransforms3d | csstransitions | canvas | teststyles | testprop | testallprops | prefixes | domprefixes
