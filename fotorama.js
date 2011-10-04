@@ -1,7 +1,7 @@
 /**
  * Галерея изображений «Фоторама». Использует jQuery для работы с DOM и анимаций.
  * @author Артём Поликарпов (artpolikarpov@gmail.com)
- * Версия 0.6
+ * Версия 1.0
  */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
