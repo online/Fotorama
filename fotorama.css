@@ -1,4 +1,4 @@
-/* Fotorama v1.0 (1152) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1151) http://fotoramajs.com/ */
 .fotorama { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); -webkit-backface-visibility: hidden; }
 
 .fotorama__wrap { position: relative; overflow: hidden; *zoom: 1; white-space: nowrap; font-size: 0; line-height: 0; background-color: #222120; -webkit-user-select: none; -moz-user-select: none; -o-user-select: none; -ms-user-select: none; }

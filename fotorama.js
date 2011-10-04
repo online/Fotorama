@@ -1,4 +1,4 @@
-/* Fotorama v1.0 (1152) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1151) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Contains: csstransforms3d | csstransitions | canvas | teststyles | testprop | testallprops | prefixes | domprefixes
@@ -566,13 +566,11 @@ window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()
 					}
 				}
 
-				if (TOUCHFlag) { //TODO: Проверять не на тач, а на мобайл
-					var leftEdge = index - o.preload;
-					if (leftEdge < 0) leftEdge = 0;
-					var rightEdge = index + o.preload + 1;
-					if (rightEdge > size - 1) rightEdge = size - 1;
-					imgFrame.slice(0,leftEdge).add(imgFrame.slice(rightEdge, size - 1)).data({'detached': true}).detach();
-				}
+				//var leftEdge = index - o.preload;
+				//if (leftEdge < 0) leftEdge = 0;
+				//var rightEdge = index + o.preload + 1;
+				//if (rightEdge > size - 1) rightEdge = size - 1;
+				//imgFrame.slice(0,leftEdge).add(imgFrame.slice(rightEdge, size - 1)).data({'detached': true}).detach();
 			}
 
 			function pleaseWait(imgToLoad, callback) {
