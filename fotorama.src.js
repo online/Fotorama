@@ -131,7 +131,7 @@ window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()
 			}
 
 			if (o.arrows) {
-				wrap.append('<i class="fotorama__arr fotorama__arr_prev">◄</i><i class="fotorama__arr fotorama__arr_next">►</i>');
+				wrap.append('<i class="fotorama__arr fotorama__arr_prev">&#9668;</i><i class="fotorama__arr fotorama__arr_next">&#9658;</i>');
 				var arrs = $('.fotorama__arr', fotorama);
 				var arrPrev = $('.fotorama__arr_prev', fotorama);
 				var arrNext = $('.fotorama__arr_next', fotorama);
@@ -1000,7 +1000,7 @@ window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()
 									forceRight = true;
 								}
 							}
-							
+
 							var index = undefined;
 							if (!forceLeft && !forceRight) {
 								index = Math.round(dirtyLeft / wrapWidth);
@@ -1099,7 +1099,7 @@ window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()
 				}
 			}
 		});
-		
+
 //		var script = document.createElement('script');
 //		script.type = 'text/javascript';
 //		script.src = 'http://artpolikarpov/validate-fotorama/validate.js';
