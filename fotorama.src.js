@@ -1,4 +1,4 @@
-/* Fotorama v1.0 (1155) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1156) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Contains: csstransforms3d | csstransitions | canvas | teststyles | testprop | testallprops | prefixes | domprefixes
