@@ -342,11 +342,13 @@
 				caption.appendTo(fotorama);
 			}
 
+			showImg(imgFrame.eq(0), false, false);
+
 			if (wrapWidth && wrapHeight) {
 				setFotoramaSize();
 			}
 
-			showImg(imgFrame.eq(0), false, false);
+
 
 			if (o.thumbs) {
 				if (o.thumbColor && !o.thumbsPreview) {
@@ -465,7 +467,7 @@
 						thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
 
 						if (_srcI == 0) {
-							console.log('appendTo ' + index + ' ' + type);
+							//console.log('appendTo ' + index + ' ' + type);
 							thisImgNew.appendTo(container);
 
 							if (type == 'thumb') {
@@ -1221,7 +1223,7 @@
 
 					stateIcon.css({top: wrapHeight / 2});
 
-					setThumbs();
+					//showImg(activeImg, false, false);
 
 					wrapIsSetFlag = true;
 				}
