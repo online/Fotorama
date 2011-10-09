@@ -270,47 +270,62 @@ Modernizr.canvas = false;
 				if (o.thumbsPreview) {
 					// Загружаем превьюшки
 					img.each(function(i){
-						var thisImgFrame = imgFrame.eq(i);
+						//var thisImgFrame = imgFrame.eq(i);
 
 						function onLoad(thisThumbNew) {
-//							if (console && console.log) {
-//								console.log('thumb onLoad ' + i);
-//							}
-
-							var thumbRatio = thisImgFrame.data('thumbRatio');
-
-							if (Modernizr.canvas) {
-								var thisImgEl = thisThumbNew.get(0);
+							var thumbWidth = thisThumbNew.width();
+							var thumbHeight;
+							var thumbRatio;
+							function waitForWidth() {
+								if (thumbWidth) {
+									thumbHeight = thisThumbNew.height();
+									thumbRatio = thumbWidth / thumbHeight * 1000;
+									continueDraw();
+								} else {
+									thumbWidth = thisThumbNew.width();
+									setTimeout(waitForWidth, 100);
+								}
 							}
+							waitForWidth();
 
-							// Одна точка-переключалка на загрузке
-							var _thumbWidth = Math.round((o.thumbSize) * thumbRatio / 1000);
-							if (Modernizr.canvas) {
-								thisThumbNew.remove();
-								thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
-								thisThumbNew.appendTo(thumb.eq(i));
-							} else {
-								thisThumbNew.addClass('fotorama__thumb__img');
-							}
-							thisThumbNew.attr({
-								width: _thumbWidth,
-								height: o.thumbSize
-							});
-							if (Modernizr.canvas) {
-								var ctx = thisThumbNew.get(0).getContext('2d');
-								ctx.drawImage(thisImgEl,0,0,_thumbWidth,o.thumbSize);
-							}
-							if (!TOUCHFlag && i != 0) {
-								thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
-							}
+							function continueDraw() {
+								if (Modernizr.canvas) {
+									var thisImgEl = thisThumbNew.get(0);
+								}
 
-							thumbsShaftWidth += _thumbWidth + o.thumbMargin - (o.thumbSize + o.thumbMargin);
-							thumbsShaft.css({'width': thumbsShaftWidth});
-							thumb.eq(i).data({'width': _thumbWidth});
+								// Одна точка-переключалка на загрузке
+								var _thumbWidth = Math.round((o.thumbSize) * thumbRatio / 1000);
+								if (Modernizr.canvas) {
+									thisThumbNew.remove();
+									thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
+									thisThumbNew.appendTo(thumb.eq(i));
+								} else {
+									thisThumbNew.addClass('fotorama__thumb__img');
+								}
+								thisThumbNew
+										.attr({
+											width: _thumbWidth,
+											height: o.thumbSize
+										})
+										.css({
+											'visibility': 'visible'
+										});
+								if (Modernizr.canvas) {
+									var ctx = thisThumbNew.get(0).getContext('2d');
+									ctx.drawImage(thisImgEl, 0, 0, _thumbWidth, o.thumbSize);
+								}
+								if (!TOUCHFlag && i != 0) {
+									thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
+								}
 
-							//if (wrapIsSetFlag && (thumbsShaftWidth <= wrapWidth*1.5)) {
+								thumbsShaftWidth += _thumbWidth + o.thumbMargin - (o.thumbSize + o.thumbMargin);
+								thumbsShaft.css({'width': thumbsShaftWidth});
+								thumb.eq(i).data({'width': _thumbWidth});
+
+								//if (wrapIsSetFlag && (thumbsShaftWidth <= wrapWidth*1.5)) {
 								setThumbs();
-							//}
+								//}
+							}
 						}
 
 						// Если включены превьюшки, придётся загружать все картинки разом
@@ -449,11 +464,10 @@ Modernizr.canvas = false;
 				}
 				function loadScope(src) {
 					function loadStart() {
-						thisImgNew
-								.attr({'src': src})
-								.css({'visibility': 'hidden'});
+						thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
 
 						if (_srcI == 0) {
+							console.log('appendTo ' + index + ' ' + type);
 							thisImgNew.appendTo(container);
 
 							if (type == 'thumb') {
@@ -470,32 +484,30 @@ Modernizr.canvas = false;
 					}
 					function loadFinish() {
 						srcState[src] = 'loaded';
+								if (console && console.log) {
+									console.log('loadFinish ' + index + ' ' + type);
+								}
 						container.trigger('fotorama.load').data({'state': 'loaded'});
 
 						if (type == 'thumb') {
 							thisImgNew.removeAttr('width');
 						}
-						var imgWidth = thisImgNew.width();
-						var imgHeight = thisImgNew.height();
-						var imgRatio = imgWidth / imgHeight * 1000;
+						//var imgWidth = thisImgNew.width();
+						//var imgHeight = thisImgNew.height();
+						//var imgRatio = imgWidth / imgHeight * 1000;
 
 						// Закешируем полезные данные на будущее
-						if (type == 'img') {
-							thisImgFrame.data({
-								'imgWidth': imgWidth,
-								'imgHeight': imgHeight,
-								'imgRatio': imgRatio
-							});
-
-	//						if (console && console.log) {
-	//							console.log(src + ' is loaded');
-	//						}
-						} else {
-							thisImgFrame.data({
-								'thumbRatio': imgRatio
-							});
-						}
-						thisImgNew.css({'visibility': 'visible'});
+//						if (type == 'img') {
+//							thisImgFrame.data({
+//								'imgWidth': imgWidth,
+//								'imgHeight': imgHeight,
+//								'imgRatio': imgRatio
+//							});
+//						} else {
+//							thisImgFrame.data({
+//								'thumbRatio': imgRatio
+//							});
+//						}
 						callback(thisImgNew);
 					}
 					function loadError(primary) {
@@ -509,6 +521,7 @@ Modernizr.canvas = false;
 					}
 					//alert(srcState[src]);
 					if (!srcState[src]) {
+						srcState[src] = 'loading';
 						thisImgFrame.data({'loading': true});
 						thisImgNew
 								.unbind('error load')
@@ -518,10 +531,11 @@ Modernizr.canvas = false;
 								.load(loadFinish);
 
 						loadStart();
-						srcState[src] = 'loading';
+
 					} else {
 						// Если картинка уже в процессе загрузки, просто ждём когда она загрузится
 						function justWait() {
+							console.log('justWait');
 							if (srcState[src] == 'error') {
 								loadError(false);
 							} else if (srcState[src] == 'loaded') {
@@ -547,73 +561,90 @@ Modernizr.canvas = false;
 //					if (console && console.log) {
 //						console.log('loadDraw first time');
 //					}
-
 					shaft.append(newImg);
+
 					function onLoad(thisImgNew) {
-						var imgWidth = newImg.data('imgWidth');
-						var imgHeight = newImg.data('imgHeight');
-						var imgRatio = newImg.data('imgRatio');
-
-						if (Modernizr.canvas) {
-							var thisImgEl = thisImgNew.get(0);
-							var imgCanvas = $('<canvas></canvas>');
-							thisImgNew.after(imgCanvas).remove();
-							thisImgNew = imgCanvas;
-						}
-
-						thisImgNew.addClass('fotorama__img');
-
-						if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
-							//Задаём размер всей Фотораме по первой загруженной картинке, если он не задан в опциях
-							wrapWidth = imgWidth;
-							wrapHeight = imgHeight;
-						}
-
-						if (o.touchStyle) {
-							var left = index*(wrapWidth+o.margin);
-							newImg.css({'left': left});
-						}
-
-						if (!wrapRatio) {
-							wrapRatio = wrapWidth / wrapHeight * 1000;
-						}
-						if (imgWidth != wrapWidth || imgHeight != wrapHeight) {
-							var minPadding = 0;
-							if (Math.round(imgRatio) != Math.round(wrapRatio)) {
-								minPadding = o.minPadding*2;
-							}
-
-							if (imgRatio >= wrapRatio) {
-								imgWidth = Math.round(wrapWidth - minPadding) < imgWidth || o.zoomToFit ? Math.round(wrapWidth - minPadding) : imgWidth;
-								imgHeight = Math.round((imgWidth) / imgRatio * 1000);
+						var imgWidth = thisImgNew.width();
+						var imgHeight;
+						var imgRatio;
+						function waitForWidth() {
+							if (imgWidth) {
+								imgHeight = thisImgNew.height();
+								imgRatio = imgWidth / imgHeight * 1000;
+								continueDraw();
 							} else {
-								imgHeight = Math.round(wrapHeight - minPadding) < imgHeight || o.zoomToFit ? Math.round(wrapHeight - minPadding) : imgHeight;
-								imgWidth = Math.round((imgHeight) * imgRatio / 1000);
+								imgWidth = thisImgNew.width();
+								setTimeout(waitForWidth, 100);
 							}
 						}
+						waitForWidth();
 
-						thisImgNew
-								.css({
-									width: imgWidth,
-									height: imgHeight
-								})
-								.attr({
-									width: imgWidth,
-									height: imgHeight
-								});
-						if (Modernizr.canvas) {
-							var ctxImg = imgCanvas.get(0).getContext('2d');
-							ctxImg.drawImage(thisImgEl,0,0,imgWidth,imgHeight);
-						}
 
-						if (imgHeight < wrapHeight) {
+						function continueDraw() {
+							if (Modernizr.canvas) {
+								var thisImgEl = thisImgNew.get(0);
+								var imgCanvas = $('<canvas></canvas>');
+								thisImgNew.after(imgCanvas).remove();
+								thisImgNew = imgCanvas;
+							}
+
+							thisImgNew.addClass('fotorama__img');
+
+							if (console && console.log) {
+								console.log(imgWidth + ' ' + imgHeight, index);
+							}
+
+							if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
+								//Задаём размер всей Фотораме по первой загруженной картинке, если он не задан в опциях
+								wrapWidth = imgWidth;
+								wrapHeight = imgHeight;
+							}
+
+							if (o.touchStyle) {
+								var left = index * (wrapWidth + o.margin);
+								newImg.css({'left': left});
+							}
+
+							if (!wrapRatio) {
+								wrapRatio = wrapWidth / wrapHeight * 1000;
+							}
+							if (imgWidth != wrapWidth || imgHeight != wrapHeight) {
+								var minPadding = 0;
+								if (Math.round(imgRatio) != Math.round(wrapRatio)) {
+									minPadding = o.minPadding * 2;
+								}
+
+								if (imgRatio >= wrapRatio) {
+									imgWidth = Math.round(wrapWidth - minPadding) < imgWidth || o.zoomToFit ? Math.round(wrapWidth - minPadding) : imgWidth;
+									imgHeight = Math.round((imgWidth) / imgRatio * 1000);
+								} else {
+									imgHeight = Math.round(wrapHeight - minPadding) < imgHeight || o.zoomToFit ? Math.round(wrapHeight - minPadding) : imgHeight;
+									imgWidth = Math.round((imgHeight) * imgRatio / 1000);
+								}
+							}
+
 							thisImgNew
+									.attr({
+										width: imgWidth,
+										height: imgHeight
+									})
 									.css({
-										top: Math.round((wrapHeight - imgHeight) / 2)
+										'visibility': 'visible'
 									});
-						}
+							if (Modernizr.canvas) {
+								var ctxImg = imgCanvas.get(0).getContext('2d');
+								ctxImg.drawImage(thisImgEl, 0, 0, imgWidth, imgHeight);
+							}
 
-						setFotoramaSize();
+							if (imgHeight < wrapHeight) {
+								thisImgNew
+										.css({
+									top: Math.round((wrapHeight - imgHeight) / 2)
+								});
+							}
+
+							setFotoramaSize();
+						}
 					}
 
 					newImg.data({'wraped': true});
@@ -1192,9 +1223,13 @@ Modernizr.canvas = false;
 
 					stateIcon.css({top: wrapHeight / 2});
 
+					setThumbs();
+
 					wrapIsSetFlag = true;
 				}
+
 			}
+
 
 			var stateIconPositionTimeout;
 			function setFotoramaState(state, index, time) {
@@ -1203,10 +1238,12 @@ Modernizr.canvas = false;
 //				}
 				clearTimeout(stateIconPositionTimeout);
 				function stateIconPosition() {
-					stateIcon.css({left: index*(wrapWidth+o.margin)+wrapWidth/2});
-					stateIconPositionTimeout = setTimeout(function(){
-						stateIcon.show();
-					},time);
+					if (wrapIsSetFlag) {
+						stateIcon.css({left: index*(wrapWidth+o.margin)+wrapWidth/2});
+						stateIconPositionTimeout = setTimeout(function(){
+							stateIcon.show();
+						},time);
+					}
 				}
 				switch (state) {
 					case 'loading':
@@ -1250,9 +1287,9 @@ Modernizr.canvas = false;
 //					console.log(thumbsShaftWidth);
 //				}
 
-				if (activeImg) {
+				//if (activeImg && thumbsShaftWidth < wrapWidth*1.5) {
 					slideThumbsShaft(0, false);
-				}
+				//}
 			}
 		});
 
