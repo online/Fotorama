@@ -90,7 +90,7 @@
 
 .fotorama__caption { font-size: 13px; line-height: 16px; margin: .5em 0; white-space: normal; }
 
-.fotorama__state { position: absolute; color: #fff; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; line-height: 80px; font-size: 80px; font-family: 'Times New Roman', Times, serif; letter-spacing: 1px; text-transform: uppercase; background-color: #222120; background-color: rgba(34, 33, 32, 0.5); text-align: center; display: none; -moz-border-radius: 50%; -webkit-border-radius: 50%; -o-border-radius: 50%; -ms-border-radius: 50%; -khtml-border-radius: 50%; border-radius: 50%; background-repeat: no-repeat; z-index: 4; }
+.fotorama__state { position: absolute; color: #fff; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; line-height: 80px; font-size: 80px; font-family: 'Times New Roman', Times, serif; letter-spacing: 1px; text-transform: uppercase; background-color: #222120; background-color: rgba(34, 33, 32, 0.5); text-align: center; display: none; -moz-border-radius: 50%; -webkit-border-radius: 50%; -o-border-radius: 50%; -ms-border-radius: 50%; -khtml-border-radius: 50%; border-radius: 50%; background-repeat: no-repeat; z-index: 6; }
 
 .fotorama_loading .fotorama__state { letter-spacing: -10px; }
 .fotorama_loading .fotorama__state span { position: relative; left: -5px; }
