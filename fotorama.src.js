@@ -1,4 +1,4 @@
-/* Fotorama v1.0 (1161) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1162) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -120,21 +120,7 @@
 			var stateIconSpinnerIntervalI = 0;
 
 			function stateIconSpinner() {
-				if (BASE64Flag) {
-					stateIcon.css({backgroundPosition: '24px ' + (24 - 56*stateIconSpinnerIntervalI) + 'px'});
-				} else {
-					var dots;
-					if (stateIconSpinnerIntervalI > 5) {
-						dots = '&middot;&middot;&middot;';
-					} else if (stateIconSpinnerIntervalI > 3) {
-						dots = '&middot;&middot;';
-					} else if (stateIconSpinnerIntervalI > 1) {
-						dots = '&middot;';
-					} else {
-						dots = '&middot;&middot;';
-					}
-					stateIcon.html('<span>'+dots+'</span>');
-				}
+				stateIcon.css({backgroundPosition: '24px ' + (24 - 56*stateIconSpinnerIntervalI) + 'px'});
 				stateIconSpinnerIntervalI++;
 				if (stateIconSpinnerIntervalI > 7) stateIconSpinnerIntervalI = 0;
 			}
@@ -1252,7 +1238,7 @@
 					if (wrapIsSetFlag) {
 						stateIcon.css({left: index*(wrapWidth+o.margin)+wrapWidth/2});
 						stateIconPositionTimeout = setTimeout(function(){
-							stateIcon.show();
+							stateIcon.stop().show().fadeTo(0,1);
 						},time);
 					}
 				}
@@ -1263,8 +1249,11 @@
 						clearInterval(stateIconSpinnerInterval);
 						if (BASE64Flag) {
 							stateIcon.css({backgroundImage: 'url('+_SPINNER+')'});
+							stateIconSpinnerInterval = setInterval(stateIconSpinner,100);
+						} else {
+							stateIcon.html('<span>&middot;&middot;&middot;</span>');
 						}
-						stateIconSpinnerInterval = setInterval(stateIconSpinner,100);
+
 					break;
 					case 'error':
 						stateIconPosition();
@@ -1278,9 +1267,9 @@
 					break;
 					case 'loaded':
 						fotorama.removeClass('fotorama_loading fotorama_error');
-						stateIconPositionTimeout = setTimeout(function(){
+						stateIcon.stop().fadeTo(time,0,function(){
 							stateIcon.hide();
-						},time);
+						});
 						clearInterval(stateIconSpinnerInterval);
 					break;
 				}
