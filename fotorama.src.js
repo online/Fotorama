@@ -482,9 +482,9 @@
 					}
 					function loadFinish() {
 						srcState[src] = 'loaded';
-								if (console && console.log) {
-									console.log('loadFinish ' + index + ' ' + type);
-								}
+//								if (console && console.log) {
+//									console.log('loadFinish ' + index + ' ' + type);
+//								}
 						container.trigger('fotorama.load').data({'state': 'loaded'});
 
 						if (type == 'thumb') {
@@ -533,7 +533,7 @@
 					} else {
 						// Если картинка уже в процессе загрузки, просто ждём когда она загрузится
 						function justWait() {
-							console.log('justWait');
+//							console.log('justWait');
 							if (srcState[src] == 'error') {
 								loadError(false);
 							} else if (srcState[src] == 'loaded') {
@@ -588,9 +588,9 @@
 
 							thisImgNew.addClass('fotorama__img');
 
-							if (console && console.log) {
-								console.log(imgWidth + ' ' + imgHeight, index);
-							}
+//							if (console && console.log) {
+//								console.log(imgWidth + ' ' + imgHeight, index);
+//							}
 
 							if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
 								//Задаём размер всей Фотораме по первой загруженной картинке, если он не задан в опциях
