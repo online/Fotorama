@@ -49,7 +49,7 @@
 .fotorama__thumbs_previews .fotorama__shadow { top: 0; }
 .fotorama__thumbs_previews .fotorama__thumbs-shaft { position: absolute; top: 0; left: 0; }
 .fotorama__thumbs_previews .fotorama__thumb { float: left; display: inline; margin-left: 0 !important; width: auto; }
-.fotorama__thumbs_previews .fotorama__thumb__img { width: auto; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=66)"; filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=66); opacity: 0.66; }
+.fotorama__thumbs_previews .fotorama__thumb__img { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=66)"; filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=66); opacity: 0.66; }
 .fotorama__thumbs_previews .fotorama__thumb_selected .fotorama__thumb__img, .fotorama__thumbs_previews .fotorama__thumb:hover .fotorama__thumb__img { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100); opacity: 1; }
 .fotorama__thumbs_previews .fotorama__thumb-border { border: solid; border-color: #00d1ff #00afea #008ed6; position: absolute; z-index: 10; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; -o-box-sizing: content-box; -ms-box-sizing: content-box; box-sizing: content-box; }
 
