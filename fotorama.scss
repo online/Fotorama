@@ -1,6 +1,6 @@
 @import "compass";
 
-/* Fotorama v1.0 (1160) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1161) http://fotoramajs.com/ */
 
 $transitionDuration: 333ms;
 $backgroundColor: #222120;
@@ -412,7 +412,7 @@ $arrWidth: 24px + 20;
 		font-size: 80px;
 	}
 	.fotorama__thumb-border	{
-	  //border-color: #ff002a mix(#ff002a, #cc0000) #cc0000 !important;
+	  border-color: #ff002a mix(#ff002a, #cc0000) #cc0000 !important;
 		border-style: dashed;
 	}
 }
