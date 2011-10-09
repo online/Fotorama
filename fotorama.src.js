@@ -1,15 +1,13 @@
-/* Fotorama v1.0 (1156) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1159) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
- * Contains: csstransforms3d | csstransitions | canvas | teststyles | testprop | testallprops | prefixes | domprefixes
+ * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-teststyles-testprop-testallprops-prefixes-domprefixes
  */
-window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="modernizr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
-
-Modernizr.canvas = false;
-
+;window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="modernizr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
 
 (function($){
 	var TOUCHFlag = ('ontouchstart' in document);
+	var CSSTRFlag = Modernizr.csstransforms3d && Modernizr.csstransitions;
 	//var IEFlag = $.browser.msie;
 	var o__dragTimeout = 200;
 	var o__shadows = true;
@@ -155,7 +153,7 @@ Modernizr.canvas = false;
 				wrap.addClass('fotorama__wrap_style_fade');
 			}
 
-			if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+			if (CSSTRFlag) {
 				wrap.addClass('fotorama__wrap_csstransitions');
 			}
 
@@ -289,19 +287,19 @@ Modernizr.canvas = false;
 							waitForWidth();
 
 							function continueDraw() {
-								if (Modernizr.canvas) {
-									var thisImgEl = thisThumbNew.get(0);
-								}
+//								/*if (Modernizr.canvas) {
+//									var thisImgEl = thisThumbNew.get(0);
+//								}*/
 
 								// Одна точка-переключалка на загрузке
 								var _thumbWidth = Math.round((o.thumbSize) * thumbRatio / 1000);
-								if (Modernizr.canvas) {
-									thisThumbNew.remove();
-									thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
-									thisThumbNew.appendTo(thumb.eq(i));
-								} else {
+//								/*if (Modernizr.canvas) {
+//									thisThumbNew.remove();
+//									thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
+//									thisThumbNew.appendTo(thumb.eq(i));
+//								} else {*/
 									thisThumbNew.addClass('fotorama__thumb__img');
-								}
+//								/*}*/
 								thisThumbNew
 										.attr({
 											width: _thumbWidth,
@@ -310,17 +308,17 @@ Modernizr.canvas = false;
 										.css({
 											'visibility': 'visible'
 										});
-								if (Modernizr.canvas) {
-									var ctx = thisThumbNew.get(0).getContext('2d');
-									ctx.drawImage(thisImgEl, 0, 0, _thumbWidth, o.thumbSize);
-								}
+//								/*if (Modernizr.canvas) {
+//									var ctx = thisThumbNew.get(0).getContext('2d');
+//									ctx.drawImage(thisImgEl, 0, 0, _thumbWidth, o.thumbSize);
+//								}*/
 								if (!TOUCHFlag && i != 0) {
 									thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
 								}
 
 								thumbsShaftWidth += _thumbWidth + o.thumbMargin - (o.thumbSize + o.thumbMargin);
 								thumbsShaft.css({'width': thumbsShaftWidth});
-								thumb.eq(i).data({'width': _thumbWidth});
+								thumb.eq(i).css({'width': _thumbWidth}).data({'width': _thumbWidth});
 
 								//if (wrapIsSetFlag && (thumbsShaftWidth <= wrapWidth*1.5)) {
 								setThumbs();
@@ -477,7 +475,7 @@ Modernizr.canvas = false;
 								thisImgNew.attr({'width': o.thumbSize});
 								thumbsShaftWidth += o.thumbSize + o.thumbMargin;
 								thumbsShaft.css({'width': thumbsShaftWidth});
-								container.data({'width': o.thumbSize});
+								container.css({'width': o.thumbSize}).data({'width': o.thumbSize});
 								setThumbs();
 							}
 						}
@@ -581,12 +579,12 @@ Modernizr.canvas = false;
 
 
 						function continueDraw() {
-							if (Modernizr.canvas) {
-								var thisImgEl = thisImgNew.get(0);
-								var imgCanvas = $('<canvas></canvas>');
-								thisImgNew.after(imgCanvas).remove();
-								thisImgNew = imgCanvas;
-							}
+//							/*if (Modernizr.canvas) {
+//								var thisImgEl = thisImgNew.get(0);
+//								var imgCanvas = $('<canvas></canvas>');
+//								thisImgNew.after(imgCanvas).remove();
+//								thisImgNew = imgCanvas;
+//							}*/
 
 							thisImgNew.addClass('fotorama__img');
 
@@ -631,10 +629,10 @@ Modernizr.canvas = false;
 									.css({
 										'visibility': 'visible'
 									});
-							if (Modernizr.canvas) {
-								var ctxImg = imgCanvas.get(0).getContext('2d');
-								ctxImg.drawImage(thisImgEl, 0, 0, imgWidth, imgHeight);
-							}
+//							/*if (Modernizr.canvas) {
+//								var ctxImg = imgCanvas.get(0).getContext('2d');
+//								ctxImg.drawImage(thisImgEl, 0, 0, imgWidth, imgHeight);
+//							}*/
 
 							if (imgHeight < wrapHeight) {
 								thisImgNew
@@ -771,7 +769,7 @@ Modernizr.canvas = false;
 
 				if (o.touchStyle) {
 					var left = -indexNew*(wrapWidth+o.margin);
-					if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+					if (CSSTRFlag) {
 						shaft.css(getDuration(time));
 						setTimeout(function(){
 							shaft.css(getTranslate(left));
@@ -780,7 +778,7 @@ Modernizr.canvas = false;
 						shaft.stop().animate({left: left}, time);
 					}
 				} else {
-					if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+					if (CSSTRFlag) {
 						if (!activeImg) {
 							//console.log('no active img');
 							newImg.css({opacity: 0});
@@ -884,7 +882,7 @@ Modernizr.canvas = false;
 								}
 							}
 
-							if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+							if (CSSTRFlag) {
 								thumbsShaft.css(getDuration(time));
 								setTimeout(function(){
 									thumbsShaft.css(getTranslate(newLeft));
@@ -893,7 +891,7 @@ Modernizr.canvas = false;
 								thumbsShaft.stop().animate({left: newLeft}, time);
 							}
 						} else {
-							if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+							if (CSSTRFlag) {
 								thumbsShaft.css(getDuration(0));
 								thumbsShaft.css(getTranslate(wrapWidth/2 - thumbsShaftWidth/2));
 							} else {
@@ -910,7 +908,7 @@ Modernizr.canvas = false;
 						}
 						var thumbBorderLeft = thumbLeft - Math.min(o.thumbMargin, o.thumbBorderWidth);
 
-						if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+						if (CSSTRFlag) {
 							thumbBorder.css(getDuration(time));
 							setTimeout(function(){
 								thumbBorder
@@ -977,7 +975,7 @@ Modernizr.canvas = false;
 							downTop = y;
 							moveLeft.push([downTime, x]);
 							shaftLeft = shaft.position().left;
-							if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+							if (CSSTRFlag) {
 								shaft
 										.css(getDuration(0))
 										.css(getTranslate(shaftLeft));
@@ -1049,7 +1047,7 @@ Modernizr.canvas = false;
 						}
 
 						if (o.touchStyle) {
-							if (Modernizr.csstransforms3d && Modernizr.csstransitions) {
+							if (CSSTRFlag) {
 								shaft.css(getTranslate(shaftLeft));
 							} else {
 								shaft.css('left', shaftLeft);
