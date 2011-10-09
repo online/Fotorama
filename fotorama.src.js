@@ -342,13 +342,11 @@
 				caption.appendTo(fotorama);
 			}
 
-			showImg(imgFrame.eq(0), false, false);
-
 			if (wrapWidth && wrapHeight) {
 				setFotoramaSize();
 			}
 
-
+			showImg(imgFrame.eq(0), false, false);
 
 			if (o.thumbs) {
 				if (o.thumbColor && !o.thumbsPreview) {
@@ -1223,7 +1221,7 @@
 
 					stateIcon.css({top: wrapHeight / 2});
 
-					//showImg(activeImg, false, false);
+					setThumbs();
 
 					wrapIsSetFlag = true;
 				}
