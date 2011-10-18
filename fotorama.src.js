@@ -1,4 +1,4 @@
-/* Fotorama v1.0 (1162) http://fotoramajs.com/ */
+/* Fotorama v1.0 (1163) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -1236,6 +1236,9 @@
 				clearTimeout(stateIconPositionTimeout);
 				function stateIconPosition() {
 					if (wrapIsSetFlag) {
+						if (!o.touchStyle) {
+							index = 0;
+						}
 						stateIcon.css({left: index*(wrapWidth+o.margin)+wrapWidth/2});
 						stateIconPositionTimeout = setTimeout(function(){
 							stateIcon.stop().show().fadeTo(0,1);
