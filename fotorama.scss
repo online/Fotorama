@@ -1,6 +1,6 @@
 @import "compass";
 
-/* Fotorama v1.0 (1162) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1164) http://fotoramajs.com/ */
 
 $transitionDuration: 333ms;
 $backgroundColor: #222120;
@@ -384,7 +384,7 @@ $arrWidth: 24px + 20;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	background-color: $backgroundColor;
-	background-color: rgba(34,33,32,.5);
+	background-color: rgba(34,33,32,.75);
 	text-align: center;
 	display: none;
 	@include border-radius(40px);
