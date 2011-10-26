@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1165) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1168) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -39,13 +39,13 @@
 		}, options);
 
 		//FOTORAMA = $();
-		////console.log("appendTo");
+		//////console.log("appendTo");
 
 //		var __startLoad = new Date().getTime();
 //		var __stopLoad;
 //		$(window).load(function(){
 //			__stopLoad = new Date().getTime();
-//			//console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
+//			////console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
 //		});
 
 		this.each(function(){
@@ -92,7 +92,7 @@
 				var wrapHeight = o.height;
 				var wrapRatio;
 				var wrapIsSetFlag = false;
-				var preloadSiblingsTimeout;
+				var loadTimeout;
 
 				if (o.touchStyle) {
 					var shaftWidth = 0,
@@ -204,7 +204,7 @@
 					imgFrame = imgFrame.add(_imgFrame);
 				});
 
-				////console.log('imgFrame.size()', imgFrame.size());
+				//////console.log('imgFrame.size()', imgFrame.size());
 
 				if (o.thumbs) {
 					// Если тумбсы или превьюшки
@@ -266,9 +266,12 @@
 							//var thisImgFrame = imgFrame.eq(i);
 
 							function onLoad(thisThumbNew) {
-								var thumbWidth = thisThumbNew.width();
-								var thumbHeight = thisThumbNew.height();
+								var $thisThumbNew = $(thisThumbNew);
+
+								var thumbWidth = $thisThumbNew.width();
+								var thumbHeight = $thisThumbNew.height();
 								var thumbRatio = thumbWidth / thumbHeight * 1000;
+
 	//							function waitForWidth() {
 	//								if (thumbWidth && thumbHeight ((IEFlag && thumbWidth != 28 && thumbHeight != 30) || !IEFlag)) {
 	//									//thumbRatio = thumbWidth / thumbHeight * 1000;
@@ -283,20 +286,20 @@
 
 
 								function continueDraw() {
-									if (Modernizr.canvas) {
+									/*if (Modernizr.canvas) {
 										var thisImgEl = thisThumbNew.get(0);
-									}
+									}*/
 
 									// Одна точка-переключалка на загрузке
 									var _thumbWidth = Math.round((o.thumbSize) * thumbRatio / 1000);
 									if (Modernizr.canvas) {
-										thisThumbNew.remove();
-										thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
-										thisThumbNew.appendTo(thumb.eq(i));
+										$thisThumbNew.remove();
+										$thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
+										$thisThumbNew.appendTo(thumb.eq(i));
 									} else {
-										thisThumbNew.addClass('fotorama__thumb__img');
+										$thisThumbNew.addClass('fotorama__thumb__img');
 									}
-									thisThumbNew
+									$thisThumbNew
 											.attr({
 												width: _thumbWidth,
 												height: o.thumbSize
@@ -307,11 +310,11 @@
 												'visibility': 'visible'
 											});
 									if (Modernizr.canvas) {
-										var ctx = thisThumbNew.get(0).getContext('2d');
-										ctx.drawImage(thisImgEl, 0, 0, _thumbWidth, o.thumbSize);
+										var ctx = $thisThumbNew.get(0).getContext('2d');
+										ctx.drawImage(thisThumbNew, 0, 0, _thumbWidth, o.thumbSize);
 									}
 									if (!TOUCHFlag && i != 0) {
-										thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
+										$thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
 									}
 
 									thumbsShaftWidth += _thumbWidth + o.thumbMargin - (o.thumbSize + o.thumbMargin);
@@ -343,8 +346,8 @@
 				}
 
 				function setFotoramaSize() {
-	//				if (console && //console.log) {
-	//					//console.log('setFotoramaSize');
+	//				if (console && ////console.log) {
+	//					////console.log('setFotoramaSize');
 	//				}
 					if (wrapWidth && wrapHeight && !wrapIsSetFlag) {
 						fotorama.css({
@@ -392,8 +395,8 @@
 
 				var stateIconPositionTimeout;
 				function setFotoramaState(state, index, time) {
-	//				if (console && //console.log) {
-	//					//console.log('setFotoramaState', wrapWidth);
+	//				if (console && ////console.log) {
+	//					////console.log('setFotoramaState', wrapWidth);
 	//				}
 					clearTimeout(stateIconPositionTimeout);
 					function stateIconPosition() {
@@ -444,8 +447,8 @@
 
 				// Прокручиваем ленту превьюшек
 				function slideThumbsShaft(time, x) {
-	//				if (console && //console.log) {
-	//					//console.log(thumbsShaftWidth);
+	//				if (console && ////console.log) {
+	//					////console.log(thumbsShaftWidth);
 	//				}
 					if (thumbsShaftWidth) {
 						var thumbLeft = activeThumb.position().left;
@@ -553,8 +556,8 @@
 						}
 					}
 
-	//				if (console && //console.log) {
-	//					//console.log(thumbsShaftWidth);
+	//				if (console && ////console.log) {
+	//					////console.log(thumbsShaftWidth);
 	//				}
 
 					//if (activeImg && thumbsShaftWidth < wrapWidth*1.5) {
@@ -563,12 +566,13 @@
 				}
 
 				function loadImg(index, container, callback, type) {
-	//				if (console && //console.log) {
-	//					//console.log('loadImg');
+	//				if (console && ////console.log) {
+	//					////console.log('loadImg');
 	//				}
 
 					var thisImgFrame = imgFrame.eq(index);
-					var thisImgNew = $('<img />');
+					var thisImgNew = new Image();
+					var $thisImgNew = $(thisImgNew);
 					var thisImg = img.eq(index);
 					var _src = [];
 					var _srcI = 0;
@@ -576,30 +580,48 @@
 					var imgSrc = src[index]['imgSrc'];
 					var thumbSrc = src[index]['thumbSrc'];
 					if (type == 'img') {
-						if (imgHref) _src.push(imgHref);
-						if (imgSrc) _src.push(imgSrc);
-						if (thumbSrc) _src.push(thumbSrc);
+						if (imgHref) {
+							_src.push(imgHref);
+							_src.push(imgHref + '?' + timestamp);
+						}
+						if (imgSrc) {
+							_src.push(imgSrc);
+							_src.push(imgSrc + '?' + timestamp);
+						}
+						if (thumbSrc) {
+							_src.push(thumbSrc);
+							_src.push(thumbSrc + '?' + timestamp);
+						}
 					} else {
-						if (thumbSrc) _src.push(thumbSrc);
-						if (imgSrc) _src.push(imgSrc);
-						if (imgHref) _src.push(imgHref);
+						if (thumbSrc) {
+							_src.push(thumbSrc);
+							_src.push(thumbSrc + '?' + timestamp);
+						}
+						if (imgSrc) {
+							_src.push(imgSrc);
+							_src.push(imgSrc + '?' + timestamp);
+						}
+						if (imgHref) {
+							_src.push(imgHref);
+							_src.push(imgHref + '?' + timestamp);
+						}
 					}
 					if (o.caption) {
 						thisImgFrame.data({'caption': thisImg.attr('alt') || thisImg.children().attr('alt')});
 					}
 					function loadScope(src) {
 						function loadStart() {
-							thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
+							$thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
 
 							if (_srcI == 0) {
-								////console.log('appendTo ' + index + ' ' + type);
-								thisImgNew.appendTo(container);
+								//////console.log('appendTo ' + index + ' ' + type);
+								$thisImgNew.appendTo(container);
 
 								if (type == 'thumb') {
-	//								if (console && //console.log) {
-	//									//console.log('firstTime + thumb ' + src);
+	//								if (console && ////console.log) {
+	//									////console.log('firstTime + thumb ' + src);
 	//								}
-									thisImgNew.attr({'width': o.thumbSize});
+									//$thisImgNew.attr({'width': o.thumbSize});
 									thumbsShaftWidth += o.thumbSize + o.thumbMargin;
 									thumbsShaft.css({'width': thumbsShaftWidth});
 									container.css({'width': o.thumbSize}).data({'width': o.thumbSize});
@@ -609,13 +631,14 @@
 						}
 						function loadFinish() {
 							srcState[src] = 'loaded';
-	//								if (console && //console.log) {
-	//									//console.log('loadFinish ' + index + ' ' + type);
+	//								if (console && ////console.log) {
+	//									////console.log('loadFinish ' + index + ' ' + type);
 	//								}
 							container.trigger('fotorama.load').data({'state': 'loaded'});
 
 							if (type == 'thumb') {
-								thisImgNew.removeAttr('width');
+								//alert('thumb load')
+								//$thisImgNew.attr({'width': thisImgNew.width});
 							}
 							//var imgWidth = thisImgNew.width();
 							//var imgHeight = thisImgNew.height();
@@ -640,9 +663,9 @@
 						}
 						function loadError(primary) {
 							srcState[src] = 'error';
-							thisImgNew.unbind('error load');
+							$thisImgNew.unbind('error load');
 							if (_srcI < _src.length && primary) {
-								loadScope(_src[_srcI] + '?' + timestamp);
+								loadScope(_src[_srcI]/* + '?' + timestamp*/);
 								_srcI++;
 							} else {
 								container.trigger('fotorama.error').data({'state': 'error'});
@@ -652,7 +675,7 @@
 						if (!srcState[src]) {
 							srcState[src] = 'loading';
 							thisImgFrame.data({'loading': true});
-							thisImgNew
+							$thisImgNew
 									.unbind('error load')
 									.error(function(){
 										loadError(true);
@@ -664,7 +687,7 @@
 						} else {
 							// Если картинка уже в процессе загрузки, просто ждём когда она загрузится
 							function justWait() {
-	//							//console.log('justWait');
+	//							////console.log('justWait');
 								if (srcState[src] == 'error') {
 									loadError(false);
 								} else if (srcState[src] == 'loaded') {
@@ -679,7 +702,7 @@
 					}
 
 
-					loadScope(_src[_srcI] + '?' + timestamp);
+					loadScope(_src[_srcI]/* + '?' + timestamp*/);
 					_srcI++;
 				}
 
@@ -687,15 +710,19 @@
 				function loadDraw(newImg) {
 					var index = imgFrame.index(newImg);
 					if (!newImg.data('wraped')) {
-	//					if (console && //console.log) {
-	//						//console.log('loadDraw first time');
+	//					if (console && ////console.log) {
+	//						////console.log('loadDraw first time');
 	//					}
 						shaft.append(newImg);
 
 						function onLoad(thisImgNew) {
-							var imgWidth = thisImgNew.width();
-							var imgHeight = thisImgNew.height();
+							var $thisImgNew = $(thisImgNew);
+
+							var imgWidth = $thisImgNew.width();
+							var imgHeight = $thisImgNew.height();
 							var imgRatio = imgWidth / imgHeight * 1000;
+
+
 	//						function waitForWidth() {
 	//							if (imgWidth && imgHeight && ((IEFlag && imgWidth != 28 && imgHeight != 30) || !IEFlag)) {
 	//								imgRatio = imgWidth / imgHeight * 1000;
@@ -717,10 +744,10 @@
 	//								thisImgNew = imgCanvas;
 	//							}*/
 
-								thisImgNew.addClass('fotorama__img');
+								$thisImgNew.addClass('fotorama__img');
 
-	//							if (console && //console.log) {
-	//								//console.log(imgWidth + ' ' + imgHeight, index);
+	//							if (console && ////console.log) {
+	//								////console.log(imgWidth + ' ' + imgHeight, index);
 	//							}
 
 								if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
@@ -752,7 +779,7 @@
 									}
 								}
 
-								thisImgNew
+								$thisImgNew
 										.attr({
 											width: imgWidth,
 											height: imgHeight
@@ -768,7 +795,7 @@
 	//							}*/
 
 								if (imgHeight < wrapHeight) {
-									thisImgNew
+									$thisImgNew
 											.css({
 										top: Math.round((wrapHeight - imgHeight) / 2)
 									});
@@ -788,22 +815,29 @@
 					}*/
 				}
 
-				function preloadSiblings() {
-					var index = imgFrame.index(activeImg);
+				function preloadSiblings(newImg) {
+					var index = imgFrame.index(newImg);
 					var sizeToLoad = 0;
+					var limitFLAG = false;
 					var indexNew = [];
 					for (i=0;i<o.preload*2+1;i++) {
 						var _indexNew = index - o.preload + i;
-						if (_indexNew >= 0 && _indexNew != index && _indexNew < size && (!imgFrame.eq(_indexNew).data('wraped') || imgFrame.eq(_indexNew).data('detached'))) {
-							sizeToLoad++;
-							indexNew.push(_indexNew);
+						if (_indexNew >= 0 && _indexNew < size) {
+							if (!imgFrame.eq(_indexNew).data('wraped') || imgFrame.eq(_indexNew).data('detached')) {
+								sizeToLoad++;
+								indexNew.push(_indexNew);
+								//console.log(_indexNew);
+							}
+						} else {
+							limitFLAG = true;
 						}
 					}
 
-					////console.log('sizeToLoad: '+sizeToLoad, indexNew.length);
+					//console.log('sizeToLoad: '+sizeToLoad, 'limitFLAG: '+limitFLAG);
 
-					if (indexNew.length >= o.preload) {
+					if (sizeToLoad >= o.preload || limitFLAG) {
 						for (i=0;i<indexNew.length;i++) {
+							//console.log(indexNew[i]);
 							loadDraw(imgFrame.eq(indexNew[i]));
 						}
 					}
@@ -838,15 +872,20 @@
 					var indexNew = imgFrame.index(newImg);
 
 
-	//				if (console && //console.log) {
-	//					//console.log('state is ' + state);
+	//				if (console && ////console.log) {
+	//					////console.log('state is ' + state);
 	//				}
 
 					imgFrame.each(function(){
 						$(this).unbind('fotorama.load fotorama.error');
 					});
 
-					loadDraw(newImg);
+
+					clearTimeout(loadTimeout);
+					loadTimeout = setTimeout(function(){
+						loadDraw(newImg);
+						preloadSiblings(newImg);
+					}, 500);
 
 					var time = o.transitionDuration;
 					if (e && e.altKey) {
@@ -920,7 +959,7 @@
 					} else {
 						if (CSSTRFlag) {
 							if (!activeImg) {
-								////console.log('no active img');
+								//////console.log('no active img');
 								newImg.css({opacity: 0});
 							}
 							prevActiveImg.add(newImg).css(getDuration(time));
@@ -954,9 +993,6 @@
 					if (o.arrows) {
 						setArrows();
 					}
-
-					clearTimeout(preloadSiblingsTimeout);
-					preloadSiblingsTimeout = setTimeout(preloadSiblings, time);
 
 					if (o.onShowImg) {
 						var data = {index: indexNew, img: activeImg, thumb: activeThumb, caption: captionText};
@@ -1055,7 +1091,7 @@
 
 				// Биндим хендлеры
 				fotorama.bind('showImg', function(e, index){
-					//console.log(index);
+					////console.log(index);
 					if (index > size - 1 || typeof(index) != 'number') {
 						index = 0
 					}
@@ -1318,7 +1354,7 @@
 					}
 				}
 			} else {
-				//console.log('Уже активирована!');
+				////console.log('Уже активирована!');
 			}
 		});
 
