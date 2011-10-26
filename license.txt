@@ -3,10 +3,14 @@ www.fotoramajs.com | artpolikarpov@gmail.com
 ***Licence***
 1. Fotorama is free and unrestricted for personal and non-commercial use.
 
+2. All commercial use without the written permission of the author is prohibited.
+
+3. The author cannot be held responsible for damages, financial or otherwise, caused by the use of Fotorama.
+
 
 ***Лицензия***
 1. Фоторама предназначена для свободного и неограниченного использования в личных некоммерческих целях.
 
-2. Любое корпоративное и/или коммерческое использование плагина нужно согласовать со мной.
+2. Любое корпоративное и/или коммерческое использование Фоторамы нужно согласовать со мной.
 
-3. Я не несу никакой ответственности за моральный, материальный или какой угодно иной ущерб, который «Фоторама» вам нанесёт.
+3. Я не несу никакой ответственности за моральный, материальный или какой угодно иной ущерб, который Фоторама вам нанесёт.

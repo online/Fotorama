@@ -1364,9 +1364,25 @@
 						shaftEl.addEventListener('touchstart', onMouseDown, false);
 					}
 				}
-			} else {
+				if (o.thumbs && o.thumbsPreview) {
+					function onThumbsMouseDown(e) {
+
+					}
+					function onThumbsMouseMove(e) {
+
+					}
+					function onThumbsMouseUp(e) {
+
+					}
+					if (!TOUCHFlag) {
+						thumbsShaft.mousedown(onThumbsMouseDown);
+					} else {
+						//thumbsShaftEl.addEventListener('touchstart', onMouseDown, false);
+					}
+				}
+			} //else {
 				////console.log('Уже активирована!');
-			}
+			//}
 		});
 
 //		var script = document.createElement('script');
