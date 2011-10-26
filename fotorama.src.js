@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1168) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1169) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -330,8 +330,8 @@
 							}
 
 							// Если включены превьюшки, придётся загружать все картинки разом
-							// Будем делать это порциями по 10 в секунду
-							var interval = i*100;
+							// Будем делать это порциями по 20 в секунду
+							var interval = i*50;
 							setTimeout(function(){
 								loadImg(i, thumb.eq(i), onLoad, 'thumb');
 							}, interval);
@@ -869,6 +869,7 @@
 				function showImg(newImg, e, x) {
 					var prevActiveImg, prevActiveThumb;
 					var captionText;
+					var indexPrev;
 					var indexNew = imgFrame.index(newImg);
 
 
@@ -885,7 +886,7 @@
 					loadTimeout = setTimeout(function(){
 						loadDraw(newImg);
 						preloadSiblings(newImg);
-					}, 500);
+					}, 333);
 
 					var time = o.transitionDuration;
 					if (e && e.altKey) {
@@ -910,7 +911,7 @@
 					}
 
 					if (activeImg) {
-						var indexPrev = imgFrame.index(activeImg);
+						indexPrev = imgFrame.index(activeImg);
 						prevActiveImg = activeImg;
 						if (o.thumbs) {
 							prevActiveThumb = activeThumb;
@@ -942,7 +943,7 @@
 						newImg.addClass('fotorama__frame_active');
 					}
 
-					if (o.thumbs && o.thumbsPreview) {
+					if (o.thumbs && o.thumbsPreview && indexPrev != indexNew) {
 						slideThumbsShaft(time, x);
 					}
 
@@ -1273,77 +1274,87 @@
 								shaft.removeClass('fotorama__shaft_grabbing');
 							}
 
-							upTime = new Date().getTime();
-							var dirtyLeft = -shaftLeft;
+							//console.log(grabbingFlag);
+							if (grabbingFlag || TOUCHFlag) {
+								upTime = new Date().getTime();
+								var dirtyLeft = -shaftLeft;
 
-							var forceLeft = false;
-							var forceRight = false;
+								var forceLeft = false;
+								var forceRight = false;
 
-							var _backTimeIdeal = upTime - o__dragTimeout;
-							var _diff, _diffMin, backTime, backLeft;
-							for (i=0;i<moveLeft.length;i++) {
-								_diff = Math.abs(_backTimeIdeal - moveLeft[i][0]);
+								var _backTimeIdeal = upTime - o__dragTimeout;
+								var _diff, _diffMin, backTime, backLeft;
+								for (i=0;i<moveLeft.length;i++) {
+									_diff = Math.abs(_backTimeIdeal - moveLeft[i][0]);
 
-								if (i == 0) {
-									_diffMin = _diff;
-									backTime = upTime - moveLeft[i][0];
-									backLeft = moveLeft[i][1];
-								}
-								if (_diff <= _diffMin) {
-									_diffMin = _diff;
-									backTime = moveLeft[i][0];
-									backLeft = moveLeft[i][1];
-								}
-							}
-
-							var timeDiff = upTime - backTime;
-							var isFlicked = timeDiff <= o__dragTimeout;
-							var isDoubleSwipe = upTime - upTimeLast <= 1000;
-
-							var direction = backLeft - x;
-
-							if (o.touchStyle) {
-								if (isFlicked) {
-									if (direction <= -10) {
-										forceLeft = true;
-									} else if (direction >= 10) {
-										forceRight = true;
+									if (i == 0) {
+										_diffMin = _diff;
+										backTime = upTime - moveLeft[i][0];
+										backLeft = moveLeft[i][1];
+									}
+									if (_diff <= _diffMin) {
+										_diffMin = _diff;
+										backTime = moveLeft[i][0];
+										backLeft = moveLeft[i][1];
 									}
 								}
 
-								var index = undefined;
-								if (!forceLeft && !forceRight) {
-									index = Math.round(dirtyLeft / wrapWidth);
-								} else {
-									if (!isDoubleSwipe) {
-										if (forceLeft) {
-											index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
-										} else if (forceRight) {
-											index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
+								var timeDiff = upTime - backTime;
+								var isFlicked = timeDiff <= o__dragTimeout;
+								var isDoubleSwipe = upTime - upTimeLast <= 1000;
+
+								var direction = backLeft - x;
+
+								if (o.touchStyle) {
+									if (isFlicked) {
+										if (direction <= -10) {
+											forceLeft = true;
+										} else if (direction >= 10) {
+											forceRight = true;
 										}
+									}
+
+									var index = undefined;
+									if (!forceLeft && !forceRight) {
+										index = Math.round(dirtyLeft / wrapWidth);
 									} else {
-										if (forceLeft) {
-											callShowImg(-1, e);
-										} else if (forceRight) {
-											callShowImg(+1, e);
+										if (!isDoubleSwipe) {
+											if (forceLeft) {
+												index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
+											} else if (forceRight) {
+												index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
+											}
+										} else {
+											if (forceLeft) {
+												callShowImg(-1, e);
+											} else if (forceRight) {
+												callShowImg(+1, e);
+											}
 										}
+									}
+
+									if (index != undefined) {
+										if (index < 0) index = 0;
+										if (index > size - 1) index = size - 1;
+										showImg(imgFrame.eq(index), e, false);
+									}
+								} else {
+									if (direction >= 0) {
+										callShowImg(+1, e);
+									} else if (direction < 0) {
+										callShowImg(-1, e);
 									}
 								}
 
-								if (index != undefined) {
-									if (index < 0) index = 0;
-									if (index > size - 1) index = size - 1;
-									showImg(imgFrame.eq(index), e, false);
-								}
-							} else {
-								if (direction >= 0) {
-									callShowImg(+1, e);
-								} else if (direction < 0) {
+								upTimeLast = upTime;
+							} /*else if (!TOUCHFlag) {
+								var clickX = e.pageX - wrap.offset().left;
+								if (clickX < wrapWidth/2) {
 									callShowImg(-1, e);
+								} else {
+									callShowImg(+1, e);
 								}
-							}
-
-							upTimeLast = upTime;
+							}*/
 						}
 					}
 
