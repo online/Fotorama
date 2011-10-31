@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1169) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1170) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -330,8 +330,8 @@
 							}
 
 							// Если включены превьюшки, придётся загружать все картинки разом
-							// Будем делать это порциями по 10 в секунду
-							var interval = i*100;
+							// Будем делать это порциями по 20 в секунду
+							var interval = i*50;
 							setTimeout(function(){
 								loadImg(i, thumb.eq(i), onLoad, 'thumb');
 							}, interval);
