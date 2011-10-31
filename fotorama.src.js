@@ -114,6 +114,26 @@
 					var checkedDirectionFlag = false;
 					var limitFlag = false;
 				}
+				
+				if (o.thumbs && o.thumbsPreview) {
+					var thumbsShaftLeft,
+							xT,
+							yT,
+							downLeftT,
+							downTopT,
+							downShaftLeftT,
+							downTimeT,
+							moveLeftT,
+							moveTimeT,
+							upTimeT,
+							upTimeLastT = 0;
+					
+					var grabbingFlagT = false;
+					var setGrabbingFlagTimeoutT;
+					var movableFlagT = false;
+					var checkedDirectionFlagT = false;
+					var limitFlagT = false;
+				}
 
 				var wrap = $('<div class="fotorama__wrap"></div>');
 				var shaft = $('<div class="fotorama__shaft"></div>');
@@ -462,7 +482,7 @@
 								var thumbPlace = wrapWidth / 2;
 								var index = thumb.index(activeThumb);
 								var direction = index - activeThumbPrevIndex;
-								var thumbsShaftLeft = thumbsShaft.position().left;
+								thumbsShaftLeft = thumbsShaft.position().left;
 								if (x && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
 									var i;
 									if (direction > 0) {
@@ -1102,15 +1122,15 @@
 
 				if (o.thumbs) {
 					// Клик по тумбсам
-					thumb.click(function(e){
-						e.stopPropagation();
-						var thisThumb = $(this);
-						if (!thisThumb.data('disabled')) {
-							var i = thumb.index($(this));
-							var x = e.pageX - thumbs.offset().left;
-							showImg(imgFrame.eq(i), e, x);
-						}
-					});
+//					thumb.click(function(e){
+//						e.stopPropagation();
+//						var thisThumb = $(this);
+//						if (!thisThumb.data('disabled')) {
+//							var i = thumb.index($(this));
+//							var x = e.pageX - thumbs.offset().left;
+//							showImg(imgFrame.eq(i), e, x);
+//						}
+//					});
 				}
 
 				if (o.arrows) {
@@ -1142,11 +1162,11 @@
 
 				if (o.touchStyle || TOUCHFlag) {
 					function onMouseDown(e) {
-						if (activeImg) {
+						if (activeImg && e.button == 0) {
 							function act() {
 								moveLeft = [];
 								grabbingFlag = false;
-								downTime = new Date().getTime();
+								downTime = e.timeStamp;
 								downLeft = x;
 								downTop = y;
 								moveLeft.push([downTime, x]);
@@ -1173,7 +1193,7 @@
 								shaftEl.addEventListener('touchmove', onMouseMove, false);
 								shaftEl.addEventListener('touchend', onMouseUp, false);
 							} else if (TOUCHFlag && e.targetTouches.length > 1) {
-								return false;
+								e.preventDefault();
 							}
 						}
 					}
@@ -1191,7 +1211,7 @@
 							}
 							grabbingFlag = true;
 							clearTimeout(setGrabbingFlagTimeout);
-							moveTime = new Date().getTime();
+							moveTime = e.timeStamp;
 							moveLeft.push([moveTime, x]);
 
 							var left =  downLeft - x;
@@ -1276,7 +1296,7 @@
 
 							//console.log(grabbingFlag);
 							if (grabbingFlag || TOUCHFlag) {
-								upTime = new Date().getTime();
+								upTime = e.timeStamp;
 								var dirtyLeft = -shaftLeft;
 
 								var forceLeft = false;
@@ -1364,15 +1384,221 @@
 						shaftEl.addEventListener('touchstart', onMouseDown, false);
 					}
 				}
+
 				if (o.thumbs && o.thumbsPreview) {
 					function onThumbsMouseDown(e) {
-
+						if (activeImg && e.button == 0) {
+							function act() {
+								moveLeftT = [];
+								grabbingFlagT = false;
+								downTimeT = e.timeStamp;
+								downLeftT = xT;
+								downTopT = yT;
+								moveLeftT.push([downTimeT, xT]);
+								thumbsShaftLeft = thumbsShaft.position().left;
+								if (CSSTRFlag) {
+									thumbsShaft
+											.css(getDuration(0))
+											.css(getTranslate(thumbsShaftLeft));
+								} else {
+									thumbsShaft.stop();
+								}
+								downShaftLeftT = thumbsShaftLeft;
+							}
+							if (!TOUCHFlag) {
+								xT = e.pageX;
+								e.preventDefault();
+								act();
+								$(document).mousemove(onThumbsMouseMove);
+								$(document).mouseup(onThumbsMouseUp);
+							} else if (TOUCHFlag && e.targetTouches.length == 1) {
+								xT = e.targetTouches[0].pageX;
+								yT = e.targetTouches[0].pageY;
+								act();
+								//shaftEl.addEventListener('touchmove', onThumbsMouseMove, false);
+								//shaftEl.addEventListener('touchend', onThumbsMouseUp, false);
+							} else if (TOUCHFlag && e.targetTouches.length > 1) {
+								e.preventDefault();
+							}
+						}
 					}
 					function onThumbsMouseMove(e) {
+						function act() {
+							e.preventDefault();
+							if (!grabbingFlagT) {
+								if (o__shadows) {
+									wrap.addClass('fotorama__wrap_shadow');
+								}
+								if (!TOUCHFlag) {
+									shaft.addClass('fotorama__shaft_grabbing');
+								}
+							}
+							grabbingFlagT = true;
+							clearTimeout(setGrabbingFlagTimeoutT);
+							moveTimeT = e.timeStamp;
+							moveLeftT.push([moveTimeT, xT]);
 
+							var left =  downLeftT - xT;
+							var minLeft = -(shaftWidth - wrapWidth);
+
+							thumbsShaftLeft = downShaftLeftT-left;
+
+							if (thumbsShaftLeft > 0) {
+								thumbsShaftLeft = Math.round(thumbsShaftLeft - (thumbsShaftLeft/1.25));
+								limitFlagT = true;
+								if (o__shadows) {
+									wrap
+											.addClass('fotorama__wrap_shadow_no-left')
+											.removeClass('fotorama__wrap_shadow_no-right');
+								}
+							} else if (thumbsShaftLeft < minLeft ) {
+								thumbsShaftLeft = Math.round(thumbsShaftLeft + ((minLeft - thumbsShaftLeft) / 1.25));
+								limitFlagT = true;
+								if (o__shadows) {
+									wrap
+											.addClass('fotorama__wrap_shadow_no-right')
+											.removeClass('fotorama__wrap_shadow_no-left');
+								}
+							} else {
+								limitFlagT = false;
+								if (o__shadows) {
+									wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
+								}
+							}
+
+							if (o.touchStyle) {
+								if (CSSTRFlag) {
+									thumbsShaft.css(getTranslate(thumbsShaftLeft));
+								} else {
+									thumbsShaft.css('left', thumbsShaftLeft);
+								}
+							}
+						}
+						if (!TOUCHFlag) {
+							xT = e.pageX;
+							act();
+						} else if (TOUCHFlag && e.targetTouches.length == 1) {
+							xT = e.targetTouches[0].pageX;
+							yT = e.targetTouches[0].pageY;
+
+							if (!checkedDirectionFlagT) {
+								if (Math.abs(xT-downLeftT) - Math.abs(yT-downTopT) >= -5) {
+									movableFlagT = true;
+									e.preventDefault();
+								}
+								checkedDirectionFlagT = true;
+							} else if (movableFlagT) {
+								act();
+							}
+						}
 					}
 					function onThumbsMouseUp(e) {
+						if (!TOUCHFlag || !e.targetTouches.length) {
+							movableFlagT = false;
+							checkedDirectionFlagT = false;
+							setGrabbingFlagTimeoutT = setTimeout(function() {
+								grabbingFlagT = false;
+								if (!TOUCHFlag) {
+									wrapLeave();
+								}
+							}, o__dragTimeout);
 
+							if (!TOUCHFlag) {
+								$(document).unbind('mouseup');
+								$(document).unbind('mousemove');
+							} else {
+								//shaftEl.removeEventListener('touchmove', onThumbsMouseMove, false);
+								//shaftEl.removeEventListener('touchend', onThumbsMouseUp, false);
+							}
+							if (o__shadows) {
+								wrap.removeClass('fotorama__wrap_shadow');
+							}
+							if (!TOUCHFlag) {
+								shaft.removeClass('fotorama__shaft_grabbing');
+							}
+
+							//console.log(grabbingFlagT);
+							if (grabbingFlagT || TOUCHFlag) {
+								upTimeT = e.timeStamp;
+								var dirtyLeft = -thumbsShaftLeft;
+
+								var forceLeft = false;
+								var forceRight = false;
+
+								var _backTimeIdeal = upTimeT - o__dragTimeout;
+								var _diff, _diffMin, backTime, backLeft;
+								for (i=0;i<moveLeftT.length;i++) {
+									_diff = Math.abs(_backTimeIdeal - moveLeftT[i][0]);
+
+									if (i == 0) {
+										_diffMin = _diff;
+										backTime = upTimeT - moveLeftT[i][0];
+										backLeft = moveLeftT[i][1];
+									}
+									if (_diff <= _diffMin) {
+										_diffMin = _diff;
+										backTime = moveLeftT[i][0];
+										backLeft = moveLeftT[i][1];
+									}
+								}
+
+								var timeDiff = upTimeT - backTime;
+								var isFlicked = timeDiff <= o__dragTimeout;
+								var isDoubleSwipe = upTimeT - upTimeLastT <= 1000;
+
+								var direction = backLeft - xT;
+
+								if (o.touchStyle) {
+									if (isFlicked) {
+										if (direction <= -10) {
+											forceLeft = true;
+										} else if (direction >= 10) {
+											forceRight = true;
+										}
+									}
+
+									var index = undefined;
+									if (!forceLeft && !forceRight) {
+										index = Math.round(dirtyLeft / wrapWidth);
+									} else {
+										if (!isDoubleSwipe) {
+											if (forceLeft) {
+												index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
+											} else if (forceRight) {
+												index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
+											}
+										} else {
+											if (forceLeft) {
+												//callShowImg(-1, e);
+											} else if (forceRight) {
+												//callShowImg(+1, e);
+											}
+										}
+									}
+
+									if (index != undefined) {
+										if (index < 0) index = 0;
+										if (index > size - 1) index = size - 1;
+										//showImg(imgFrame.eq(index), e, false);
+									}
+								} else {
+									if (direction >= 0) {
+										//callShowImg(+1, e);
+									} else if (direction < 0) {
+										//callShowImg(-1, e);
+									}
+								}
+
+								upTimeLastT = upTimeT;
+							} /*else if (!TOUCHFlag) {
+								var clickX = e.pageX - wrap.offset().left;
+								if (clickX < wrapWidth/2) {
+									callShowImg(-1, e);
+								} else {
+									callShowImg(+1, e);
+								}
+							}*/
+						}
 					}
 					if (!TOUCHFlag) {
 						thumbsShaft.mousedown(onThumbsMouseDown);

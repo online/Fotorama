@@ -393,6 +393,12 @@ $arrWidth: 24px + 30;
 }
 
 .fotorama_loading {
+  * {
+    cursor: -webkit-wait;
+		cursor: -moz-wait;
+		cursor: -o-wait;
+		cursor: wait;
+	}		
 	.fotorama__state {
 		//display: block;
 		letter-spacing: -10px;
