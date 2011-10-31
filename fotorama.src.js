@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1168) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1169) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -1141,7 +1141,7 @@
 
 				if (o.touchStyle || TOUCHFlag) {
 					function onMouseDown(e) {
-						if (activeImg) {
+						if (e.button == 0 && activeImg) {
 							function act() {
 								moveLeft = [];
 								grabbingFlag = false;
