@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1170) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1171) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -881,17 +881,19 @@
 					});
 
 
-					clearTimeout(loadTimeout);
-					loadTimeout = setTimeout(function(){
-						loadDraw(newImg);
-						preloadSiblings(newImg);
-					}, 500);
+
 
 					var time = o.transitionDuration;
 					if (e && e.altKey) {
 						// Как на маке: клик с шифтом замедляет анимацию
 						time = time*10;
 					}
+
+					clearTimeout(loadTimeout);
+					loadTimeout = setTimeout(function(){
+						loadDraw(newImg);
+						preloadSiblings(newImg);
+					}, time+10);
 
 					var state = newImg.data('state');
 					if (state == 'loading' || !state) {
@@ -1141,7 +1143,7 @@
 
 				if (o.touchStyle || TOUCHFlag) {
 					function onMouseDown(e) {
-						if (e.button == 0 && activeImg) {
+						if ((TOUCHFlag || (!TOUCHFlag && e.button == 0)) && activeImg) {
 							function act() {
 								moveLeft = [];
 								grabbingFlag = false;
