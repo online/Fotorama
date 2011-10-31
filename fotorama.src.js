@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1169) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1165) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -39,13 +39,13 @@
 		}, options);
 
 		//FOTORAMA = $();
-		//////console.log("appendTo");
+		////console.log("appendTo");
 
 //		var __startLoad = new Date().getTime();
 //		var __stopLoad;
 //		$(window).load(function(){
 //			__stopLoad = new Date().getTime();
-//			////console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
+//			//console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
 //		});
 
 		this.each(function(){
@@ -92,7 +92,7 @@
 				var wrapHeight = o.height;
 				var wrapRatio;
 				var wrapIsSetFlag = false;
-				var loadTimeout;
+				var preloadSiblingsTimeout;
 
 				if (o.touchStyle) {
 					var shaftWidth = 0,
@@ -113,26 +113,6 @@
 					var movableFlag = false;
 					var checkedDirectionFlag = false;
 					var limitFlag = false;
-				}
-				
-				if (o.thumbs && o.thumbsPreview) {
-					var thumbsShaftLeft,
-							xT,
-							yT,
-							downLeftT,
-							downTopT,
-							downShaftLeftT,
-							downTimeT,
-							moveLeftT,
-							moveTimeT,
-							upTimeT,
-							upTimeLastT = 0;
-					
-					var grabbingFlagT = false;
-					var setGrabbingFlagTimeoutT;
-					var movableFlagT = false;
-					var checkedDirectionFlagT = false;
-					var limitFlagT = false;
 				}
 
 				var wrap = $('<div class="fotorama__wrap"></div>');
@@ -224,7 +204,7 @@
 					imgFrame = imgFrame.add(_imgFrame);
 				});
 
-				//////console.log('imgFrame.size()', imgFrame.size());
+				////console.log('imgFrame.size()', imgFrame.size());
 
 				if (o.thumbs) {
 					// Если тумбсы или превьюшки
@@ -286,12 +266,9 @@
 							//var thisImgFrame = imgFrame.eq(i);
 
 							function onLoad(thisThumbNew) {
-								var $thisThumbNew = $(thisThumbNew);
-
-								var thumbWidth = $thisThumbNew.width();
-								var thumbHeight = $thisThumbNew.height();
+								var thumbWidth = thisThumbNew.width();
+								var thumbHeight = thisThumbNew.height();
 								var thumbRatio = thumbWidth / thumbHeight * 1000;
-
 	//							function waitForWidth() {
 	//								if (thumbWidth && thumbHeight ((IEFlag && thumbWidth != 28 && thumbHeight != 30) || !IEFlag)) {
 	//									//thumbRatio = thumbWidth / thumbHeight * 1000;
@@ -306,20 +283,20 @@
 
 
 								function continueDraw() {
-									/*if (Modernizr.canvas) {
+									if (Modernizr.canvas) {
 										var thisImgEl = thisThumbNew.get(0);
-									}*/
+									}
 
 									// Одна точка-переключалка на загрузке
 									var _thumbWidth = Math.round((o.thumbSize) * thumbRatio / 1000);
 									if (Modernizr.canvas) {
-										$thisThumbNew.remove();
-										$thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
-										$thisThumbNew.appendTo(thumb.eq(i));
+										thisThumbNew.remove();
+										thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
+										thisThumbNew.appendTo(thumb.eq(i));
 									} else {
-										$thisThumbNew.addClass('fotorama__thumb__img');
+										thisThumbNew.addClass('fotorama__thumb__img');
 									}
-									$thisThumbNew
+									thisThumbNew
 											.attr({
 												width: _thumbWidth,
 												height: o.thumbSize
@@ -330,11 +307,11 @@
 												'visibility': 'visible'
 											});
 									if (Modernizr.canvas) {
-										var ctx = $thisThumbNew.get(0).getContext('2d');
-										ctx.drawImage(thisThumbNew, 0, 0, _thumbWidth, o.thumbSize);
+										var ctx = thisThumbNew.get(0).getContext('2d');
+										ctx.drawImage(thisImgEl, 0, 0, _thumbWidth, o.thumbSize);
 									}
 									if (!TOUCHFlag && i != 0) {
-										$thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
+										thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
 									}
 
 									thumbsShaftWidth += _thumbWidth + o.thumbMargin - (o.thumbSize + o.thumbMargin);
@@ -350,8 +327,8 @@
 							}
 
 							// Если включены превьюшки, придётся загружать все картинки разом
-							// Будем делать это порциями по 20 в секунду
-							var interval = i*50;
+							// Будем делать это порциями по 10 в секунду
+							var interval = i*100;
 							setTimeout(function(){
 								loadImg(i, thumb.eq(i), onLoad, 'thumb');
 							}, interval);
@@ -366,8 +343,8 @@
 				}
 
 				function setFotoramaSize() {
-	//				if (console && ////console.log) {
-	//					////console.log('setFotoramaSize');
+	//				if (console && //console.log) {
+	//					//console.log('setFotoramaSize');
 	//				}
 					if (wrapWidth && wrapHeight && !wrapIsSetFlag) {
 						fotorama.css({
@@ -415,8 +392,8 @@
 
 				var stateIconPositionTimeout;
 				function setFotoramaState(state, index, time) {
-	//				if (console && ////console.log) {
-	//					////console.log('setFotoramaState', wrapWidth);
+	//				if (console && //console.log) {
+	//					//console.log('setFotoramaState', wrapWidth);
 	//				}
 					clearTimeout(stateIconPositionTimeout);
 					function stateIconPosition() {
@@ -467,8 +444,8 @@
 
 				// Прокручиваем ленту превьюшек
 				function slideThumbsShaft(time, x) {
-	//				if (console && ////console.log) {
-	//					////console.log(thumbsShaftWidth);
+	//				if (console && //console.log) {
+	//					//console.log(thumbsShaftWidth);
 	//				}
 					if (thumbsShaftWidth) {
 						var thumbLeft = activeThumb.position().left;
@@ -482,7 +459,7 @@
 								var thumbPlace = wrapWidth / 2;
 								var index = thumb.index(activeThumb);
 								var direction = index - activeThumbPrevIndex;
-								thumbsShaftLeft = thumbsShaft.position().left;
+								var thumbsShaftLeft = thumbsShaft.position().left;
 								if (x && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
 									var i;
 									if (direction > 0) {
@@ -576,8 +553,8 @@
 						}
 					}
 
-	//				if (console && ////console.log) {
-	//					////console.log(thumbsShaftWidth);
+	//				if (console && //console.log) {
+	//					//console.log(thumbsShaftWidth);
 	//				}
 
 					//if (activeImg && thumbsShaftWidth < wrapWidth*1.5) {
@@ -586,13 +563,12 @@
 				}
 
 				function loadImg(index, container, callback, type) {
-	//				if (console && ////console.log) {
-	//					////console.log('loadImg');
+	//				if (console && //console.log) {
+	//					//console.log('loadImg');
 	//				}
 
 					var thisImgFrame = imgFrame.eq(index);
-					var thisImgNew = new Image();
-					var $thisImgNew = $(thisImgNew);
+					var thisImgNew = $('<img />');
 					var thisImg = img.eq(index);
 					var _src = [];
 					var _srcI = 0;
@@ -600,48 +576,30 @@
 					var imgSrc = src[index]['imgSrc'];
 					var thumbSrc = src[index]['thumbSrc'];
 					if (type == 'img') {
-						if (imgHref) {
-							_src.push(imgHref);
-							_src.push(imgHref + '?' + timestamp);
-						}
-						if (imgSrc) {
-							_src.push(imgSrc);
-							_src.push(imgSrc + '?' + timestamp);
-						}
-						if (thumbSrc) {
-							_src.push(thumbSrc);
-							_src.push(thumbSrc + '?' + timestamp);
-						}
+						if (imgHref) _src.push(imgHref);
+						if (imgSrc) _src.push(imgSrc);
+						if (thumbSrc) _src.push(thumbSrc);
 					} else {
-						if (thumbSrc) {
-							_src.push(thumbSrc);
-							_src.push(thumbSrc + '?' + timestamp);
-						}
-						if (imgSrc) {
-							_src.push(imgSrc);
-							_src.push(imgSrc + '?' + timestamp);
-						}
-						if (imgHref) {
-							_src.push(imgHref);
-							_src.push(imgHref + '?' + timestamp);
-						}
+						if (thumbSrc) _src.push(thumbSrc);
+						if (imgSrc) _src.push(imgSrc);
+						if (imgHref) _src.push(imgHref);
 					}
 					if (o.caption) {
 						thisImgFrame.data({'caption': thisImg.attr('alt') || thisImg.children().attr('alt')});
 					}
 					function loadScope(src) {
 						function loadStart() {
-							$thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
+							thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
 
 							if (_srcI == 0) {
-								//////console.log('appendTo ' + index + ' ' + type);
-								$thisImgNew.appendTo(container);
+								////console.log('appendTo ' + index + ' ' + type);
+								thisImgNew.appendTo(container);
 
 								if (type == 'thumb') {
-	//								if (console && ////console.log) {
-	//									////console.log('firstTime + thumb ' + src);
+	//								if (console && //console.log) {
+	//									//console.log('firstTime + thumb ' + src);
 	//								}
-									//$thisImgNew.attr({'width': o.thumbSize});
+									thisImgNew.attr({'width': o.thumbSize});
 									thumbsShaftWidth += o.thumbSize + o.thumbMargin;
 									thumbsShaft.css({'width': thumbsShaftWidth});
 									container.css({'width': o.thumbSize}).data({'width': o.thumbSize});
@@ -651,14 +609,13 @@
 						}
 						function loadFinish() {
 							srcState[src] = 'loaded';
-	//								if (console && ////console.log) {
-	//									////console.log('loadFinish ' + index + ' ' + type);
+	//								if (console && //console.log) {
+	//									//console.log('loadFinish ' + index + ' ' + type);
 	//								}
 							container.trigger('fotorama.load').data({'state': 'loaded'});
 
 							if (type == 'thumb') {
-								//alert('thumb load')
-								//$thisImgNew.attr({'width': thisImgNew.width});
+								thisImgNew.removeAttr('width');
 							}
 							//var imgWidth = thisImgNew.width();
 							//var imgHeight = thisImgNew.height();
@@ -683,9 +640,9 @@
 						}
 						function loadError(primary) {
 							srcState[src] = 'error';
-							$thisImgNew.unbind('error load');
+							thisImgNew.unbind('error load');
 							if (_srcI < _src.length && primary) {
-								loadScope(_src[_srcI]/* + '?' + timestamp*/);
+								loadScope(_src[_srcI] + '?' + timestamp);
 								_srcI++;
 							} else {
 								container.trigger('fotorama.error').data({'state': 'error'});
@@ -695,7 +652,7 @@
 						if (!srcState[src]) {
 							srcState[src] = 'loading';
 							thisImgFrame.data({'loading': true});
-							$thisImgNew
+							thisImgNew
 									.unbind('error load')
 									.error(function(){
 										loadError(true);
@@ -707,7 +664,7 @@
 						} else {
 							// Если картинка уже в процессе загрузки, просто ждём когда она загрузится
 							function justWait() {
-	//							////console.log('justWait');
+	//							//console.log('justWait');
 								if (srcState[src] == 'error') {
 									loadError(false);
 								} else if (srcState[src] == 'loaded') {
@@ -722,7 +679,7 @@
 					}
 
 
-					loadScope(_src[_srcI]/* + '?' + timestamp*/);
+					loadScope(_src[_srcI] + '?' + timestamp);
 					_srcI++;
 				}
 
@@ -730,19 +687,15 @@
 				function loadDraw(newImg) {
 					var index = imgFrame.index(newImg);
 					if (!newImg.data('wraped')) {
-	//					if (console && ////console.log) {
-	//						////console.log('loadDraw first time');
+	//					if (console && //console.log) {
+	//						//console.log('loadDraw first time');
 	//					}
 						shaft.append(newImg);
 
 						function onLoad(thisImgNew) {
-							var $thisImgNew = $(thisImgNew);
-
-							var imgWidth = $thisImgNew.width();
-							var imgHeight = $thisImgNew.height();
+							var imgWidth = thisImgNew.width();
+							var imgHeight = thisImgNew.height();
 							var imgRatio = imgWidth / imgHeight * 1000;
-
-
 	//						function waitForWidth() {
 	//							if (imgWidth && imgHeight && ((IEFlag && imgWidth != 28 && imgHeight != 30) || !IEFlag)) {
 	//								imgRatio = imgWidth / imgHeight * 1000;
@@ -764,10 +717,10 @@
 	//								thisImgNew = imgCanvas;
 	//							}*/
 
-								$thisImgNew.addClass('fotorama__img');
+								thisImgNew.addClass('fotorama__img');
 
-	//							if (console && ////console.log) {
-	//								////console.log(imgWidth + ' ' + imgHeight, index);
+	//							if (console && //console.log) {
+	//								//console.log(imgWidth + ' ' + imgHeight, index);
 	//							}
 
 								if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
@@ -799,7 +752,7 @@
 									}
 								}
 
-								$thisImgNew
+								thisImgNew
 										.attr({
 											width: imgWidth,
 											height: imgHeight
@@ -815,7 +768,7 @@
 	//							}*/
 
 								if (imgHeight < wrapHeight) {
-									$thisImgNew
+									thisImgNew
 											.css({
 										top: Math.round((wrapHeight - imgHeight) / 2)
 									});
@@ -835,29 +788,22 @@
 					}*/
 				}
 
-				function preloadSiblings(newImg) {
-					var index = imgFrame.index(newImg);
+				function preloadSiblings() {
+					var index = imgFrame.index(activeImg);
 					var sizeToLoad = 0;
-					var limitFLAG = false;
 					var indexNew = [];
 					for (i=0;i<o.preload*2+1;i++) {
 						var _indexNew = index - o.preload + i;
-						if (_indexNew >= 0 && _indexNew < size) {
-							if (!imgFrame.eq(_indexNew).data('wraped') || imgFrame.eq(_indexNew).data('detached')) {
-								sizeToLoad++;
-								indexNew.push(_indexNew);
-								//console.log(_indexNew);
-							}
-						} else {
-							limitFLAG = true;
+						if (_indexNew >= 0 && _indexNew != index && _indexNew < size && (!imgFrame.eq(_indexNew).data('wraped') || imgFrame.eq(_indexNew).data('detached'))) {
+							sizeToLoad++;
+							indexNew.push(_indexNew);
 						}
 					}
 
-					//console.log('sizeToLoad: '+sizeToLoad, 'limitFLAG: '+limitFLAG);
+					////console.log('sizeToLoad: '+sizeToLoad, indexNew.length);
 
-					if (sizeToLoad >= o.preload || limitFLAG) {
+					if (indexNew.length >= o.preload) {
 						for (i=0;i<indexNew.length;i++) {
-							//console.log(indexNew[i]);
 							loadDraw(imgFrame.eq(indexNew[i]));
 						}
 					}
@@ -889,24 +835,18 @@
 				function showImg(newImg, e, x) {
 					var prevActiveImg, prevActiveThumb;
 					var captionText;
-					var indexPrev;
 					var indexNew = imgFrame.index(newImg);
 
 
-	//				if (console && ////console.log) {
-	//					////console.log('state is ' + state);
+	//				if (console && //console.log) {
+	//					//console.log('state is ' + state);
 	//				}
 
 					imgFrame.each(function(){
 						$(this).unbind('fotorama.load fotorama.error');
 					});
 
-
-					clearTimeout(loadTimeout);
-					loadTimeout = setTimeout(function(){
-						loadDraw(newImg);
-						preloadSiblings(newImg);
-					}, 333);
+					loadDraw(newImg);
 
 					var time = o.transitionDuration;
 					if (e && e.altKey) {
@@ -931,7 +871,7 @@
 					}
 
 					if (activeImg) {
-						indexPrev = imgFrame.index(activeImg);
+						var indexPrev = imgFrame.index(activeImg);
 						prevActiveImg = activeImg;
 						if (o.thumbs) {
 							prevActiveThumb = activeThumb;
@@ -963,7 +903,7 @@
 						newImg.addClass('fotorama__frame_active');
 					}
 
-					if (o.thumbs && o.thumbsPreview && indexPrev != indexNew) {
+					if (o.thumbs && o.thumbsPreview) {
 						slideThumbsShaft(time, x);
 					}
 
@@ -980,7 +920,7 @@
 					} else {
 						if (CSSTRFlag) {
 							if (!activeImg) {
-								//////console.log('no active img');
+								////console.log('no active img');
 								newImg.css({opacity: 0});
 							}
 							prevActiveImg.add(newImg).css(getDuration(time));
@@ -1014,6 +954,9 @@
 					if (o.arrows) {
 						setArrows();
 					}
+
+					clearTimeout(preloadSiblingsTimeout);
+					preloadSiblingsTimeout = setTimeout(preloadSiblings, time);
 
 					if (o.onShowImg) {
 						var data = {index: indexNew, img: activeImg, thumb: activeThumb, caption: captionText};
@@ -1112,7 +1055,7 @@
 
 				// Биндим хендлеры
 				fotorama.bind('showImg', function(e, index){
-					////console.log(index);
+					//console.log(index);
 					if (index > size - 1 || typeof(index) != 'number') {
 						index = 0
 					}
@@ -1122,15 +1065,15 @@
 
 				if (o.thumbs) {
 					// Клик по тумбсам
-//					thumb.click(function(e){
-//						e.stopPropagation();
-//						var thisThumb = $(this);
-//						if (!thisThumb.data('disabled')) {
-//							var i = thumb.index($(this));
-//							var x = e.pageX - thumbs.offset().left;
-//							showImg(imgFrame.eq(i), e, x);
-//						}
-//					});
+					thumb.click(function(e){
+						e.stopPropagation();
+						var thisThumb = $(this);
+						if (!thisThumb.data('disabled')) {
+							var i = thumb.index($(this));
+							var x = e.pageX - thumbs.offset().left;
+							showImg(imgFrame.eq(i), e, x);
+						}
+					});
 				}
 
 				if (o.arrows) {
@@ -1162,11 +1105,11 @@
 
 				if (o.touchStyle || TOUCHFlag) {
 					function onMouseDown(e) {
-						if (activeImg && e.button == 0) {
+						if (activeImg) {
 							function act() {
 								moveLeft = [];
 								grabbingFlag = false;
-								downTime = e.timeStamp;
+								downTime = new Date().getTime();
 								downLeft = x;
 								downTop = y;
 								moveLeft.push([downTime, x]);
@@ -1193,7 +1136,7 @@
 								shaftEl.addEventListener('touchmove', onMouseMove, false);
 								shaftEl.addEventListener('touchend', onMouseUp, false);
 							} else if (TOUCHFlag && e.targetTouches.length > 1) {
-								e.preventDefault();
+								return false;
 							}
 						}
 					}
@@ -1211,7 +1154,7 @@
 							}
 							grabbingFlag = true;
 							clearTimeout(setGrabbingFlagTimeout);
-							moveTime = e.timeStamp;
+							moveTime = new Date().getTime();
 							moveLeft.push([moveTime, x]);
 
 							var left =  downLeft - x;
@@ -1294,87 +1237,77 @@
 								shaft.removeClass('fotorama__shaft_grabbing');
 							}
 
-							//console.log(grabbingFlag);
-							if (grabbingFlag || TOUCHFlag) {
-								upTime = e.timeStamp;
-								var dirtyLeft = -shaftLeft;
+							upTime = new Date().getTime();
+							var dirtyLeft = -shaftLeft;
 
-								var forceLeft = false;
-								var forceRight = false;
+							var forceLeft = false;
+							var forceRight = false;
 
-								var _backTimeIdeal = upTime - o__dragTimeout;
-								var _diff, _diffMin, backTime, backLeft;
-								for (i=0;i<moveLeft.length;i++) {
-									_diff = Math.abs(_backTimeIdeal - moveLeft[i][0]);
+							var _backTimeIdeal = upTime - o__dragTimeout;
+							var _diff, _diffMin, backTime, backLeft;
+							for (i=0;i<moveLeft.length;i++) {
+								_diff = Math.abs(_backTimeIdeal - moveLeft[i][0]);
 
-									if (i == 0) {
-										_diffMin = _diff;
-										backTime = upTime - moveLeft[i][0];
-										backLeft = moveLeft[i][1];
-									}
-									if (_diff <= _diffMin) {
-										_diffMin = _diff;
-										backTime = moveLeft[i][0];
-										backLeft = moveLeft[i][1];
+								if (i == 0) {
+									_diffMin = _diff;
+									backTime = upTime - moveLeft[i][0];
+									backLeft = moveLeft[i][1];
+								}
+								if (_diff <= _diffMin) {
+									_diffMin = _diff;
+									backTime = moveLeft[i][0];
+									backLeft = moveLeft[i][1];
+								}
+							}
+
+							var timeDiff = upTime - backTime;
+							var isFlicked = timeDiff <= o__dragTimeout;
+							var isDoubleSwipe = upTime - upTimeLast <= 1000;
+
+							var direction = backLeft - x;
+
+							if (o.touchStyle) {
+								if (isFlicked) {
+									if (direction <= -10) {
+										forceLeft = true;
+									} else if (direction >= 10) {
+										forceRight = true;
 									}
 								}
 
-								var timeDiff = upTime - backTime;
-								var isFlicked = timeDiff <= o__dragTimeout;
-								var isDoubleSwipe = upTime - upTimeLast <= 1000;
-
-								var direction = backLeft - x;
-
-								if (o.touchStyle) {
-									if (isFlicked) {
-										if (direction <= -10) {
-											forceLeft = true;
-										} else if (direction >= 10) {
-											forceRight = true;
+								var index = undefined;
+								if (!forceLeft && !forceRight) {
+									index = Math.round(dirtyLeft / wrapWidth);
+								} else {
+									if (!isDoubleSwipe) {
+										if (forceLeft) {
+											index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
+										} else if (forceRight) {
+											index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
 										}
-									}
-
-									var index = undefined;
-									if (!forceLeft && !forceRight) {
-										index = Math.round(dirtyLeft / wrapWidth);
 									} else {
-										if (!isDoubleSwipe) {
-											if (forceLeft) {
-												index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
-											} else if (forceRight) {
-												index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
-											}
-										} else {
-											if (forceLeft) {
-												callShowImg(-1, e);
-											} else if (forceRight) {
-												callShowImg(+1, e);
-											}
+										if (forceLeft) {
+											callShowImg(-1, e);
+										} else if (forceRight) {
+											callShowImg(+1, e);
 										}
 									}
-
-									if (index != undefined) {
-										if (index < 0) index = 0;
-										if (index > size - 1) index = size - 1;
-										showImg(imgFrame.eq(index), e, false);
-									}
-								} else {
-									if (direction >= 0) {
-										callShowImg(+1, e);
-									} else if (direction < 0) {
-										callShowImg(-1, e);
-									}
 								}
 
-								upTimeLast = upTime;
-							} /*else if (!TOUCHFlag) {
-								var clickX = e.pageX - wrap.offset().left;
-								if (clickX < wrapWidth/2) {
-									callShowImg(-1, e);
-								} else {
+								if (index != undefined) {
+									if (index < 0) index = 0;
+									if (index > size - 1) index = size - 1;
+									showImg(imgFrame.eq(index), e, false);
+								}
+							} else {
+								if (direction >= 0) {
 									callShowImg(+1, e);
+								} else if (direction < 0) {
+									callShowImg(-1, e);
 								}
-							}*/
+							}
+
+							upTimeLast = upTime;
 						}
 					}
 
@@ -1384,231 +1317,9 @@
 						shaftEl.addEventListener('touchstart', onMouseDown, false);
 					}
 				}
-
-				if (o.thumbs && o.thumbsPreview) {
-					function onThumbsMouseDown(e) {
-						if (activeImg && e.button == 0) {
-							function act() {
-								moveLeftT = [];
-								grabbingFlagT = false;
-								downTimeT = e.timeStamp;
-								downLeftT = xT;
-								downTopT = yT;
-								moveLeftT.push([downTimeT, xT]);
-								thumbsShaftLeft = thumbsShaft.position().left;
-								if (CSSTRFlag) {
-									thumbsShaft
-											.css(getDuration(0))
-											.css(getTranslate(thumbsShaftLeft));
-								} else {
-									thumbsShaft.stop();
-								}
-								downShaftLeftT = thumbsShaftLeft;
-							}
-							if (!TOUCHFlag) {
-								xT = e.pageX;
-								e.preventDefault();
-								act();
-								$(document).mousemove(onThumbsMouseMove);
-								$(document).mouseup(onThumbsMouseUp);
-							} else if (TOUCHFlag && e.targetTouches.length == 1) {
-								xT = e.targetTouches[0].pageX;
-								yT = e.targetTouches[0].pageY;
-								act();
-								//shaftEl.addEventListener('touchmove', onThumbsMouseMove, false);
-								//shaftEl.addEventListener('touchend', onThumbsMouseUp, false);
-							} else if (TOUCHFlag && e.targetTouches.length > 1) {
-								e.preventDefault();
-							}
-						}
-					}
-					function onThumbsMouseMove(e) {
-						function act() {
-							e.preventDefault();
-							if (!grabbingFlagT) {
-								if (o__shadows) {
-									wrap.addClass('fotorama__wrap_shadow');
-								}
-								if (!TOUCHFlag) {
-									shaft.addClass('fotorama__shaft_grabbing');
-								}
-							}
-							grabbingFlagT = true;
-							clearTimeout(setGrabbingFlagTimeoutT);
-							moveTimeT = e.timeStamp;
-							moveLeftT.push([moveTimeT, xT]);
-
-							var left =  downLeftT - xT;
-							var minLeft = -(shaftWidth - wrapWidth);
-
-							thumbsShaftLeft = downShaftLeftT-left;
-
-							if (thumbsShaftLeft > 0) {
-								thumbsShaftLeft = Math.round(thumbsShaftLeft - (thumbsShaftLeft/1.25));
-								limitFlagT = true;
-								if (o__shadows) {
-									wrap
-											.addClass('fotorama__wrap_shadow_no-left')
-											.removeClass('fotorama__wrap_shadow_no-right');
-								}
-							} else if (thumbsShaftLeft < minLeft ) {
-								thumbsShaftLeft = Math.round(thumbsShaftLeft + ((minLeft - thumbsShaftLeft) / 1.25));
-								limitFlagT = true;
-								if (o__shadows) {
-									wrap
-											.addClass('fotorama__wrap_shadow_no-right')
-											.removeClass('fotorama__wrap_shadow_no-left');
-								}
-							} else {
-								limitFlagT = false;
-								if (o__shadows) {
-									wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
-								}
-							}
-
-							if (o.touchStyle) {
-								if (CSSTRFlag) {
-									thumbsShaft.css(getTranslate(thumbsShaftLeft));
-								} else {
-									thumbsShaft.css('left', thumbsShaftLeft);
-								}
-							}
-						}
-						if (!TOUCHFlag) {
-							xT = e.pageX;
-							act();
-						} else if (TOUCHFlag && e.targetTouches.length == 1) {
-							xT = e.targetTouches[0].pageX;
-							yT = e.targetTouches[0].pageY;
-
-							if (!checkedDirectionFlagT) {
-								if (Math.abs(xT-downLeftT) - Math.abs(yT-downTopT) >= -5) {
-									movableFlagT = true;
-									e.preventDefault();
-								}
-								checkedDirectionFlagT = true;
-							} else if (movableFlagT) {
-								act();
-							}
-						}
-					}
-					function onThumbsMouseUp(e) {
-						if (!TOUCHFlag || !e.targetTouches.length) {
-							movableFlagT = false;
-							checkedDirectionFlagT = false;
-							setGrabbingFlagTimeoutT = setTimeout(function() {
-								grabbingFlagT = false;
-								if (!TOUCHFlag) {
-									wrapLeave();
-								}
-							}, o__dragTimeout);
-
-							if (!TOUCHFlag) {
-								$(document).unbind('mouseup');
-								$(document).unbind('mousemove');
-							} else {
-								//shaftEl.removeEventListener('touchmove', onThumbsMouseMove, false);
-								//shaftEl.removeEventListener('touchend', onThumbsMouseUp, false);
-							}
-							if (o__shadows) {
-								wrap.removeClass('fotorama__wrap_shadow');
-							}
-							if (!TOUCHFlag) {
-								shaft.removeClass('fotorama__shaft_grabbing');
-							}
-
-							//console.log(grabbingFlagT);
-							if (grabbingFlagT || TOUCHFlag) {
-								upTimeT = e.timeStamp;
-								var dirtyLeft = -thumbsShaftLeft;
-
-								var forceLeft = false;
-								var forceRight = false;
-
-								var _backTimeIdeal = upTimeT - o__dragTimeout;
-								var _diff, _diffMin, backTime, backLeft;
-								for (i=0;i<moveLeftT.length;i++) {
-									_diff = Math.abs(_backTimeIdeal - moveLeftT[i][0]);
-
-									if (i == 0) {
-										_diffMin = _diff;
-										backTime = upTimeT - moveLeftT[i][0];
-										backLeft = moveLeftT[i][1];
-									}
-									if (_diff <= _diffMin) {
-										_diffMin = _diff;
-										backTime = moveLeftT[i][0];
-										backLeft = moveLeftT[i][1];
-									}
-								}
-
-								var timeDiff = upTimeT - backTime;
-								var isFlicked = timeDiff <= o__dragTimeout;
-								var isDoubleSwipe = upTimeT - upTimeLastT <= 1000;
-
-								var direction = backLeft - xT;
-
-								if (o.touchStyle) {
-									if (isFlicked) {
-										if (direction <= -10) {
-											forceLeft = true;
-										} else if (direction >= 10) {
-											forceRight = true;
-										}
-									}
-
-									var index = undefined;
-									if (!forceLeft && !forceRight) {
-										index = Math.round(dirtyLeft / wrapWidth);
-									} else {
-										if (!isDoubleSwipe) {
-											if (forceLeft) {
-												index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
-											} else if (forceRight) {
-												index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
-											}
-										} else {
-											if (forceLeft) {
-												//callShowImg(-1, e);
-											} else if (forceRight) {
-												//callShowImg(+1, e);
-											}
-										}
-									}
-
-									if (index != undefined) {
-										if (index < 0) index = 0;
-										if (index > size - 1) index = size - 1;
-										//showImg(imgFrame.eq(index), e, false);
-									}
-								} else {
-									if (direction >= 0) {
-										//callShowImg(+1, e);
-									} else if (direction < 0) {
-										//callShowImg(-1, e);
-									}
-								}
-
-								upTimeLastT = upTimeT;
-							} /*else if (!TOUCHFlag) {
-								var clickX = e.pageX - wrap.offset().left;
-								if (clickX < wrapWidth/2) {
-									callShowImg(-1, e);
-								} else {
-									callShowImg(+1, e);
-								}
-							}*/
-						}
-					}
-					if (!TOUCHFlag) {
-						thumbsShaft.mousedown(onThumbsMouseDown);
-					} else {
-						//thumbsShaftEl.addEventListener('touchstart', onMouseDown, false);
-					}
-				}
-			} //else {
-				////console.log('Уже активирована!');
-			//}
+			} else {
+				//console.log('Уже активирована!');
+			}
 		});
 
 //		var script = document.createElement('script');
