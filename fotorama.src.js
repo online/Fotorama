@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1171) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1172) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -11,6 +11,7 @@
 	//var IEFlag = $.browser.msie;
 	var o__dragTimeout = 200;
 	var o__shadows = true;
+	var o__loop = false;
 
 	$.fn.fotorama = function(options) {
 		var o = $.extend({
@@ -19,6 +20,7 @@
 			height: null,
 			transitionDuration: 333,
 			touchStyle: true,
+			pseudoClick: true,
 			backgroundColor: null,
 			margin: 0,
 			minPadding: 10,
@@ -39,13 +41,13 @@
 		}, options);
 
 		//FOTORAMA = $();
-		//////console.log("appendTo");
+		////////console.log("appendTo");
 
 //		var __startLoad = new Date().getTime();
 //		var __stopLoad;
 //		$(window).load(function(){
 //			__stopLoad = new Date().getTime();
-//			////console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
+//			//////console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
 //		});
 
 		this.each(function(){
@@ -79,10 +81,8 @@
 				// Очищаем DOM
 				fotorama.html('');
 
-				o.loop = false;
-
 				if (!o.touchStyle) {
-					o.loop = true;
+					o__loop = true;
 					o.arrows = false;
 				}
 
@@ -204,7 +204,7 @@
 					imgFrame = imgFrame.add(_imgFrame);
 				});
 
-				//////console.log('imgFrame.size()', imgFrame.size());
+				////////console.log('imgFrame.size()', imgFrame.size());
 
 				if (o.thumbs) {
 					// Если тумбсы или превьюшки
@@ -346,8 +346,8 @@
 				}
 
 				function setFotoramaSize() {
-	//				if (console && ////console.log) {
-	//					////console.log('setFotoramaSize');
+	//				if (console && //////console.log) {
+	//					//////console.log('setFotoramaSize');
 	//				}
 					if (wrapWidth && wrapHeight && !wrapIsSetFlag) {
 						fotorama.css({
@@ -395,8 +395,8 @@
 
 				var stateIconPositionTimeout;
 				function setFotoramaState(state, index, time) {
-	//				if (console && ////console.log) {
-	//					////console.log('setFotoramaState', wrapWidth);
+	//				if (console && //////console.log) {
+	//					//////console.log('setFotoramaState', wrapWidth);
 	//				}
 					clearTimeout(stateIconPositionTimeout);
 					function stateIconPosition() {
@@ -447,8 +447,8 @@
 
 				// Прокручиваем ленту превьюшек
 				function slideThumbsShaft(time, x) {
-	//				if (console && ////console.log) {
-	//					////console.log(thumbsShaftWidth);
+	//				if (console && //////console.log) {
+	//					//////console.log(thumbsShaftWidth);
 	//				}
 					if (thumbsShaftWidth) {
 						var thumbLeft = activeThumb.position().left;
@@ -556,8 +556,8 @@
 						}
 					}
 
-	//				if (console && ////console.log) {
-	//					////console.log(thumbsShaftWidth);
+	//				if (console && //////console.log) {
+	//					//////console.log(thumbsShaftWidth);
 	//				}
 
 					//if (activeImg && thumbsShaftWidth < wrapWidth*1.5) {
@@ -566,8 +566,8 @@
 				}
 
 				function loadImg(index, container, callback, type) {
-	//				if (console && ////console.log) {
-	//					////console.log('loadImg');
+	//				if (console && //////console.log) {
+	//					//////console.log('loadImg');
 	//				}
 
 					var thisImgFrame = imgFrame.eq(index);
@@ -614,12 +614,12 @@
 							$thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
 
 							if (_srcI == 0) {
-								//////console.log('appendTo ' + index + ' ' + type);
+								////////console.log('appendTo ' + index + ' ' + type);
 								$thisImgNew.appendTo(container);
 
 								if (type == 'thumb') {
-	//								if (console && ////console.log) {
-	//									////console.log('firstTime + thumb ' + src);
+	//								if (console && //////console.log) {
+	//									//////console.log('firstTime + thumb ' + src);
 	//								}
 									//$thisImgNew.attr({'width': o.thumbSize});
 									thumbsShaftWidth += o.thumbSize + o.thumbMargin;
@@ -631,8 +631,8 @@
 						}
 						function loadFinish() {
 							srcState[src] = 'loaded';
-	//								if (console && ////console.log) {
-	//									////console.log('loadFinish ' + index + ' ' + type);
+	//								if (console && //////console.log) {
+	//									//////console.log('loadFinish ' + index + ' ' + type);
 	//								}
 							container.trigger('fotorama.load').data({'state': 'loaded'});
 
@@ -687,7 +687,7 @@
 						} else {
 							// Если картинка уже в процессе загрузки, просто ждём когда она загрузится
 							function justWait() {
-	//							////console.log('justWait');
+	//							//////console.log('justWait');
 								if (srcState[src] == 'error') {
 									loadError(false);
 								} else if (srcState[src] == 'loaded') {
@@ -710,8 +710,8 @@
 				function loadDraw(newImg) {
 					var index = imgFrame.index(newImg);
 					if (!newImg.data('wraped')) {
-	//					if (console && ////console.log) {
-	//						////console.log('loadDraw first time');
+	//					if (console && //////console.log) {
+	//						//////console.log('loadDraw first time');
 	//					}
 						shaft.append(newImg);
 
@@ -746,8 +746,8 @@
 
 								$thisImgNew.addClass('fotorama__img');
 
-	//							if (console && ////console.log) {
-	//								////console.log(imgWidth + ' ' + imgHeight, index);
+	//							if (console && //////console.log) {
+	//								//////console.log(imgWidth + ' ' + imgHeight, index);
 	//							}
 
 								if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
@@ -826,18 +826,18 @@
 							if (!imgFrame.eq(_indexNew).data('wraped') || imgFrame.eq(_indexNew).data('detached')) {
 								sizeToLoad++;
 								indexNew.push(_indexNew);
-								//console.log(_indexNew);
+								////console.log(_indexNew);
 							}
 						} else {
 							limitFLAG = true;
 						}
 					}
 
-					//console.log('sizeToLoad: '+sizeToLoad, 'limitFLAG: '+limitFLAG);
+					////console.log('sizeToLoad: '+sizeToLoad, 'limitFLAG: '+limitFLAG);
 
 					if (sizeToLoad >= o.preload || limitFLAG) {
 						for (i=0;i<indexNew.length;i++) {
-							//console.log(indexNew[i]);
+							////console.log(indexNew[i]);
 							loadDraw(imgFrame.eq(indexNew[i]));
 						}
 					}
@@ -869,19 +869,17 @@
 				function showImg(newImg, e, x) {
 					var prevActiveImg, prevActiveThumb;
 					var captionText;
+					var indexPrev;
 					var indexNew = imgFrame.index(newImg);
 
 
-	//				if (console && ////console.log) {
-	//					////console.log('state is ' + state);
+	//				if (console && //////console.log) {
+	//					//////console.log('state is ' + state);
 	//				}
 
 					imgFrame.each(function(){
 						$(this).unbind('fotorama.load fotorama.error');
 					});
-
-
-
 
 					var time = o.transitionDuration;
 					if (e && e.altKey) {
@@ -912,7 +910,7 @@
 					}
 
 					if (activeImg) {
-						var indexPrev = imgFrame.index(activeImg);
+						indexPrev = imgFrame.index(activeImg);
 						prevActiveImg = activeImg;
 						if (o.thumbs) {
 							prevActiveThumb = activeThumb;
@@ -944,7 +942,7 @@
 						newImg.addClass('fotorama__frame_active');
 					}
 
-					if (o.thumbs && o.thumbsPreview) {
+					if (o.thumbs && o.thumbsPreview && indexPrev != indexNew) {
 						slideThumbsShaft(time, x);
 					}
 
@@ -961,7 +959,7 @@
 					} else {
 						if (CSSTRFlag) {
 							if (!activeImg) {
-								//////console.log('no active img');
+								////////console.log('no active img');
 								newImg.css({opacity: 0});
 							}
 							prevActiveImg.add(newImg).css(getDuration(time));
@@ -1057,21 +1055,21 @@
 					arrNext.add(arrPrev).css('color', o.arrowsColor);
 				}
 
-				function callShowImg(delta, e) {
+				function callShowImg(delta, e, loop) {
 					e.stopPropagation();
 					e.preventDefault();
 
 					var index = imgFrame.index(activeImg);
 					var indexNew = index + delta;
 					if (indexNew < 0) {
-						if (o.loop) {
+						if (o__loop || loop) {
 							indexNew = size - 1;
 						} else {
 							indexNew = 0;
 						}
 					}
 					if (indexNew > size - 1) {
-						if (o.loop) {
+						if (o__loop || loop) {
 							indexNew = 0;
 						} else {
 							indexNew = size - 1;
@@ -1093,7 +1091,7 @@
 
 				// Биндим хендлеры
 				fotorama.bind('showImg', function(e, index){
-					////console.log(index);
+					//////console.log(index);
 					if (index > size - 1 || typeof(index) != 'number') {
 						index = 0
 					}
@@ -1277,7 +1275,6 @@
 
 							upTime = new Date().getTime();
 							var dirtyLeft = -shaftLeft;
-
 							var forceLeft = false;
 							var forceRight = false;
 
@@ -1305,37 +1302,47 @@
 							var direction = backLeft - x;
 
 							if (o.touchStyle) {
-								if (isFlicked) {
-									if (direction <= -10) {
-										forceLeft = true;
-									} else if (direction >= 10) {
-										forceRight = true;
-									}
-								}
-
-								var index = undefined;
-								if (!forceLeft && !forceRight) {
-									index = Math.round(dirtyLeft / wrapWidth);
-								} else {
-									if (!isDoubleSwipe) {
-										if (forceLeft) {
-											index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
-										} else if (forceRight) {
-											index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
+								if (TOUCHFlag || grabbingFlag) {
+									if (isFlicked) {
+										if (direction <= -10) {
+											forceLeft = true;
+										} else if (direction >= 10) {
+											forceRight = true;
 										}
+									}
+
+									var index = undefined;
+									if (!forceLeft && !forceRight) {
+										index = Math.round(dirtyLeft / wrapWidth);
 									} else {
-										if (forceLeft) {
-											callShowImg(-1, e);
-										} else if (forceRight) {
-											callShowImg(+1, e);
+										if (!isDoubleSwipe) {
+											if (forceLeft) {
+												index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
+											} else if (forceRight) {
+												index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
+											}
+										} else {
+											if (forceLeft) {
+												callShowImg(-1, e);
+											} else if (forceRight) {
+												callShowImg(+1, e);
+											}
 										}
 									}
-								}
 
-								if (index != undefined) {
-									if (index < 0) index = 0;
-									if (index > size - 1) index = size - 1;
-									showImg(imgFrame.eq(index), e, false);
+									if (index != undefined) {
+										if (index < 0) index = 0;
+										if (index > size - 1) index = size - 1;
+										showImg(imgFrame.eq(index), e, false);
+									}
+								} else if (o.pseudoClick) {
+									if (!e.shiftKey) {
+										// Если клик без шифта
+										callShowImg(+1, e, true);
+									} else {
+										// Если с шифтом
+										callShowImg(-1, e, true);
+									}
 								}
 							} else {
 								if (direction >= 0) {
@@ -1356,7 +1363,7 @@
 					}
 				}
 			} else {
-				////console.log('Уже активирована!');
+				//////console.log('Уже активирована!');
 			}
 		});
 

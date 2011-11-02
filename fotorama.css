@@ -1,4 +1,4 @@
-/* Fotorama 1.1 (v1171) http://fotoramajs.com/ */
+/* Fotorama 1.1 (v1172) http://fotoramajs.com/ */
 .fotorama { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); *zoom: 1; }
 .fotorama * { -webkit-backface-visibility: hidden; }
 
@@ -77,7 +77,7 @@
 .fotorama__wrap_touch .fotorama__arr { opacity: 1 !important; -moz-transition-property: none; -webkit-transition-property: none; -o-transition-property: none; transition-property: none; -moz-transition-duration: 1s; -webkit-transition-duration: 1s; -o-transition-duration: 1s; transition-duration: 1s; }
 .fotorama__wrap_touch .fotorama__arr_disabled { opacity: 0.11 !important; }
 
-.fotorama__wrap_mouseover .fotorama__arr { opacity: 0.66; }
+.fotorama__wrap_mouseover .fotorama__arr { opacity: 0.77; }
 .fotorama__wrap_mouseover .fotorama__arr:hover { opacity: 1; }
 
 .fotorama__wrap_mouseover .fotorama__arr_prev, .fotorama__wrap_touch .fotorama__arr_prev { margin-left: 0; }
