@@ -1143,7 +1143,7 @@
 
 				if (o.touchStyle || TOUCHFlag) {
 					function onMouseDown(e) {
-						if ((TOUCHFlag || (!TOUCHFlag && e.button == 0)) && activeImg) {
+						if ((TOUCHFlag || e.button == 0) && activeImg) {
 							function act() {
 								moveLeft = [];
 								grabbingFlag = false;
