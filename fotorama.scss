@@ -1,6 +1,6 @@
 @import "compass";
 
-/* Fotorama 1.1 (v1173) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1176) http://fotoramajs.com/ */
 
 $transitionDuration: 333ms;
 $backgroundColor: #222120;
@@ -239,15 +239,12 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 		display: inline;
 		width: auto;
 	}
-	img {
-		//position:relative;
-		//left: -9999px;
-	}
 	.fotorama__thumb__img {
 		width: auto;
-		//height: auto;
 		@include opacity(0.66);
-		//left: 0;
+		border: none;
+		margin: 0;
+		padding: 0;
 	}
 	.fotorama__thumb_selected, .fotorama__thumb:hover {
 		.fotorama__thumb__img {
@@ -337,10 +334,6 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 
 .fotorama__img {
 	position: relative;
-	//max-width: 100%;
-	//text-align: center;
-	//margin: 0 auto;
-	//white-space: normal;
 }
 
 $arrWidth: 24px + 20;
@@ -366,19 +359,16 @@ $arrHeight: 24px*3;
 	opacity: 0;
 	font-style: normal;
 	-webkit-tap-highlight-color: rgba(255,255,255,.15);
-	//background: rgba(34,33,32,.1);
 }
 
 .fotorama__arr_prev {
 	left: 0;
 	margin-left: 0;
-	//*margin-left: 0 !important;
 }
 
 .fotorama__arr_next {
 	left: 100%;
 	margin-left: -$arrWidth;
-	//*margin-left: -$arrWidth !important;
 }
 
 .fotorama__arr_disabled {
@@ -446,14 +436,11 @@ $arrHeight: 24px*3;
 	.fotorama__arr_prev {
 		top: 0;
 		margin-top: 0;
-		//*margin-top: 0 !important;
 	}
 
 	.fotorama__arr_next {
-	  //top: auto;
 		bottom: 0;
 		margin-bottom: 0;
-		//*margin-bottom: 0 !important;
 	}
 
 	.fotorama__wrap_mouseover, .fotorama__wrap_touch {
@@ -521,7 +508,6 @@ $arrHeight: 24px*3;
 
 .fotorama_loading {
 	.fotorama__state {
-		//display: block;
 		letter-spacing: -10px;
 		span {
 			position: relative;
@@ -535,7 +521,6 @@ $arrHeight: 24px*3;
 
 .fotorama_error {
 	.fotorama__state {
-		//display: block;
 		font-size: 80px;
 	}
 	.fotorama__thumb-border	{
