@@ -4,50 +4,55 @@
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
  */
 ;window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="modernizr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
+var TOUCHFlag = ('ontouchstart' in document);
+var CSSTRFlag = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 (function($){
-	var TOUCHFlag = ('ontouchstart' in document);
-	var CSSTRFlag = Modernizr.csstransforms3d && Modernizr.csstransitions;
-	//var IEFlag = $.browser.msie;
+	var IEFlag = $.browser.msie;
 	var o__dragTimeout = 200;
-	var o__shadows = true;
 	var o__loop = false;
+	var $window = $(window);
 
 	$.fn.fotorama = function(options) {
 		var o = $.extend({
 			startImg: 0,
 			width: null,
 			height: null,
+			vertical: false,
 			transitionDuration: 333,
 			touchStyle: true,
 			pseudoClick: true,
 			backgroundColor: null,
-			margin: 0,
+			margin: 5,
 			minPadding: 10,
+			alwaysPadding: false,
 			preload: 3,
 			zoomToFit: true,
+			resize: false,
 			arrows: true,
 			arrowsColor: null,
 			thumbs: true,
 			thumbsBackgroundColor: null,
 			thumbColor: null,
 			thumbsPreview: true,
-			thumbSize: 48,
-			thumbMargin: 0,
+			thumbSize: null,
+			thumbMargin: 5,
 			thumbBorderWidth: 3,
 			thumbBorderColor: null,
+			thumbsPreviewRight: false,
+			shadows: true,
 			caption: false,
 			onShowImg: null
 		}, options);
 
 		//FOTORAMA = $();
-		////////console.log("appendTo");
+		////////////console.log("appendTo");
 
 //		var __startLoad = new Date().getTime();
 //		var __stopLoad;
 //		$(window).load(function(){
 //			__stopLoad = new Date().getTime();
-//			//////console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
+//			//////////console.log('Load in ' + (__stopLoad-__startLoad)/1000 + 'sec');
 //		});
 
 		this.each(function(){
@@ -61,6 +66,13 @@
 				var timestamp = new Date().getTime();
 
 				fotorama.addClass('fotorama');
+
+				if (!o.vertical) {
+					fotorama.addClass('fotorama_horizontal');
+				} else {
+					fotorama.addClass('fotorama_vertical');
+				}
+
 
 				// Все изображения
 				var img = fotorama.children().filter(function(){
@@ -88,6 +100,7 @@
 
 				var srcState = [];
 
+				var wrapSize, wrapSize2;
 				var wrapWidth = o.width;
 				var wrapHeight = o.height;
 				var wrapRatio;
@@ -96,14 +109,15 @@
 
 				if (o.touchStyle) {
 					var shaftWidth = 0,
-							shaftLeft,
-							x,
-							y,
-							downLeft,
-							downTop,
-							downShaftLeft,
+							shaftHeight,
+							shaftPos,
+							coo,
+							coo2,
+							downPos,
+							downPos2,
+							downShaftPos,
 							downTime,
-							moveLeft,
+							movePos,
 							moveTime,
 							upTime,
 							upTimeLast = 0;
@@ -114,6 +128,25 @@
 					var checkedDirectionFlag = false;
 					var limitFlag = false;
 				}
+
+				var _pos, _pos2, _coo, _coo2, _size, _size2;
+					if (!o.vertical) {
+						_pos = 'left';
+						_pos2 = 'top';
+						_coo = 'pageX';
+						_coo2 = 'pageY';
+						_size = 'width';
+						_size2 = 'height';
+					} else {
+						_pos = 'top';
+						_pos2 = 'left';
+						_coo = 'pageY';
+						_coo2 = 'pageX';
+						_size = 'height';
+						_size2 = 'width';
+					}
+
+
 
 				var wrap = $('<div class="fotorama__wrap"></div>');
 				var shaft = $('<div class="fotorama__shaft"></div>');
@@ -127,6 +160,7 @@
 				var stateIcon = $('<div class="fotorama__state"></div>').appendTo(shaft);
 				var stateIconSpinnerInterval;
 				var stateIconSpinnerIntervalI = 0;
+				var stateIconPositionTimeout;
 
 				function stateIconSpinner() {
 					stateIcon.css({backgroundPosition: '24px ' + (24 - 56*stateIconSpinnerIntervalI) + 'px'});
@@ -136,13 +170,13 @@
 
 				if (TOUCHFlag) {
 					wrap.addClass('fotorama__wrap_touch');
-					o__shadows = false;
+					o.shadows = false;
 				}
 				if (o.touchStyle) {
 					wrap.addClass('fotorama__wrap_style_touch');
-					if (o__shadows) {
-						wrap.append('<i class="fotorama__shadow fotorama__shadow_left"></i><i class="fotorama__shadow fotorama__shadow_right"></i>');
-						var shadow = $('.fotorama__shadow', wrap);
+					if (o.shadows) {
+						wrap.append('<i class="fotorama__shadow fotorama__shadow_prev"></i><i class="fotorama__shadow fotorama__shadow_next"></i>');
+						//var shadow = $('.fotorama__shadow', wrap);
 					}
 				} else {
 					wrap.addClass('fotorama__wrap_style_fade');
@@ -153,7 +187,15 @@
 				}
 
 				if (o.arrows) {
-					wrap.append('<i class="fotorama__arr fotorama__arr_prev">&#9668;</i><i class="fotorama__arr fotorama__arr_next">&#9658;</i>');
+					var _arrPrev, _arrNext;
+					if (!o.vertical) {
+						_arrPrev = '&#9668;';
+						_arrNext = '&#9658;';
+					} else {
+						_arrPrev = '&#9650;';
+						_arrNext = '&#9660;';
+					}
+					wrap.append('<i class="fotorama__arr fotorama__arr_prev">'+_arrPrev+'</i><i class="fotorama__arr fotorama__arr_next">'+_arrNext+'</i>');
 					var arrs = $('.fotorama__arr', fotorama);
 					var arrPrev = $('.fotorama__arr_prev', fotorama);
 					var arrNext = $('.fotorama__arr_next', fotorama);
@@ -204,44 +246,58 @@
 					imgFrame = imgFrame.add(_imgFrame);
 				});
 
-				////////console.log('imgFrame.size()', imgFrame.size());
+				////////////console.log('imgFrame.size()', imgFrame.size());
 
 				if (o.thumbs) {
+					var o__thumbSize = o.thumbSize;
+					if (!o__thumbSize) {
+						o__thumbSize = o.vertical ? 64 : 48;
+					}
+					////console.log(o.thumbSize);
 					// Если тумбсы или превьюшки
 					var activeThumb;
 					var activeThumbPrevIndex = 0;
 					// Контейнер для тумбсов-переключалок
 					var thumbs = $('<div class="fotorama__thumbs"></div>');
+					var thumbsSize2;
 
 					if (o.thumbsPreview) {
 						o.thumbOpacity = .66;
 						o.thumbOpacityActive = 1;
-						var thumbsHeight = o.thumbSize + (o.thumbMargin*2);
+						thumbsSize2 = o__thumbSize + o.thumbMargin*2;
 						thumbs
 								.addClass('fotorama__thumbs_previews')
-								.css({height: thumbsHeight});
+								.css(_size2, thumbsSize2);
 					}
 
 					thumbs.appendTo(fotorama).css('visibility', 'hidden');
+
+					//if (o.vertical) {
+						//fotorama.append('<div class="fotorama__clear"></div>');
+					//}
+
 					var thumbsShaft = $('<div class="fotorama__thumbs-shaft"></div>');
 					thumbs.append(thumbsShaft);
 					if (o.thumbsPreview) {
-						var thumbsShaftWidth = 0;
-						if (o__shadows) {
-							thumbs.append('<i class="fotorama__shadow fotorama__shadow_left"></i><i class="fotorama__shadow fotorama__shadow_right"></i>');
+						var thumbsShaftSize = 0;
+						if (o.shadows) {
+							thumbs.append('<i class="fotorama__shadow fotorama__shadow_prev"></i><i class="fotorama__shadow fotorama__shadow_next"></i>');
 							var thumbsShadow = $('.fotorama__shadow', thumbs);
-							thumbsShadow.css({height: thumbsHeight});
+							//thumbsShadow.css({height: thumbsHeight});
 						}
 
 						var thumbBorder = $('<i class="fotorama__thumb-border"></i>');
-						var thumbBorderHeight = o.thumbSize;
-						if (thumbBorderHeight >= thumbsHeight - o.thumbBorderWidth*2) {
-							thumbBorderHeight = thumbsHeight - o.thumbBorderWidth*2;
-						}
-						var thumbBorderTop = o.thumbMargin - Math.min(o.thumbMargin, o.thumbBorderWidth);
+						var thumbBorderSize2 = o__thumbSize - o.thumbBorderWidth*2;//o__thumbSize;
+						//////console.log(thumbBorderSize2);
+						/*if (thumbBorderSize2 >= thumbsSize2 - o.thumbBorderWidth*2) {
+							thumbBorderSize2 = thumbsSize2 - o.thumbBorderWidth*2;
+						}*/
+						var thumbBorderPos2 = o.thumbMargin;// - Math.min(o.thumbMargin, o.thumbBorderWidth);
 						thumbBorder
 								.hide()
-								.css({height: thumbBorderHeight, top: thumbBorderTop, 'border-width': o.thumbBorderWidth})
+								.css(_size2, thumbBorderSize2)
+								.css(_pos2, thumbBorderPos2)
+								.css('border-width', o.thumbBorderWidth)
 								.appendTo(thumbsShaft);
 					}
 
@@ -249,9 +305,10 @@
 					img.each(function(i){
 						// Одна точка-переключалка
 						var _thumb;
+						var _thumbSize2 = o__thumbSize;
 						if (o.thumbsPreview) {
 							_thumb = $('<div class="fotorama__thumb"></div>');
-							_thumb.css({height: o.thumbSize, margin: o.thumbMargin});
+							_thumb.css(_size2, _thumbSize2).css('margin', o.thumbMargin);
 						} else {
 							_thumb = $('<i class="fotorama__thumb"><i class="fotorama__thumb__dot"></i></i>');
 						}
@@ -284,14 +341,18 @@
 	//							}
 	//							waitForWidth();
 
-
-								function continueDraw() {
 									/*if (Modernizr.canvas) {
 										var thisImgEl = thisThumbNew.get(0);
 									}*/
 
 									// Одна точка-переключалка на загрузке
-									var _thumbWidth = Math.round((o.thumbSize) * thumbRatio / 1000);
+									var _thumbSize;
+									if (!o.vertical) {
+										_thumbSize = Math.round(o__thumbSize * thumbRatio / 1000);
+									} else {
+										_thumbSize = Math.round(o__thumbSize / thumbRatio * 1000);
+									}
+									var _thumbSize2 = o__thumbSize;
 									if (Modernizr.canvas) {
 										$thisThumbNew.remove();
 										$thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
@@ -300,33 +361,30 @@
 										$thisThumbNew.addClass('fotorama__thumb__img');
 									}
 									$thisThumbNew
-											.attr({
-												width: _thumbWidth,
-												height: o.thumbSize
-											})
-											.css({
-												width: _thumbWidth,
-												height: o.thumbSize,
-												'visibility': 'visible'
-											});
+											.attr(_size, _thumbSize)
+											.attr(_size2, _thumbSize2)
+											.css(_size, _thumbSize)
+											.css(_size2, _thumbSize2)
+											.css('visibility', 'visible');
 									if (Modernizr.canvas) {
 										var ctx = $thisThumbNew.get(0).getContext('2d');
-										ctx.drawImage(thisThumbNew, 0, 0, _thumbWidth, o.thumbSize);
+										if (!o.vertical) {
+											ctx.drawImage(thisThumbNew, 0, 0, _thumbSize, _thumbSize2);
+										} else {
+											ctx.drawImage(thisThumbNew, 0, 0, _thumbSize2, _thumbSize);
+										}
 									}
 									if (!TOUCHFlag && i != 0) {
 										$thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
 									}
 
-									thumbsShaftWidth += _thumbWidth + o.thumbMargin - (o.thumbSize + o.thumbMargin);
-									thumbsShaft.css({'width': thumbsShaftWidth});
-									thumb.eq(i).css({'width': _thumbWidth}).data({'width': _thumbWidth});
+									thumbsShaftSize += _thumbSize + o.thumbMargin - (o__thumbSize + o.thumbMargin);
+									thumbsShaft.css(_size, thumbsShaftSize);
+									thumb.eq(i).css(_size, _thumbSize).data(_size, _thumbSize);
 
 									//if (wrapIsSetFlag && (thumbsShaftWidth <= wrapWidth*1.5)) {
-									setThumbs();
+									setThumbsShadow();
 									//}
-								}
-
-								continueDraw();
 							}
 
 							// Если включены превьюшки, придётся загружать все картинки разом
@@ -345,58 +403,113 @@
 					caption.appendTo(fotorama);
 				}
 
-				function setFotoramaSize() {
-	//				if (console && //////console.log) {
-	//					//////console.log('setFotoramaSize');
-	//				}
-					if (wrapWidth && wrapHeight && !wrapIsSetFlag) {
-						fotorama.css({
-							width: wrapWidth
-						});
+				function getRatioWidthHeight() {
+					if (!wrapRatio) {
+						wrapRatio = wrapWidth / wrapHeight * 1000;
+					}
+					if (!thumbsSize2) {
+						thumbsSize2 = o.vertical ? thumbs.width() : thumbs.height();
+					}
+					if (o.resize) {
+						var windowHeight = $window.height();
+						wrapWidth = fotorama.width() - (o.vertical ? thumbsSize2 : 0);
+						wrapHeight = Math.round(wrapWidth / wrapRatio * 1000);
+						if (wrapHeight > windowHeight - 40 - (!o.vertical ? thumbsSize2 : 0)) {
+							wrapHeight = windowHeight - 40 - (!o.vertical ? thumbsSize2 : 0);
+							wrapWidth = Math.round(wrapHeight * wrapRatio / 1000);
+						}
+					}
+				}
+
+				function setFotoramaSize(forceResize, forceRatioWidthHeight) {
+					if (wrapWidth && wrapHeight && (!wrapIsSetFlag || forceResize)) {
+						if (!forceRatioWidthHeight) {
+							getRatioWidthHeight();
+						}
+
+						if (!o.vertical) {
+							wrapSize = wrapWidth;
+							wrapSize2 = wrapHeight;
+						} else {
+							wrapSize = wrapHeight;
+							wrapSize2 = wrapWidth;
+						}
+
+						//fotorama.css({
+							//width: wrapWidth
+						//});
 						wrap.add(imgFrame).css({
 							width: wrapWidth,
 							height: wrapHeight
 						});
+
+						if (o.vertical) {
+							if (!o.thumbsPreviewRight) {
+								wrap.css({left: thumbsSize2});
+							} else {
+								thumbs.css({left: wrapWidth});
+							}
+						}
+
 						if (!o.touchStyle) {
 							shaft.css({
 								width: wrapWidth,
 								height: wrapHeight
 							});
 						} else {
-							shaftWidth = (wrapWidth+o.margin)*size - o.margin;
-							shaft.css({'width': shaftWidth, 'height': wrapHeight});
+							if (!o.vertical) {
+								shaftWidth = (wrapWidth+o.margin)*size - o.margin;
+								shaftHeight = wrapHeight;
+							} else {
+								shaftWidth = wrapWidth;
+								shaftHeight = (wrapHeight+o.margin)*size - o.margin;
+							}
+							shaft.css({width: shaftWidth, height: shaftHeight});
 						}
 						if (o.thumbs) {
-							thumbs.css({
-								width: wrapWidth,
-								visibility: 'visible'
-							});
+							if (o.thumbsPreview || !o.vertical) {
+								thumbs.css(_size, wrapSize);
+							}
+							thumbs.css({visibility: 'visible'});
 						}
 
-						if (o.arrows) {
-							arrPrev.add(arrNext).css({
-								top: wrapHeight / 2
-							});
+						if (IEFlag && !o.vertical) {
+							if (o.arrows) {
+								arrPrev.add(arrNext).css({
+									top: wrapHeight / 2
+								});
+							}
+
+							stateIcon.css(_pos2, wrapSize2 / 2);
 						}
 
-						if (o__shadows && o.touchStyle) {
-							shadow.css({
-								height: wrapHeight
-							});
+						//if (o.shadows && o.touchStyle) {
+							//shadow.css({
+								//height: wrapHeight
+							//});
+						//}
+
+
+
+
+						setThumbsShadow();
+						if (activeImg) {
+							////console.log('callShowImg');
+							showImg(activeImg, false, false, true);
 						}
-
-						stateIcon.css({top: wrapHeight / 2});
-
-						setThumbs();
 
 						wrapIsSetFlag = true;
 					}
+					if (forceResize) {
+						imgFrame.each(function(i){
+							setImgSize($(this), i);
+						});
+					}
 				}
 
-				var stateIconPositionTimeout;
 				function setFotoramaState(state, index, time) {
-	//				if (console && //////console.log) {
-	//					//////console.log('setFotoramaState', wrapWidth);
+	//				if (////console && //////////console.log) {
+	//					//////////console.log('setFotoramaState', wrapWidth);
 	//				}
 					clearTimeout(stateIconPositionTimeout);
 					function stateIconPosition() {
@@ -404,7 +517,7 @@
 							if (!o.touchStyle) {
 								index = 0;
 							}
-							stateIcon.css({left: index*(wrapWidth+o.margin)+wrapWidth/2});
+							stateIcon.css(_pos, index*(wrapSize+o.margin)+wrapSize/2);
 							stateIconPositionTimeout = setTimeout(function(){
 								stateIcon.stop().show().fadeTo(0,1);
 							},time);
@@ -447,22 +560,23 @@
 
 				// Прокручиваем ленту превьюшек
 				function slideThumbsShaft(time, x) {
-	//				if (console && //////console.log) {
-	//					//////console.log(thumbsShaftWidth);
+	//				if (////console && //////////console.log) {
+	//					//////////console.log(thumbsShaftWidth);
 	//				}
-					if (thumbsShaftWidth) {
-						var thumbLeft = activeThumb.position().left;
-						var thumbWidth = activeThumb.data('width');
-						if (!thumbWidth) {
+					if (thumbsShaftSize) {
+						var thumbPos = activeThumb.position()[_pos];
+						var thumbSize = activeThumb.data()[_size];
+						//////console.log(thumbSize);
+						if (!thumbSize) {
 							thumbBorder.hide();
 						} else {
 							thumbBorder.show();
-							if (thumbsShaftWidth > wrapWidth) {
-								var thumbCenter = thumbLeft + thumbWidth / 2;
-								var thumbPlace = wrapWidth / 2;
+							if (thumbsShaftSize > wrapSize) {
+								var thumbCenter = thumbPos + thumbSize / 2;
+								var thumbPlace = wrapSize / 2;
 								var index = thumb.index(activeThumb);
 								var direction = index - activeThumbPrevIndex;
-								var thumbsShaftLeft = thumbsShaft.position().left;
+								var thumbsShaftPos = thumbsShaft.position()[_pos];
 								if (x && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
 									var i;
 									if (direction > 0) {
@@ -477,33 +591,33 @@
 									}
 									if (index != i) {
 										var nextThumb = thumb.eq(i);
-										thumbCenter = nextThumb.position().left + nextThumb.data('width') / 2;
+										thumbCenter = nextThumb.position()[_pos] + nextThumb.data()[_size] / 2;
 										thumbPlace = x;
 									}
 								}
-								var minLeft = -(thumbsShaftWidth-wrapWidth);
-								var newLeft = Math.round(-(thumbCenter - thumbPlace) + o.thumbMargin);
+								var minPos = -(thumbsShaftSize-wrapSize);
+								var newPos = Math.round(-(thumbCenter - thumbPlace) + o.thumbMargin);
 
-								if ((direction > 0 && newLeft > thumbsShaftLeft) || (direction < 0 && newLeft < thumbsShaftLeft)) {
-									newLeft = thumbsShaftLeft;
+								if ((direction > 0 && newPos > thumbsShaftPos) || (direction < 0 && newPos < thumbsShaftPos)) {
+									newPos = thumbsShaftPos;
 								}
 
-								if (newLeft <= minLeft) {
-									newLeft = minLeft;
-									if (o__shadows) {
+								if (newPos <= minPos) {
+									newPos = minPos;
+									if (o.shadows) {
 										thumbs
 												.removeClass('fotorama__thumbs_shadow_no-left')
 												.addClass('fotorama__thumbs_shadow_no-right');
 									}
-								} else if (newLeft >= o.thumbMargin) {
-									newLeft = o.thumbMargin;
-									if (o__shadows) {
+								} else if (newPos >= o.thumbMargin) {
+									newPos = o.thumbMargin;
+									if (o.shadows) {
 										thumbs
 												.removeClass('fotorama__thumbs_shadow_no-right')
 												.addClass('fotorama__thumbs_shadow_no-left');
 									}
 								} else {
-									if (o__shadows) {
+									if (o.shadows) {
 										thumbs
 												.removeClass('fotorama__thumbs_shadow_no-left fotorama__thumbs_shadow_no-right');
 									}
@@ -512,52 +626,51 @@
 								if (CSSTRFlag) {
 									thumbsShaft.css(getDuration(time));
 									setTimeout(function(){
-										thumbsShaft.css(getTranslate(newLeft));
-									},0);
+										thumbsShaft.css(getTranslate(newPos, o.vertical));
+									},1);
 								} else {
-									thumbsShaft.stop().animate({left: newLeft}, time);
+									thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
 								}
 							} else {
 								if (CSSTRFlag) {
 									thumbsShaft.css(getDuration(0));
-									thumbsShaft.css(getTranslate(wrapWidth/2 - thumbsShaftWidth/2));
-								} else {
-									thumbsShaft
-											.css({
-												left: wrapWidth/2 - thumbsShaftWidth/2
-											});
 								}
+								thumbsShaft.css(getTranslate(wrapSize/2 - thumbsShaftSize/2, o.vertical));
 							}
 
-							var thumbBorderWidth = thumbWidth;
-							if (o.thumbBorderWidth > o.thumbMargin) {
-								thumbBorderWidth = thumbBorderWidth - (o.thumbBorderWidth - o.thumbMargin)*2;
-							}
-							var thumbBorderLeft = thumbLeft - Math.min(o.thumbMargin, o.thumbBorderWidth);
+							var thumbBorderSize = thumbSize - o.thumbBorderWidth*2;
+//							if (o.thumbBorderWidth > o.thumbMargin) {
+//								thumbBorderSize = thumbBorderSize;
+//							}
+							var thumbBorderPos = thumbPos;// - Math.min(o.thumbMargin, o.thumbBorderWidth);
 
 							if (CSSTRFlag) {
 								thumbBorder.css(getDuration(time));
 								setTimeout(function(){
 									thumbBorder
-											.css(getTranslate(thumbBorderLeft))
-											.css({width: thumbBorderWidth});
-								},0);
+											.css(getTranslate(thumbBorderPos, o.vertical))
+											.css(_size, thumbBorderSize);
+								},1);
 							} else {
-								thumbBorder.stop().animate({left: thumbBorderLeft, width: thumbBorderWidth}, time);
+								if (!o.vertical) {
+									thumbBorder.stop().animate({left: thumbBorderPos, width: thumbBorderSize}, time);
+								} else {
+									thumbBorder.stop().animate({top: thumbBorderPos, height: thumbBorderSize}, time);
+								}
 							}
 						}
 					}
 				}
 
-				function setThumbs() {
-					if (o__shadows) {
-						if (thumbsShaftWidth > wrapWidth) {
+				function setThumbsShadow() {
+					if (o.shadows) {
+						if (thumbsShaftSize > wrapSize) {
 							thumbs.addClass('fotorama__thumbs_shadow');
 						}
 					}
 
-	//				if (console && //////console.log) {
-	//					//////console.log(thumbsShaftWidth);
+	//				if (////console && //////////console.log) {
+	//					//////////console.log(thumbsShaftWidth);
 	//				}
 
 					//if (activeImg && thumbsShaftWidth < wrapWidth*1.5) {
@@ -565,9 +678,59 @@
 					//}
 				}
 
+				function setImgSize(thisImgFrame, index) {
+					if (!index) index = imgFrame.index(thisImgFrame);
+					var thisImg = thisImgFrame.data('img');
+					if (thisImg) {
+						var thisImgWidth = thisImgFrame.data('imgWidth');
+						var thisImgHeight = thisImgFrame.data('imgHeight');
+						var thisImgRatio = thisImgFrame.data('imgRatio');
+						var thisImgTop = 0
+						if (o.touchStyle) {
+							if (!o.vertical) {
+								thisImgFrame.css({left: index * (wrapWidth + o.margin)});
+							} else {
+								thisImgFrame.css({top: index * (wrapHeight + o.margin)});
+							}
+						}
+
+						if (thisImgWidth != wrapWidth || thisImgHeight != wrapHeight) {
+							var minPadding = 0;
+							if (Math.round(thisImgRatio) != Math.round(wrapRatio) || o.alwaysPadding) {
+								minPadding = o.minPadding * 2;
+							}
+
+							if (thisImgRatio >= wrapRatio) {
+								thisImgWidth = Math.round(wrapWidth - minPadding) < thisImgWidth || o.zoomToFit ? Math.round(wrapWidth - minPadding) : thisImgWidth;
+								thisImgHeight = Math.round((thisImgWidth) / thisImgRatio * 1000);
+							} else {
+								thisImgHeight = Math.round(wrapHeight - minPadding) < thisImgHeight || o.zoomToFit ? Math.round(wrapHeight - minPadding) : thisImgHeight;
+								thisImgWidth = Math.round((thisImgHeight) * thisImgRatio / 1000);
+							}
+						}
+						thisImg
+								.attr({
+									width: thisImgWidth,
+									height: thisImgHeight
+								})
+								.css({
+									width: thisImgWidth,
+									height: thisImgHeight,
+									visibility: 'visible'
+								});
+						if (thisImgHeight < wrapHeight) {
+							thisImgTop = Math.round((wrapHeight - thisImgHeight) / 2)
+						}
+						thisImg
+							.css({
+								top: thisImgTop
+							});
+					}
+				}
+
 				function loadImg(index, container, callback, type) {
-	//				if (console && //////console.log) {
-	//					//////console.log('loadImg');
+	//				if (////console && //////////console.log) {
+	//					//////////console.log('loadImg');
 	//				}
 
 					var thisImgFrame = imgFrame.eq(index);
@@ -614,27 +777,27 @@
 							$thisImgNew.attr({'src': src}).css({'visibility': 'hidden'});
 
 							if (_srcI == 0) {
-								////////console.log('appendTo ' + index + ' ' + type);
+								////////////console.log('appendTo ' + index + ' ' + type);
 								$thisImgNew.appendTo(container);
 
 								if (type == 'thumb') {
-	//								if (console && //////console.log) {
-	//									//////console.log('firstTime + thumb ' + src);
+	//								if (////console && //////////console.log) {
+	//									//////////console.log('firstTime + thumb ' + src);
 	//								}
-									//$thisImgNew.attr({'width': o.thumbSize});
-									thumbsShaftWidth += o.thumbSize + o.thumbMargin;
-									thumbsShaft.css({'width': thumbsShaftWidth});
-									container.css({'width': o.thumbSize}).data({'width': o.thumbSize});
-									setThumbs();
+									//$thisImgNew.attr({'width': o__thumbSize});
+									thumbsShaftSize += o__thumbSize + o.thumbMargin;
+									thumbsShaft.css(_size, thumbsShaftSize);
+									container.css(_size, o__thumbSize).data(_size, o__thumbSize);
+									setThumbsShadow();
 								}
 							}
 						}
 						function loadFinish() {
 							srcState[src] = 'loaded';
-	//								if (console && //////console.log) {
-	//									//////console.log('loadFinish ' + index + ' ' + type);
+	//								if (////console && //////////console.log) {
+	//									//////////console.log('loadFinish ' + index + ' ' + type);
 	//								}
-							container.trigger('fotorama.load').data({'state': 'loaded'});
+							container.trigger('fotoramaLoad').data({'state': 'loaded'});
 
 							if (type == 'thumb') {
 								//alert('thumb load')
@@ -668,7 +831,7 @@
 								loadScope(_src[_srcI]/* + '?' + timestamp*/);
 								_srcI++;
 							} else {
-								container.trigger('fotorama.error').data({'state': 'error'});
+								container.trigger('fotoramaError').data({'state': 'error'});
 							}
 						}
 						//alert(srcState[src]);
@@ -687,7 +850,7 @@
 						} else {
 							// Если картинка уже в процессе загрузки, просто ждём когда она загрузится
 							function justWait() {
-	//							//////console.log('justWait');
+	//							//////////console.log('justWait');
 								if (srcState[src] == 'error') {
 									loadError(false);
 								} else if (srcState[src] == 'loaded') {
@@ -707,16 +870,17 @@
 				}
 
 				// Загружаем, отрисовываем
-				function loadDraw(newImg) {
-					var index = imgFrame.index(newImg);
+				function loadDraw(newImg, index) {
+					if (!index) index = imgFrame.index(newImg);
 					if (!newImg.data('wraped')) {
-	//					if (console && //////console.log) {
-	//						//////console.log('loadDraw first time');
+	//					if (////console && //////////console.log) {
+	//						//////////console.log('loadDraw first time');
 	//					}
 						shaft.append(newImg);
 
 						function onLoad(thisImgNew) {
 							var $thisImgNew = $(thisImgNew);
+
 
 							var imgWidth = $thisImgNew.width();
 							var imgHeight = $thisImgNew.height();
@@ -735,8 +899,6 @@
 	//						}
 	//						waitForWidth();
 
-
-							function continueDraw() {
 	//							/*if (Modernizr.canvas) {
 	//								var thisImgEl = thisImgNew.get(0);
 	//								var imgCanvas = $('<canvas></canvas>');
@@ -745,78 +907,39 @@
 	//							}*/
 
 								$thisImgNew.addClass('fotorama__img');
+								newImg.data({'img': $thisImgNew, 'imgWidth': imgWidth, 'imgHeight': imgHeight, 'imgRatio': imgRatio});
 
-	//							if (console && //////console.log) {
-	//								//////console.log(imgWidth + ' ' + imgHeight, index);
+	//							if (////console && //////////console.log) {
+	//								//////////console.log(imgWidth + ' ' + imgHeight, index);
 	//							}
 
 								if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
 									//Задаём размер всей Фотораме по первой загруженной картинке, если он не задан в опциях
 									wrapWidth = imgWidth;
 									wrapHeight = imgHeight;
+									
+									getRatioWidthHeight();
 								}
 
-								if (o.touchStyle) {
-									var left = index * (wrapWidth + o.margin);
-									newImg.css({'left': left});
-								}
 
-								if (!wrapRatio) {
-									wrapRatio = wrapWidth / wrapHeight * 1000;
-								}
-								if (imgWidth != wrapWidth || imgHeight != wrapHeight) {
-									var minPadding = 0;
-									if (Math.round(imgRatio) != Math.round(wrapRatio)) {
-										minPadding = o.minPadding * 2;
-									}
 
-									if (imgRatio >= wrapRatio) {
-										imgWidth = Math.round(wrapWidth - minPadding) < imgWidth || o.zoomToFit ? Math.round(wrapWidth - minPadding) : imgWidth;
-										imgHeight = Math.round((imgWidth) / imgRatio * 1000);
-									} else {
-										imgHeight = Math.round(wrapHeight - minPadding) < imgHeight || o.zoomToFit ? Math.round(wrapHeight - minPadding) : imgHeight;
-										imgWidth = Math.round((imgHeight) * imgRatio / 1000);
-									}
-								}
-
-								$thisImgNew
-										.attr({
-											width: imgWidth,
-											height: imgHeight
-										})
-										.css({
-											width: imgWidth,
-											height: imgHeight,
-											'visibility': 'visible'
-										});
-	//							/*if (Modernizr.canvas) {
-	//								var ctxImg = imgCanvas.get(0).getContext('2d');
-	//								ctxImg.drawImage(thisImgEl, 0, 0, imgWidth, imgHeight);
-	//							}*/
-
-								if (imgHeight < wrapHeight) {
-									$thisImgNew
-											.css({
-										top: Math.round((wrapHeight - imgHeight) / 2)
-									});
-								}
-
+								setImgSize(newImg, index);
+								////console.log('setFotoramaSize');
 								setFotoramaSize();
-							}
-
-							continueDraw();
 						}
 
 						newImg.data({'wraped': true});
 
 						loadImg(index, newImg, onLoad, 'img');
-					} /*else if (newImg.data('detached')) {
+					}/* else {
+						setImgSize(newImg, index);
+					}*/ /*else if (newImg.data('detached')) {
 						newImg.data({'detached': false}).appendTo(shaft);
 					}*/
 				}
 
-				function preloadSiblings(newImg) {
-					var index = imgFrame.index(newImg);
+				function preloadSiblings(newImg, index) {
+					if (!index) index = imgFrame.index(newImg);
 					var sizeToLoad = 0;
 					var limitFLAG = false;
 					var indexNew = [];
@@ -826,19 +949,19 @@
 							if (!imgFrame.eq(_indexNew).data('wraped') || imgFrame.eq(_indexNew).data('detached')) {
 								sizeToLoad++;
 								indexNew.push(_indexNew);
-								////console.log(_indexNew);
+								////////console.log(_indexNew);
 							}
 						} else {
 							limitFLAG = true;
 						}
 					}
 
-					////console.log('sizeToLoad: '+sizeToLoad, 'limitFLAG: '+limitFLAG);
+					////////console.log('sizeToLoad: '+sizeToLoad, 'limitFLAG: '+limitFLAG);
 
 					if (sizeToLoad >= o.preload || limitFLAG) {
 						for (i=0;i<indexNew.length;i++) {
-							////console.log(indexNew[i]);
-							loadDraw(imgFrame.eq(indexNew[i]));
+							////////console.log(indexNew[i]);
+							loadDraw(imgFrame.eq(indexNew[i]), indexNew[i]);
 						}
 					}
 
@@ -866,41 +989,47 @@
 				}
 
 				// Показываем картинки, выделяем тумбсы
-				function showImg(newImg, e, x) {
+				function showImg(newImg, e, x, reset) {
 					var prevActiveImg, prevActiveThumb;
 					var captionText;
 					var indexPrev;
 					var indexNew = imgFrame.index(newImg);
 
 
-	//				if (console && //////console.log) {
-	//					//////console.log('state is ' + state);
+	//				if (////console && //////////console.log) {
+	//					//////////console.log('state is ' + state);
 	//				}
 
 					imgFrame.each(function(){
-						$(this).unbind('fotorama.load fotorama.error');
+						$(this).unbind('fotoramaLoad fotoramaError');
 					});
 
-					var time = o.transitionDuration;
-					if (e && e.altKey) {
-						// Как на маке: клик с шифтом замедляет анимацию
-						time = time*10;
+					var time = 0;
+
+					if (!reset) {
+						time = o.transitionDuration;
+						if (e && e.altKey) {
+							// Как на маке: клик с шифтом замедляет анимацию
+							time = time*10;
+						}
 					}
+
+					//setImgSize(newImg, indexNew);
 
 					clearTimeout(loadTimeout);
 					loadTimeout = setTimeout(function(){
-						loadDraw(newImg);
-						preloadSiblings(newImg);
+						loadDraw(newImg, indexNew);
+						preloadSiblings(newImg, indexNew);
 					}, time+10);
 
 					var state = newImg.data('state');
 					if (state == 'loading' || !state) {
 						setFotoramaState('loading', indexNew, time);
 
-						newImg.bind('fotorama.load', function(){
+						newImg.bind('fotoramaLoad', function(){
 							setFotoramaState('loaded', indexNew, time);
 						});
-						newImg.bind('fotorama.error', function(){
+						newImg.bind('fotoramaError', function(){
 							setFotoramaState('error', indexNew, time);
 						});
 					} else if (state == 'error') {
@@ -937,29 +1066,35 @@
 							activeThumb.children().stop().fadeTo(time, o.thumbOpacityActive);
 						}
 					}
-					if (o__shadows) {
+					if (o.shadows) {
 						prevActiveImg.removeClass('fotorama__frame_active');
 						newImg.addClass('fotorama__frame_active');
 					}
 
-					if (o.thumbs && o.thumbsPreview && indexPrev != indexNew) {
+					if (o.thumbs && o.thumbsPreview && (indexPrev != indexNew)) {
+						////console.log('slideThumbsShaft', reset, time);
 						slideThumbsShaft(time, x);
 					}
 
 					if (o.touchStyle) {
-						var left = -indexNew*(wrapWidth+o.margin);
+						var pos;
+						if (!o.vertical) {
+							pos = -indexNew*(wrapWidth+o.margin);
+						} else {
+							pos = -indexNew*(wrapHeight+o.margin);
+						}
 						if (CSSTRFlag) {
 							shaft.css(getDuration(time));
 							setTimeout(function(){
-								shaft.css(getTranslate(left));
+								shaft.css(getTranslate(pos, o.vertical));
 							},1);
 						} else {
-							shaft.stop().animate({left: left}, time);
+							shaft.stop().animate(getTranslate(pos, o.vertical), time);
 						}
 					} else {
 						if (CSSTRFlag) {
 							if (!activeImg) {
-								////////console.log('no active img');
+								////////////console.log('no active img');
 								newImg.css({opacity: 0});
 							}
 							prevActiveImg.add(newImg).css(getDuration(time));
@@ -1001,6 +1136,7 @@
 				}
 
 				if (wrapWidth && wrapHeight) {
+					////console.log('setFotoramaSize');
 					setFotoramaSize();
 				}
 
@@ -1015,7 +1151,7 @@
 					if (o.thumbsBackgroundColor) {
 						// Если переназначен фон под тумбсами или превьюшками
 						thumbs.css('background-color', o.thumbsBackgroundColor);
-						if (o.thumbsPreview && o__shadows) {
+						if (o.thumbsPreview && o.shadows) {
 							thumbsShadow.css(getBoxShadowColor(o.thumbsBackgroundColor));
 						}
 					}
@@ -1089,15 +1225,64 @@
 					//}
 				//}
 
+				var resizeTimeout = false;
+				var resizeOverflow = false;
+				function fotoramaResize() {
+					if (!resizeOverflow) {
+						fotorama.css({overflow: 'hidden'});
+						resizeOverflow = true;
+					}
+					clearTimeout(resizeTimeout);
+					resizeTimeout = setTimeout(function(){
+						////console.log('setFotoramaSize');
+						setFotoramaSize(true);
+						fotorama.css({overflow: 'visible'});
+						resizeOverflow = false;
+					},100);
+				}
+
+				function bindFotoramaResize() {
+					if (o.resize) {
+						$window.bind('resize', fotoramaResize);
+					} else {
+						$window.unbind('resize', fotoramaResize);
+					}
+				}
+
+				bindFotoramaResize();
+
 				// Биндим хендлеры
-				fotorama.bind('showImg', function(e, index){
-					//////console.log(index);
+				fotorama.bind('fotoramaShowImg', function(e, index){
+					//////////console.log(index);
 					if (index > size - 1 || typeof(index) != 'number') {
 						index = 0
 					}
 
 					showImg(imgFrame.eq(index), e, false);
 				});
+
+				fotorama.bind('fotoramaResize', function(e, width, height, resize) {
+					if (width) {
+						wrapWidth = width;
+					}
+					if (height) {
+						wrapHeight = height;
+					}
+					wrapRatio = wrapWidth / wrapHeight * 1000;
+					if (!resize) {
+						////console.log('setFotoramaSize');
+						o.resize = false;
+						setFotoramaSize(true, true);
+						bindFotoramaResize();
+					} else {
+						////console.log('setFotoramaSize');
+						o.resize = true;
+						setFotoramaSize(true);
+						bindFotoramaResize();
+					}
+					clearTimeout(resizeTimeout);
+				});
+
 
 				if (o.thumbs) {
 					// Клик по тумбсам
@@ -1106,7 +1291,7 @@
 						var thisThumb = $(this);
 						if (!thisThumb.data('disabled')) {
 							var i = thumb.index($(this));
-							var x = e.pageX - thumbs.offset().left;
+							var x = e[_coo] - thumbs.offset()[_pos];
 							showImg(imgFrame.eq(i), e, x);
 						}
 					});
@@ -1143,31 +1328,31 @@
 					function onMouseDown(e) {
 						if ((TOUCHFlag || e.which < 2) && activeImg) {
 							function act() {
-								moveLeft = [];
+								movePos = [];
 								grabbingFlag = false;
-								downTime = new Date().getTime();
-								downLeft = x;
-								downTop = y;
-								moveLeft.push([downTime, x]);
-								shaftLeft = shaft.position().left;
+								downTime = e.timeStamp;
+								downPos = coo;
+								downPos2 = coo2;
+								movePos.push([downTime, coo]);
+								shaftPos = shaft.position()[_pos];
 								if (CSSTRFlag) {
 									shaft
 											.css(getDuration(0))
-											.css(getTranslate(shaftLeft));
+											.css(getTranslate(shaftPos, o.vertical));
 								} else {
 									shaft.stop();
 								}
-								downShaftLeft = shaftLeft;
+								downShaftPos = shaftPos;
 							}
 							if (!TOUCHFlag) {
-								x = e.pageX;
+								coo = e[_coo];
 								e.preventDefault();
 								act();
 								$(document).mousemove(onMouseMove);
 								$(document).mouseup(onMouseUp);
 							} else if (TOUCHFlag && e.targetTouches.length == 1) {
-								x = e.targetTouches[0].pageX;
-								y = e.targetTouches[0].pageY;
+								coo = e.targetTouches[0][_coo];
+								coo2 = e.targetTouches[0][_coo2];
 								act();
 								shaftEl.addEventListener('touchmove', onMouseMove, false);
 								shaftEl.addEventListener('touchend', onMouseUp, false);
@@ -1181,7 +1366,7 @@
 						function act() {
 							e.preventDefault();
 							if (!grabbingFlag) {
-								if (o__shadows) {
+								if (o.shadows) {
 									wrap.addClass('fotorama__wrap_shadow');
 								}
 								if (!TOUCHFlag) {
@@ -1190,54 +1375,55 @@
 							}
 							grabbingFlag = true;
 							clearTimeout(setGrabbingFlagTimeout);
-							moveTime = new Date().getTime();
-							moveLeft.push([moveTime, x]);
+							moveTime = e.timeStamp;
+							movePos.push([moveTime, coo]);
 
-							var left =  downLeft - x;
-							var minLeft = -(shaftWidth - wrapWidth);
+							var pos =  downPos - coo;
+							var minPos;
+							if (!o.vertical) {
+								minPos = -(shaftWidth - wrapWidth);
+							} else {
+								minPos = -(shaftHeight - wrapHeight);
+							}
 
-							shaftLeft = downShaftLeft-left;
+							shaftPos = downShaftPos-pos;
 
-							if (shaftLeft > 0) {
-								shaftLeft = Math.round(shaftLeft - (shaftLeft/1.25));
+							if (shaftPos > 0) {
+								shaftPos = Math.round(shaftPos - (shaftPos/1.25));
 								limitFlag = true;
-								if (o__shadows) {
+								if (o.shadows) {
 									wrap
 											.addClass('fotorama__wrap_shadow_no-left')
 											.removeClass('fotorama__wrap_shadow_no-right');
 								}
-							} else if (shaftLeft < minLeft ) {
-								shaftLeft = Math.round(shaftLeft + ((minLeft - shaftLeft) / 1.25));
+							} else if (shaftPos < minPos ) {
+								shaftPos = Math.round(shaftPos + ((minPos - shaftPos) / 1.25));
 								limitFlag = true;
-								if (o__shadows) {
+								if (o.shadows) {
 									wrap
 											.addClass('fotorama__wrap_shadow_no-right')
 											.removeClass('fotorama__wrap_shadow_no-left');
 								}
 							} else {
 								limitFlag = false;
-								if (o__shadows) {
+								if (o.shadows) {
 									wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
 								}
 							}
 
 							if (o.touchStyle) {
-								if (CSSTRFlag) {
-									shaft.css(getTranslate(shaftLeft));
-								} else {
-									shaft.css('left', shaftLeft);
-								}
+								shaft.css(getTranslate(shaftPos, o.vertical));
 							}
 						}
 						if (!TOUCHFlag) {
-							x = e.pageX;
+							coo = e[_coo];
 							act();
 						} else if (TOUCHFlag && e.targetTouches.length == 1) {
-							x = e.targetTouches[0].pageX;
-							y = e.targetTouches[0].pageY;
+							coo = e.targetTouches[0][_coo];
+							coo2 = e.targetTouches[0][_coo2];
 
 							if (!checkedDirectionFlag) {
-								if (Math.abs(x-downLeft) - Math.abs(y-downTop) >= -5) {
+								if (Math.abs(coo-downPos) - Math.abs(coo2-downPos2) >= -5) {
 									movableFlag = true;
 									e.preventDefault();
 								}
@@ -1266,32 +1452,32 @@
 								shaftEl.removeEventListener('touchmove', onMouseMove, false);
 								shaftEl.removeEventListener('touchend', onMouseUp, false);
 							}
-							if (o__shadows) {
+							if (o.shadows) {
 								wrap.removeClass('fotorama__wrap_shadow');
 							}
 							if (!TOUCHFlag) {
 								shaft.removeClass('fotorama__shaft_grabbing');
 							}
 
-							upTime = new Date().getTime();
-							var dirtyLeft = -shaftLeft;
+							upTime = e.timeStamp;
+							var dirtyLeft = -shaftPos;
 							var forceLeft = false;
 							var forceRight = false;
 
 							var _backTimeIdeal = upTime - o__dragTimeout;
 							var _diff, _diffMin, backTime, backLeft;
-							for (i=0;i<moveLeft.length;i++) {
-								_diff = Math.abs(_backTimeIdeal - moveLeft[i][0]);
+							for (i=0;i<movePos.length;i++) {
+								_diff = Math.abs(_backTimeIdeal - movePos[i][0]);
 
 								if (i == 0) {
 									_diffMin = _diff;
-									backTime = upTime - moveLeft[i][0];
-									backLeft = moveLeft[i][1];
+									backTime = upTime - movePos[i][0];
+									backLeft = movePos[i][1];
 								}
 								if (_diff <= _diffMin) {
 									_diffMin = _diff;
-									backTime = moveLeft[i][0];
-									backLeft = moveLeft[i][1];
+									backTime = movePos[i][0];
+									backLeft = movePos[i][1];
 								}
 							}
 
@@ -1299,7 +1485,7 @@
 							var isFlicked = timeDiff <= o__dragTimeout;
 							var isDoubleSwipe = upTime - upTimeLast <= 1000;
 
-							var direction = backLeft - x;
+							var direction = backLeft - coo;
 
 							if (o.touchStyle) {
 								if (TOUCHFlag || grabbingFlag) {
@@ -1313,13 +1499,13 @@
 
 									var index = undefined;
 									if (!forceLeft && !forceRight) {
-										index = Math.round(dirtyLeft / wrapWidth);
+										index = Math.round(dirtyLeft / wrapSize);
 									} else {
 										if (!isDoubleSwipe) {
 											if (forceLeft) {
-												index = Math.round((dirtyLeft - wrapWidth / 2) / wrapWidth);
+												index = Math.round((dirtyLeft - wrapSize / 2) / wrapSize);
 											} else if (forceRight) {
-												index = Math.round((dirtyLeft + wrapWidth / 2) / wrapWidth);
+												index = Math.round((dirtyLeft + wrapSize / 2) / wrapSize);
 											}
 										} else {
 											if (forceLeft) {
@@ -1357,14 +1543,19 @@
 					}
 
 					if (!TOUCHFlag) {
+						/*if (shaftEl.addEventListener) {
+							shaftEl.addEventListener('mousedown', onMouseDown, true);
+						} else {
+							shaftEl.attachEvent('onmousedown', onMouseDown);
+						}*/
 						shaft.mousedown(onMouseDown);
 					} else {
 						shaftEl.addEventListener('touchstart', onMouseDown, false);
 					}
 				}
-			} else {
-				//////console.log('Уже активирована!');
-			}
+			}// else {
+				//////////console.log('Уже активирована!');
+			//}
 		});
 
 //		var script = document.createElement('script');
@@ -1374,13 +1565,26 @@
 	}
 })(jQuery);
 
-function getTranslate(left) {
-	var value = 'translate3d('+left+'px, 0, 0)';
-	return {
-		'-moz-transform': value,
-		'-webkit-transform': value,
-		'-o-transform': value,
-		'transform': value
+function getTranslate(pos, vertical) {
+	if (CSSTRFlag) {
+		var value;
+		if (!vertical) {
+			value = 'translate3d(' + pos + 'px,0,0)';
+		} else {
+			value = 'translate3d(0,' + pos + 'px,0)';
+		}
+		return {
+			'-moz-transform': value,
+			'-webkit-transform': value,
+			'-o-transform': value,
+			transform: value
+		}
+	} else {
+		if (!vertical) {
+			return {left: pos};
+		} else {
+			return {top: pos};
+		}
 	}
 }
 
