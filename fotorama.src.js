@@ -891,13 +891,14 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				});
 				newImg.bind('fotoramaError', function(){
 					setFotoramaState('error', indexNew, time);
+					setCaption();
 				});
 			} else if (state == 'error') {
 				setFotoramaState('error', indexNew, time);
 			} else if (state != fotoramaState) {
 				setFotoramaState('loaded', indexNew, 0);
-				setCaption();
 			}
+			setCaption();
 
 			if (activeImg) {
 				indexPrev = imgFrame.index(activeImg);
