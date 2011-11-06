@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1177) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1178) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -864,6 +864,17 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				}
 			}
 
+			function setCaption() {
+				if (o.caption) {
+					captionText = newImg.data('caption');
+					if (captionText) {
+						caption.html(captionText).show();
+					} else {
+						caption.html('').hide();
+					}
+				}
+			}
+
 			clearTimeout(loadTimeout);
 			loadTimeout = setTimeout(function(){
 				loadDraw(newImg, indexNew);
@@ -876,6 +887,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 				newImg.bind('fotoramaLoad', function(){
 					setFotoramaState('loaded', indexNew, time);
+					setCaption();
 				});
 				newImg.bind('fotoramaError', function(){
 					setFotoramaState('error', indexNew, time);
@@ -884,6 +896,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				setFotoramaState('error', indexNew, time);
 			} else if (state != fotoramaState) {
 				setFotoramaState('loaded', indexNew, 0);
+				setCaption();
 			}
 
 			if (activeImg) {
@@ -957,15 +970,6 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				}
 			}
 
-			if (o.caption) {
-				captionText = newImg.data('caption');
-				if (captionText) {
-					caption.html(captionText).show();
-				} else {
-					caption.html('').hide();
-				}
-			}
-
 			activeImg = newImg;
 			if (o.arrows) {
 				setArrows();
@@ -981,7 +985,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			setFotoramaSize();
 		}
 
-		showImg(imgFrame.eq(o.startImg), false, false);
+		showImg(imgFrame.eq(o.startImg), false, false, true);
 
 		if (o.thumbs) {
 			if (o.thumbColor && !o.thumbsPreview) {
