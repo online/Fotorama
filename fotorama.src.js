@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1178) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1179) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -262,6 +262,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			thumbs.append(thumbsShaft);
 			if (o.thumbsPreview) {
 				var thumbsShaftSize = 0;
+				var thumbsShaftPos = undefined;
 				if (o.shadows) {
 					thumbs.append('<i class="fotorama__shadow fotorama__shadow_prev"></i><i class="fotorama__shadow fotorama__shadow_next"></i>');
 					var thumbsShadow = $('.fotorama__shadow', thumbs);
@@ -513,7 +514,9 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						var thumbPlace = wrapSize / 2;
 						var index = thumb.index(activeThumb);
 						var direction = index - activeThumbPrevIndex;
-						var thumbsShaftPos = thumbsShaft.position()[_pos];
+						if (thumbsShaftPos == undefined) {
+							thumbsShaftPos = thumbsShaft.position()[_pos];
+						}
 						if (x && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
 							var i;
 							if (direction > 0) {
@@ -560,6 +563,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 							}
 						}
 
+						thumbsShaftPos = newPos;
 						if (csstrFLAG) {
 							thumbsShaft.css(getDuration(time));
 							setTimeout(function(){
@@ -1094,6 +1098,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 			showImg(imgFrame.eq(index), e, false);
 		});
+
 
 		fotorama.bind('fotoramaResize', function(e, width, height, resize) {
 			if (width) {
