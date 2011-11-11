@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1179) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1180) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -41,7 +41,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			thumbsPreviewRight: false,
 			shadows: true,
 			caption: false,
-			onShowImg: null
+			onShowImg: null,
+			detach: true
 		}, options);
 
 		this.each(function(){
@@ -798,6 +799,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				newImg.data({'wraped': true});
 
 				loadImg(index, newImg, onLoad, 'img');
+			} else if (o.detach && newImg.data('detached')) {
+				newImg.data({'detached': false}).appendTo(shaft);
 			}
 		}
 
@@ -822,15 +825,18 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				for (i=0;i<indexNew.length;i++) {
 					loadDraw(imgFrame.eq(indexNew[i]), indexNew[i]);
 				}
+
+				if (o.detach) { //TODO: Проверять не на тач, а на мобайл
+					var leftEdge = index - o.preload;
+					if (leftEdge < 0) leftEdge = 0;
+					var rightEdge = index + o.preload + 1;
+					if (rightEdge > size - 1) rightEdge = size - 1;
+					imgFrame.slice(0,leftEdge).add(imgFrame.slice(rightEdge, size - 1)).data({'detached': true}).detach();
+				}
+
 			}
 
-			//if (TOUCHFlag) { //TODO: Проверять не на тач, а на мобайл
-				//var leftEdge = index - o.preload;
-				//if (leftEdge < 0) leftEdge = 0;
-				//var rightEdge = index + o.preload + 1;
-				//if (rightEdge > size - 1) rightEdge = size - 1;
-				//imgFrame.slice(0,leftEdge).add(imgFrame.slice(rightEdge, size - 1)).data({'detached': true}).detach();
-			//}
+
 		}
 
 		function setArrows() {
