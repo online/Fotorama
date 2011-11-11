@@ -827,14 +827,13 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 
 			if (sizeToLoad >= o.preload || limitFLAG) {
-				for (i=0;i<indexNew.length;i++) {
+				$(indexNew).each(function(i){
 					// Порциями опять же
 					var interval = i*50;
 					setTimeout(function(){
 						loadDraw(imgFrame.eq(indexNew[i]), indexNew[i]);
 					},interval);
-
-				}
+				});
 
 				if (o.detach) { //TODO: Проверять не на тач, а на мобайл
 					var leftEdge = index - o.preload;
