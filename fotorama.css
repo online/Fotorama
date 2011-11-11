@@ -113,7 +113,7 @@
 
 .fotorama__caption { font-size: 13px; line-height: 16px; margin: .5em 0; white-space: normal; }
 
-.fotorama__state { position: absolute; color: #fff; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; line-height: 80px; font-size: 80px; font-family: 'Times New Roman', Times, serif; letter-spacing: 1px; text-transform: uppercase; background-color: #222120; background-color: rgba(34, 33, 32, 0.75); text-align: center; display: none; -moz-border-radius: 40px; -webkit-border-radius: 40px; -o-border-radius: 40px; -ms-border-radius: 40px; -khtml-border-radius: 40px; border-radius: 40px; background-repeat: no-repeat; z-index: 6; top: 50%; left: auto; }
+.fotorama__state { position: absolute; color: #fff; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; line-height: 80px; font-size: 80px; font-family: 'Times New Roman', Times, serif; letter-spacing: 1px; text-transform: uppercase; background-color: #222120; background-color: rgba(34, 33, 32, 0.75); background-position: 24px 24px; text-align: center; display: none; -moz-border-radius: 40px; -webkit-border-radius: 40px; -o-border-radius: 40px; -ms-border-radius: 40px; -khtml-border-radius: 40px; border-radius: 40px; background-repeat: no-repeat; z-index: 6; top: 50%; left: auto; }
 
 .fotorama_vertical .fotorama__state { top: auto; left: 50%; }
 

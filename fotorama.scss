@@ -490,6 +490,7 @@ $arrHeight: 24px*3;
 	text-transform: uppercase;
 	background-color: $backgroundColor;
 	background-color: rgba(34,33,32,.75);
+	background-position: 24px 24px;
 	text-align: center;
 	display: none;
 	@include border-radius(40px);
