@@ -447,13 +447,15 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				wrapIsSetFlag = true;
 			}
 			if (forceResize) {
-				setImgSize(activeImg);
-				imgFrame.not(activeImg).each(function(i){
-					//Ресайзим порциями, чтобы не падали слабенькие Айпады
-					var interval = i*50+50;
-					setTimeout(function(){
-						setImgSize($(this), i);
-					}, interval);
+				var activeIndex = imgFrame.index(activeImg);
+				setImgSize(activeImg, activeIndex);
+				imgFrame.each(function(i){
+					if (i != activeIndex) { //Ресайзим порциями, чтобы не падали слабенькие Айпады
+						var interval = i * 50 + 50;
+						setTimeout(function() {
+							setImgSize($(this), i);
+						}, interval);
+					}
 				});
 			}
 		}
