@@ -885,11 +885,18 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				}
 			}
 
+			var detachedFLAG = newImg.data('detached');
+
 			clearTimeout(loadTimeout);
 			loadTimeout = setTimeout(function(){
-				loadDraw(newImg, indexNew);
+				if (!detachedFLAG) {
+					loadDraw(newImg, indexNew);
+				}
 				preloadSiblings(newImg, indexNew);
 			}, time+10);
+			if (detachedFLAG) {
+				loadDraw(newImg, indexNew);
+			}
 
 			var state = newImg.data('state');
 			if (state == 'loading' || !state) {
