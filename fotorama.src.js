@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1182) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1183) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -371,10 +371,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 			if (o.resize) {
 				var windowHeight = $window.height();
-				wrapWidth = fotorama.width() - (o.vertical ? thumbsSize2 : 0);
+				wrapWidth = fotorama.width() - (o.vertical && thumbsSize2  ? thumbsSize2 : 0);
 				wrapHeight = Math.round(wrapWidth / wrapRatio * 1000);
-				if (wrapHeight > windowHeight - 40 - (!o.vertical ? thumbsSize2 : 0)) {
-					wrapHeight = windowHeight - 40 - (!o.vertical ? thumbsSize2 : 0);
+				if (wrapHeight > windowHeight - 40 - (!o.vertical && thumbsSize2 ? thumbsSize2 : 0)) {
+					wrapHeight = windowHeight - 40 - (!o.vertical && thumbsSize2 ? thumbsSize2 : 0);
 					wrapWidth = Math.round(wrapHeight * wrapRatio / 1000);
 				}
 			}
@@ -447,15 +447,18 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				wrapIsSetFlag = true;
 			}
 			if (forceResize) {
-				var activeIndex = imgFrame.index(activeImg);
-				setImgSize(activeImg, activeIndex);
+				//var activeIndex = imgFrame.index(activeImg);
+				//setImgSize(activeImg, activeIndex);
+				//var interval = 0;
 				imgFrame.each(function(i){
-					if (i != activeIndex) { //Ресайзим порциями, чтобы не падали слабенькие Айпады
-						var interval = i * 50 + 50;
-						setTimeout(function() {
+					//if (i != activeIndex) {
+						//Ресайзим порциями, чтобы не падали слабенькие Айпады
+						//setTimeout(function() {
+							//console.log(i);
 							setImgSize($(this), i);
-						}, interval);
-					}
+						//}, interval*50+50);
+						//interval++;
+					//}
 				});
 			}
 		}
