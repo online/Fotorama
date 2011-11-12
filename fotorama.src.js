@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1183) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1184) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -75,6 +75,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			return ((thisChild.is('a') && thisChild.children('img').size()) || thisChild.is('img')) && (thisChild.attr('href') || thisChild.attr('src') || thisChild.children().attr('src'));
 		});
 		var size = img.size();
+		fotorama.data({size: size});
 		if (o.startImg > size - 1 || typeof(o.startImg) != 'number') {
 			o.startImg = 0
 		}
