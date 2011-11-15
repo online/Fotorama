@@ -1226,7 +1226,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						e.preventDefault();
 						act();
 						$document.mousemove(onMouseMove);
-						$document.bind('mouseup mouseleave', onMouseUp);
+						$document.mouseup(onMouseUp);
 					} else if (touchFLAG && e.targetTouches.length == 1) {
 						coo = e.targetTouches[0][_coo];
 						coo2 = e.targetTouches[0][_coo2];
