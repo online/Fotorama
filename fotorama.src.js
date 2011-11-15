@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1186) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1187) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -16,6 +16,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 	//alert(quirksFLAG);
 
 	var $window = $(window);
+	var $document = $(document);
 
 	$.fn.fotorama = function(options) {
 		var o = $.extend({
@@ -130,7 +131,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					downPos2,
 					downShaftPos,
 					downTime,
-					movePos,
+					movePos = [],
 					moveTime,
 					upTime,
 					upTimeLast = 0;
@@ -1204,7 +1205,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			function onMouseDown(e) {
 				if ((touchFLAG || e.which < 2) && activeImg) {
 					function act() {
-						movePos = [];
+						//movePos = [];
 						grabbingFlag = false;
 						downTime = new Date().getTime();
 						downPos = coo;
@@ -1224,8 +1225,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						coo = e[_coo];
 						e.preventDefault();
 						act();
-						$(document).mousemove(onMouseMove);
-						$(document).mouseup(onMouseUp);
+						$document.mousemove(onMouseMove);
+						$document.bind('mouseup mouseleave', onMouseUp);
 					} else if (touchFLAG && e.targetTouches.length == 1) {
 						coo = e.targetTouches[0][_coo];
 						coo2 = e.targetTouches[0][_coo2];
@@ -1311,7 +1312,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 
 			function onMouseUp(e) {
-				if (!touchFLAG || !e.targetTouches.length) {
+				if ((!touchFLAG || !e.targetTouches.length) && movePos.length) {
 					movableFlag = false;
 					checkedDirectionFlag = false;
 					setGrabbingFlagTimeout = setTimeout(function() {
@@ -1322,8 +1323,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					}, o__dragTimeout);
 
 					if (!touchFLAG) {
-						$(document).unbind('mouseup');
-						$(document).unbind('mousemove');
+						$document.unbind('mouseup');
+						$document.unbind('mousemove');
 					} else {
 						shaftEl.removeEventListener('touchmove', onMouseMove, false);
 						shaftEl.removeEventListener('touchend', onMouseUp, false);
@@ -1356,6 +1357,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 							backLeft = movePos[i][1];
 						}
 					}
+
+					movePos = [];
 
 					var timeDiff = upTime - backTime;
 					var isFlicked = timeDiff <= o__dragTimeout;
