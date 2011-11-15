@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1184) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1185) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -7,9 +7,14 @@
 var touchFLAG = ('ontouchstart' in document);
 var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
+
 (function($){
 	var ieFLAG = $.browser.msie;
 	var o__dragTimeout = 200;
+	var quirksFLAG = document.compatMode != 'CSS1Compat' && ieFLAG;
+
+	//alert(quirksFLAG);
+
 	var $window = $(window);
 
 	$.fn.fotorama = function(options) {
@@ -70,11 +75,20 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 
 		// Все изображения
-		var img = fotorama.children().filter(function(){
-			var thisChild = $(this);
-			return ((thisChild.is('a') && thisChild.children('img').size()) || thisChild.is('img')) && (thisChild.attr('href') || thisChild.attr('src') || thisChild.children().attr('src'));
-		});
+		var img;
+		var dataFLAG = o.data && typeof(o.data) == 'object';
+		if (!dataFLAG) {
+			img = fotorama.children().filter(function(){
+				var thisChild = $(this);
+				return ((thisChild.is('a') && thisChild.children('img').size()) || thisChild.is('img')) && (thisChild.attr('href') || thisChild.attr('src') || thisChild.children().attr('src'));
+			});
+		} else {
+			img = $(o.data).filter(function(){
+				return this.img;
+			});
+		}
 		var size = img.size();
+
 		fotorama.data({size: size});
 		if (o.startImg > size - 1 || typeof(o.startImg) != 'number') {
 			o.startImg = 0
@@ -82,8 +96,12 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 		var src = [];
 		img.each(function(i){
-			var thisImg = $(this);
-			src[i] = {'imgHref': thisImg.attr('href'), 'imgSrc': thisImg.attr('src'), 'thumbSrc': thisImg.children().attr('src')};
+			if (!dataFLAG) {
+				var thisImg = $(this);
+				src[i] = {'imgHref': thisImg.attr('href'), 'imgSrc': thisImg.attr('src'), 'thumbSrc': thisImg.children().attr('src')};
+			} else {
+				src[i] = {'imgHref': this.img, 'thumbSrc': this.thumb};
+			}
 		});
 
 		// Очищаем DOM
@@ -141,11 +159,9 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				_size2 = 'width';
 			}
 
-		var wrap = $('<div class="fotorama__wrap"></div>');
-		var shaft = $('<div class="fotorama__shaft"></div>');
-		var shaftEl = shaft.get(0);
-
-		fotorama.append(wrap.append(shaft));
+		var wrap = $('<div class="fotorama__wrap"></div>').appendTo(fotorama);
+		var shaft = $('<div class="fotorama__shaft"></div>').appendTo(wrap);
+		var shaftEl = shaft[0];
 
 		// Запрещаем выделять фотораму
 		disableSelection(fotorama);
@@ -187,10 +203,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				_arrPrev = '&#9650;';
 				_arrNext = '&#9660;';
 			}
-			wrap.append('<i class="fotorama__arr fotorama__arr_prev">'+_arrPrev+'</i><i class="fotorama__arr fotorama__arr_next">'+_arrNext+'</i>');
-			var arrs = $('.fotorama__arr', fotorama);
-			var arrPrev = $('.fotorama__arr_prev', fotorama);
-			var arrNext = $('.fotorama__arr_next', fotorama);
+
+			var arrs = $('<i class="fotorama__arr fotorama__arr_prev">'+_arrPrev+'</i><i class="fotorama__arr fotorama__arr_next">'+_arrNext+'</i>').appendTo(wrap);
+			var arrPrev = arrs.eq(0);
+			var arrNext = arrs.eq(1);
 
 			if (!touchFLAG) {
 				// Стрелочки при наведении на фотораму
@@ -246,7 +262,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			var activeThumb;
 			var activeThumbPrevIndex = 0;
 			// Контейнер для тумбсов-переключалок
-			var thumbs = $('<div class="fotorama__thumbs"></div>');
+			var thumbs = $('<div class="fotorama__thumbs"></div>').appendTo(fotorama).css('visibility', 'hidden');
 			var thumbsSize2;
 
 			if (o.thumbsPreview) {
@@ -258,28 +274,23 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						.css(_size2, thumbsSize2);
 			}
 
-			thumbs.appendTo(fotorama).css('visibility', 'hidden');
-
-			var thumbsShaft = $('<div class="fotorama__thumbs-shaft"></div>');
-			thumbs.append(thumbsShaft);
+			var thumbsShaft = $('<div class="fotorama__thumbs-shaft"></div>').appendTo(thumbs);
 			if (o.thumbsPreview) {
 				var thumbsShaftSize = 0;
 				var thumbsShaftPos = undefined;
 				if (o.shadows) {
-					thumbs.append('<i class="fotorama__shadow fotorama__shadow_prev"></i><i class="fotorama__shadow fotorama__shadow_next"></i>');
-					var thumbsShadow = $('.fotorama__shadow', thumbs);
+					var thumbsShadow = $('<i class="fotorama__shadow fotorama__shadow_prev"></i><i class="fotorama__shadow fotorama__shadow_next"></i>').appendTo(thumbs);
 				}
 
-				var thumbBorder = $('<i class="fotorama__thumb-border"></i>');
-				var thumbBorderSize2 = o__thumbSize - o.thumbBorderWidth*2;
 
+				var thumbBorderSize2 = o__thumbSize - (quirksFLAG ? 0 : o.thumbBorderWidth*2);
 				var thumbBorderPos2 = o.thumbMargin;
-				thumbBorder
-						.hide()
-						.css(_size2, thumbBorderSize2)
-						.css(_pos2, thumbBorderPos2)
-						.css('border-width', o.thumbBorderWidth)
-						.appendTo(thumbsShaft);
+				var thumbBorder = $('<i class="fotorama__thumb-border"></i>')
+														.hide()
+														.css(_size2, thumbBorderSize2)
+														.css(_pos2, thumbBorderPos2)
+														.css('border-width', o.thumbBorderWidth)
+														.appendTo(thumbsShaft);
 			}
 
 			// Создаём точки и превьюшки
@@ -329,7 +340,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 								.css(_size2, o__thumbSize)
 								.css('visibility', 'visible');
 						if (Modernizr.canvas) {
-							var ctx = $thisThumbNew.get(0).getContext('2d');
+							var ctx = $thisThumbNew[0].getContext('2d');
 							if (!o.vertical) {
 								ctx.drawImage(thisThumbNew, 0, 0, _thumbSize, o__thumbSize);
 							} else {
@@ -455,7 +466,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					//if (i != activeIndex) {
 						//Ресайзим порциями, чтобы не падали слабенькие Айпады
 						//setTimeout(function() {
-							//console.log(i);
+							////console.log(i);
 							setImgSize($(this), i);
 						//}, interval*50+50);
 						//interval++;
@@ -591,7 +602,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						thumbsShaft.css(getTranslate(wrapSize/2 - thumbsShaftSize/2, o.vertical));
 					}
 
-					var thumbBorderSize = thumbSize - o.thumbBorderWidth*2;
+					var thumbBorderSize = thumbSize - (quirksFLAG ? 0 : o.thumbBorderWidth*2);
 					var thumbBorderPos = thumbPos;
 
 					if (csstrFLAG) {
@@ -710,7 +721,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				}
 			}
 			if (o.caption) {
-				thisImgFrame.data({'caption': thisImg.attr('alt') || thisImg.children().attr('alt')});
+				thisImgFrame.data({'caption': thisImg.attr('alt') || thisImg.children().attr('alt') || thisImg[0].caption});
 			}
 			function loadScope(src) {
 				function loadStart() {
@@ -1195,7 +1206,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					function act() {
 						movePos = [];
 						grabbingFlag = false;
-						downTime = e.timeStamp;
+						downTime = new Date().getTime();
 						downPos = coo;
 						downPos2 = coo2;
 						movePos.push([downTime, coo]);
@@ -1240,7 +1251,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					}
 					grabbingFlag = true;
 					clearTimeout(setGrabbingFlagTimeout);
-					moveTime = e.timeStamp;
+					moveTime = new Date().getTime();
 					movePos.push([moveTime, coo]);
 
 					var pos =  downPos - coo;
@@ -1324,7 +1335,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						shaft.removeClass('fotorama__shaft_grabbing');
 					}
 
-					upTime = e.timeStamp;
+					upTime = new Date().getTime();
 					var dirtyLeft = -shaftPos;
 					var forceLeft = false;
 					var forceRight = false;
@@ -1348,6 +1359,9 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 					var timeDiff = upTime - backTime;
 					var isFlicked = timeDiff <= o__dragTimeout;
+
+					//console.log(e);
+
 					var isDoubleSwipe = upTime - upTimeLast <= 1000;
 
 					var direction = backLeft - coo;
