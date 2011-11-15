@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1185) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1186) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -43,7 +43,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			thumbMargin: 5,
 			thumbBorderWidth: 3,
 			thumbBorderColor: null,
-			thumbsPreviewRight: false,
+			verticalThumbsRight: false,
 			shadows: true,
 			caption: false,
 			onShowImg: null,
@@ -412,7 +412,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				});
 
 				if (o.vertical && o.thumbs) {
-					if (!o.thumbsPreviewRight) {
+					if (!o.verticalThumbsRight) {
 						wrap.css({left: thumbsSize2});
 					} else {
 						thumbs.css({left: wrapWidth});
