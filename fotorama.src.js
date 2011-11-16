@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1187) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1188) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -393,6 +393,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 		}
 
+		var resizeStack = [];
+
 		function setFotoramaSize(forceResize, forceRatioWidthHeight) {
 			if (wrapWidth && wrapHeight && (!wrapIsSetFlag || forceResize)) {
 				if (!forceRatioWidthHeight) {
@@ -460,18 +462,23 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				wrapIsSetFlag = true;
 			}
 			if (forceResize) {
-				//var activeIndex = imgFrame.index(activeImg);
-				//setImgSize(activeImg, activeIndex);
-				//var interval = 0;
+				var activeIndex = imgFrame.index(activeImg);
+				setImgSize(activeImg, activeIndex);
+				var interval = 0;
+				//console.log('resize!');
+				$(resizeStack).each(function(){
+					clearTimeout(this);
+				});
 				imgFrame.each(function(i){
-					//if (i != activeIndex) {
+					if (i != activeIndex) {
 						//Ресайзим порциями, чтобы не падали слабенькие Айпады
-						//setTimeout(function() {
-							////console.log(i);
+						var timeout = setTimeout(function() {
+							//console.log(i);
 							setImgSize($(this), i);
-						//}, interval*50+50);
-						//interval++;
-					//}
+						}, interval*50+50);
+						resizeStack.push(timeout);
+						interval++;
+					}
 				});
 			}
 		}
@@ -1205,12 +1212,11 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			function onMouseDown(e) {
 				if ((touchFLAG || e.which < 2) && activeImg) {
 					function act() {
-						//movePos = [];
-						grabbingFlag = false;
+						//grabbingFlag = false;
 						downTime = new Date().getTime();
 						downPos = coo;
 						downPos2 = coo2;
-						movePos.push([downTime, coo]);
+						movePos = [[downTime, coo]];
 						shaftPos = shaft.position()[_pos];
 						if (csstrFLAG) {
 							shaft
@@ -1312,7 +1318,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 
 			function onMouseUp(e) {
-				if ((!touchFLAG || !e.targetTouches.length) && movePos.length) {
+				if (!touchFLAG || !e.targetTouches.length) {
 					movableFlag = false;
 					checkedDirectionFlag = false;
 					setGrabbingFlagTimeout = setTimeout(function() {
@@ -1358,19 +1364,17 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						}
 					}
 
-					movePos = [];
-
 					var timeDiff = upTime - backTime;
 					var isFlicked = timeDiff <= o__dragTimeout;
 
-					//console.log(e);
+					////console.log(e);
 
 					var isDoubleSwipe = upTime - upTimeLast <= 1000;
 
 					var direction = backLeft - coo;
 
 					if (o.touchStyle) {
-						if (touchFLAG || grabbingFlag) {
+						if (touchFLAG || movePos.length > 1 || grabbingFlag) {
 							if (isFlicked) {
 								if (direction <= -10) {
 									forceLeft = true;
