@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1188) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1189) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -20,10 +20,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 	$.fn.fotorama = function(options) {
 		var o = $.extend({
-			startImg: 0,
+			data: null,
 			width: null,
 			height: null,
-			vertical: false,
+			startImg: 0,
 			transitionDuration: 333,
 			touchStyle: true,
 			pseudoClick: true,
@@ -32,8 +32,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			minPadding: 10,
 			alwaysPadding: false,
 			preload: 3,
-			zoomToFit: true,
 			resize: false,
+			zoomToFit: true,
+			vertical: false,
+			verticalThumbsRight: false,
 			arrows: true,
 			arrowsColor: null,
 			thumbs: true,
@@ -44,11 +46,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			thumbMargin: 5,
 			thumbBorderWidth: 3,
 			thumbBorderColor: null,
-			verticalThumbsRight: false,
 			shadows: true,
 			caption: false,
 			onShowImg: null,
-			detach: true
+			detachSiblings: true
 		}, options);
 
 		this.each(function(){
@@ -465,16 +466,18 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				var activeIndex = imgFrame.index(activeImg);
 				setImgSize(activeImg, activeIndex);
 				var interval = 0;
-				//console.log('resize!');
+				////console.log('resize!');
 				$(resizeStack).each(function(){
 					clearTimeout(this);
 				});
+				resizeStack = [];
 				imgFrame.each(function(i){
 					if (i != activeIndex) {
+						var thisImg = $(this);
 						//Ресайзим порциями, чтобы не падали слабенькие Айпады
 						var timeout = setTimeout(function() {
-							//console.log(i);
-							setImgSize($(this), i);
+							////console.log(i);
+							setImgSize(thisImg, i);
 						}, interval*50+50);
 						resizeStack.push(timeout);
 						interval++;
@@ -829,7 +832,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				newImg.data({'wraped': true});
 
 				loadImg(index, newImg, onLoad, 'img');
-			} else if (o.detach && newImg.data('detached')) {
+			} else if (o.detachSiblings && newImg.data('detached')) {
 				newImg.data({'detached': false}).appendTo(shaft);
 			}
 		}
@@ -860,7 +863,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					},interval);
 				});
 
-				if (o.detach) { //TODO: Проверять не на тач, а на мобайл
+				if (o.detachSiblings) {
 					var leftEdge = index - o.preload;
 					if (leftEdge < 0) leftEdge = 0;
 					var rightEdge = index + o.preload + 1;
@@ -1130,8 +1133,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		function bindFotoramaResize() {
 			if (o.resize) {
 				$window.bind('resize', fotoramaResize);
+				window.addEventListener('resize', fotoramaResize, false);
 			} else {
 				$window.unbind('resize', fotoramaResize);
+				window.removeEventListener('resize', fotoramaResize, false);
 			}
 		}
 
@@ -1367,7 +1372,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					var timeDiff = upTime - backTime;
 					var isFlicked = timeDiff <= o__dragTimeout;
 
-					////console.log(e);
+					//////console.log(e);
 
 					var isDoubleSwipe = upTime - upTimeLast <= 1000;
 
