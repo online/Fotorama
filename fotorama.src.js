@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1189) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1190) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -46,9 +46,9 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			thumbMargin: 5,
 			thumbBorderWidth: 3,
 			thumbBorderColor: null,
-			shadows: true,
 			caption: false,
 			onShowImg: null,
+			shadows: true,
 			detachSiblings: true
 		}, options);
 
@@ -251,7 +251,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		var imgFrame = $();
 		img.each(function(i){
 			// Заготавливаем фреймы под фотки
-			var _imgFrame = $('<div class="fotorama__frame"></div>');
+			var _imgFrame = $('<div class="fotorama__frame" style="visibility: hidden;"></div>');
 			imgFrame = imgFrame.add(_imgFrame);
 		});
 
@@ -804,6 +804,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		function loadDraw(newImg, index) {
 			if (!index) index = imgFrame.index(newImg);
 			if (!newImg.data('wraped')) {
+				//newImg.css({visibility: 'hidden'});
 				shaft.append(newImg);
 
 				function onLoad(thisImgNew) {
@@ -825,6 +826,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						getRatioWidthHeight();
 					}
 
+					newImg.css({visibility: 'visible'});
 					setImgSize(newImg, index);
 					setFotoramaSize();
 				}
@@ -926,12 +928,12 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 			clearTimeout(loadTimeout);
 			loadTimeout = setTimeout(function(){
-				if (!detachedFLAG) {
+				if (!detachedFLAG && indexNew != o.startImg) {
 					loadDraw(newImg, indexNew);
 				}
 				preloadSiblings(newImg, indexNew);
 			}, time+10);
-			if (detachedFLAG) {
+			if (detachedFLAG || indexNew == o.startImg) {
 				loadDraw(newImg, indexNew);
 			}
 
