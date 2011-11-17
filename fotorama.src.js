@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1190) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1191) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -1135,10 +1135,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		function bindFotoramaResize() {
 			if (o.resize) {
 				$window.bind('resize', fotoramaResize);
-				window.addEventListener('resize', fotoramaResize, false);
+				window.addEventListener('onorientationchange', fotoramaResize, false);
 			} else {
 				$window.unbind('resize', fotoramaResize);
-				window.removeEventListener('resize', fotoramaResize, false);
+				window.removeEventListener('onorientationchange', fotoramaResize, false);
 			}
 		}
 
@@ -1163,12 +1163,12 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 			wrapRatio = wrapWidth / wrapHeight * 1000;
 			if (!resize) {
-				setFotoramaSize(true, true);
 				o.resize = false;
+				setFotoramaSize(true, true);
 				bindFotoramaResize();
 			} else {
-				setFotoramaSize(true);
 				o.resize = true;
+				setFotoramaSize(true);
 				bindFotoramaResize();
 			}
 			clearTimeout(resizeTimeout);
