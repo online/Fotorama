@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1193) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1194) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -138,6 +138,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					upTimeLast = 0;
 
 			var grabbingFlag = false;
+			var mouseDownFlag = false;
 			var setGrabbingFlagTimeout;
 			var movableFlag = false;
 			var checkedDirectionFlag = false;
@@ -1154,7 +1155,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				index = 0
 			}
 
-			if (!o.touchStyle || !grabbingFlag) {
+			if (!o.touchStyle || !mouseDownFlag) {
 				showImg(imgFrame.eq(index), e, false);
 			}
 		});
@@ -1225,7 +1226,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			function onMouseDown(e) {
 				if ((touchFLAG || e.which < 2) && activeImg) {
 					function act() {
-						//grabbingFlag = false;
+						mouseDownFlag = true;
 						downTime = new Date().getTime();
 						downPos = coo;
 						downPos2 = coo2;
@@ -1332,6 +1333,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 			function onMouseUp(e) {
 				if (!touchFLAG || !e.targetTouches.length) {
+					mouseDownFlag = false;
 					movableFlag = false;
 					checkedDirectionFlag = false;
 					setGrabbingFlagTimeout = setTimeout(function() {
