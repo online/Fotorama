@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1192) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1193) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -1154,7 +1154,9 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				index = 0
 			}
 
-			showImg(imgFrame.eq(index), e, false);
+			if (!o.touchStyle || !grabbingFlag) {
+				showImg(imgFrame.eq(index), e, false);
+			}
 		});
 
 
