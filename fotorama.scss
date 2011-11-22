@@ -1,10 +1,11 @@
 @import "compass";
 
-/* Fotorama 1.3 (v1194) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1195) http://fotoramajs.com/ */
 
 $transitionDuration: 333ms;
 $backgroundColor: #222120;
-$bezier: cubic-bezier(0.25, 0, 0.25, 1);
+$bezier: cubic-bezier(.25, 0, .25, 1);
+$bezier2: cubic-bezier(0, 0, .25, 1);
 
 .fotorama {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -15,19 +16,13 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 	}
 }
 
-.fotorama__clear {
-	font-size: 0;
-	line-height: 0;
-	clear: both;
-}
-
 .fotorama__wrap {
 	position: relative;
 	overflow: hidden;
 	*zoom: 1;
-	white-space: nowrap;
-	font-size: 0;
-	line-height: 0;
+	//white-space: nowrap;
+	//font-size: 0;
+	//line-height: 0;
 	background-color: $backgroundColor;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -125,7 +120,7 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 	left: 0;
 }
 
-.fotorama__wrap_csstransitions {
+.fotorama_csstransitions {
 	.fotorama__wrap_style_touch {
 		.fotorama__shaft {
 			-webkit-transition-property: -webkit-transform;
@@ -282,7 +277,7 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 	}
 }
 
-.fotorama__wrap_csstransitions {
+.fotorama_csstransitions {
 	.fotorama__thumbs_previews {
 		.fotorama__thumbs-shaft {
 			-webkit-transition-property: -webkit-transform;
@@ -293,12 +288,14 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 			@include transition-timing-function($bezier);
 			@include transform(translate3d(0,0,0));
 		}
+		.fotorama__thumbs-shaft_out {
+			@include transition-timing-function($bezier2);
+		}
 		.fotorama__thumb-border {
 			@include transition-property(all);
 			@include transition-duration(0);
 			@include transition-timing-function($bezier);
 			@include transform(translate3d(0,0,0));
-
 		}
 	}
 }
@@ -313,7 +310,7 @@ $bezier: cubic-bezier(0.25, 0, 0.25, 1);
 	background-color: $backgroundColor;
 }
 
-.fotorama__wrap_csstransitions.fotorama__wrap_style_fade {
+.fotorama_csstransitions.fotorama__wrap_style_fade {
 	.fotorama__frame {
 		@include transition-property(opacity);
 		@include transition-duration(0);
