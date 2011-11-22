@@ -4,11 +4,10 @@
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
  */
 ;window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="modernizr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
-var touchFLAG = ('ontouchstart' in document);
-var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
-
 
 (function($){
+	var touchFLAG = ('ontouchstart' in document);
+	var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 	var ieFLAG = $.browser.msie;
 	var o__dragTimeout = 200;
 	var quirksFLAG = document.compatMode != 'CSS1Compat' && ieFLAG;
@@ -59,6 +58,70 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 			}
 		});
 	}
+
+	function getTranslate(pos, vertical) {
+		if (csstrFLAG) {
+			var value;
+			if (!vertical) {
+				value = 'translate3d(' + pos + 'px,0,0)';
+			} else {
+				value = 'translate3d(0,' + pos + 'px,0)';
+			}
+			return {
+				'-moz-transform': value,
+				'-webkit-transform': value,
+				'-o-transform': value,
+				transform: value
+			}
+		} else {
+			if (!vertical) {
+				return {left: pos};
+			} else {
+				return {top: pos};
+			}
+		}
+	}
+
+	function getDuration(time) {
+		var value = time+'ms';
+		return {
+			'-moz-transition-duration': value,
+			'-webkit-transition-duration': value,
+			'-o-transition-duration': value,
+			'transition-duration': value
+		}
+	}
+
+	function getBoxShadowColor(color) {
+		var value = '0 0 10px ' + color;
+		return {
+			'-moz-box-shadow': value,
+			'-webkit-box-shadow': value,
+			'-o-box-shadow': value,
+			'box-shadow': value
+		}
+	}
+
+	function disableSelection(target) {
+		target
+			.mousemove(function(e){
+				e.preventDefault();
+			})
+			.mousedown(function(e){
+				e.preventDefault();
+			});
+	}
+
+	var _SPINNER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAGoCAMAAAAQMBfHAAABtlBMVEX///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8cWrVBAAAAkXRSTlMAKUfghaPCZkAlPw7nsHiUy1w3VBcoLEoiNsAw/EbdoYNlGSYIFEUdDEgS2yENIMi9CnfkLhUnkhutW5/5gGSCAgsyaZlEsVA4yQQfAxM9Khh/AWEPm7nVEfNCtB4kNDnGSU+JM5dznmAtXkuQO3JnTlhiWp2nIwf2rtgcPha7UYxf4avt0DUGpjp1eXwvTBBjhUW/zwAABtxJREFUeF7tmtlXE0kUxm/2zr5gwhI3QiAsCXtCQFED4gKCIKIgoo7ruI0zOjNuo7Pva/7jqTq3iy9dOc05eclT/94434/qk6fbt74mK6GLF0N0EJF6PXKgUBcgAJfLzcJyHvkjz/VOXQhXXAWVX/Z4PCOdViHsEqgz1q+zAYHzyjKZdB4VxtEbIpiq16dEPuiShEkCIyGSoUhkSAh7Ik6bOYwx/BlUORhIJNYg1ILBErWP7Fm/5GzWGgxfcEsuDFPUz0StguFmDJo1hVmrEDKFEKX4iGjKKvTzEUY/tY/pjY00gkLy+z1r3n3M54tD+CIQ6O3Tc9+MSIqLi0UWlIH8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';
+	var _ERROR = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAAAAABWESUoAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAJ0Uk5TAEQHIkixAAABv0lEQVQYGWXBQWcjcRzH4d+L+xpDRVRYETGXqt5W9FI9xFIVvfae64i11IgosfoGeqtaZawcwlgrlxE1Qvx99j+zk5lUn8fU6N48pmtc+vpwrZapNkgKGtvFUDVTJYgdH+xnJ6qYStEbn6wGKpm8wYZSHl+fS9Hl9w2l7bk8k9TP8HZ3oQ4mG7w8kmRSuKIyU6uzxHsLJZOm1CY6kuDFkqlfAE9vwH6kI0vADWRaAH86/Q2QR2p1MiCRdQrgVrrYAauuWjdAcWoTIAskjfGeAzWCDBjbHJipNMWbqxUDc/sFjFRZ4t2rMQJSy4EvqoQvgLvSQQ/IbQ8u0H+9DHg/Uy1w4MyBC1Q7eweynmp72FsO9HRw5YCXUJUusLUUGKlxj/dTlRGQ2hyI1UrwpirNgIWNgXWgRvCMN5a3BiZ2WgDf1OqugN2FNAaKjikBso5aUQ5s+p01sJBp4IBHHfm6B9InoOjLpBjvQUcm1KaSSWGKtzxRa0ZlFUomKcrx1mMdhHc7vKwvyeRdbCn9jS+H0vl1nFPaDOWZStGaT35HKpkqJz8cH7g4VMVUGz4WNHbJUDVTo3uTvKaOLF3enqrxD+aQUnwgKhDtAAAAAElFTkSuQmCC';
+	var base64Test = new Image();
+	var BASE64FLAG = true;
+	base64Test.onerror = function(){
+		if(this.width != 1 || this.height != 1){
+			BASE64FLAG = false;
+		}
+	}
+	base64Test.src = _ERROR;
 
 	function doFotorama(fotorama, o) {
 		fotorama.data({initialized: true});
@@ -119,31 +182,26 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		var wrapWidth = o.width;
 		var wrapHeight = o.height;
 		var wrapRatio;
-		var wrapIsSetFlag = false;
+		var wrapIsSetFLAG = false;
 		var loadTimeout;
 
 		if (o.touchStyle) {
-			var shaftWidth = 0,
-					shaftHeight,
-					shaftPos,
-					coo,
-					coo2,
-					downPos,
-					downPos2,
-					downShaftPos,
-					downTime,
-					movePos = [],
-					moveTime,
-					upTime,
-					upTimeLast = 0;
+			var shaftSize = 0,
+				shaftSize2;
 
-			var grabbingFlag = false;
-			var mouseDownFlag = false;
-			var setGrabbingFlagTimeout;
-			var movableFlag = false;
-			var checkedDirectionFlag = false;
-			var limitFlag = false;
+			var shaftGrabbingFLAG = false;
+			var shaftMouseDownFLAG = false;
+			var setShaftGrabbingFLAGTimeout;
 		}
+
+		if (o.thumbs && o.thumbsPreview) {
+			var thumbsShaftMouseDownFLAG = false;
+			var thumbsShaftDraggedFLAG = false;
+			var thumbsShaftJerkFLAG = false;
+			var thumbsShaftGrabbingFLAG = false;
+			var setThumbsShaftGrabbingFLAGTimeout;
+		}
+
 
 		var _pos, _pos2, _coo, _coo2, _size, _size2;
 			if (!o.vertical) {
@@ -164,7 +222,6 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 		var wrap = $('<div class="fotorama__wrap"></div>').appendTo(fotorama);
 		var shaft = $('<div class="fotorama__shaft"></div>').appendTo(wrap);
-		var shaftEl = shaft[0];
 
 		// Запрещаем выделять фотораму
 		disableSelection(fotorama);
@@ -194,7 +251,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		}
 
 		if (csstrFLAG) {
-			wrap.addClass('fotorama__wrap_csstransitions');
+			fotorama.addClass('fotorama_csstransitions');
 		}
 
 		if (o.arrows) {
@@ -213,10 +270,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 			if (!touchFLAG) {
 				// Стрелочки при наведении на фотораму
-				var wrapEnteredFlag = false;
+				var wrapEnteredFLAG = false;
 				var wrapLeaveTimeout;
 				function wrapEnter() {
-					wrapEnteredFlag = true;
+					wrapEnteredFLAG = true;
 					clearTimeout(wrapLeaveTimeout);
 					arrs.css(getDuration(0));
 					wrap.removeClass('fotorama__wrap_mouseout');
@@ -230,7 +287,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				function wrapLeave() {
 					clearTimeout(wrapLeaveTimeout);
 					wrapLeaveTimeout = setTimeout(function(){
-						if (!grabbingFlag && !wrapEnteredFlag) {
+						if (!shaftGrabbingFLAG && !wrapEnteredFLAG) {
 							wrap
 									.removeClass('fotorama__wrap_mouseover')
 									.addClass('fotorama__wrap_mouseout');
@@ -241,7 +298,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					wrapEnter();
 				});
 				wrap.mouseleave(function(){
-					wrapEnteredFlag = false;
+					wrapEnteredFLAG = false;
 					wrapLeave();
 				});
 			}
@@ -284,7 +341,6 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				if (o.shadows) {
 					var thumbsShadow = $('<i class="fotorama__shadow fotorama__shadow_prev"></i><i class="fotorama__shadow fotorama__shadow_next"></i>').appendTo(thumbs);
 				}
-
 
 				var thumbBorderSize2 = o__thumbSize - (quirksFLAG ? 0 : o.thumbBorderWidth*2);
 				var thumbBorderPos2 = o.thumbMargin;
@@ -398,7 +454,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		var resizeStack = [];
 
 		function setFotoramaSize(forceResize, forceRatioWidthHeight) {
-			if (wrapWidth && wrapHeight && (!wrapIsSetFlag || forceResize)) {
+			if (wrapWidth && wrapHeight && (!wrapIsSetFLAG || forceResize)) {
 				if (!forceRatioWidthHeight) {
 					getRatioWidthHeight();
 				}
@@ -430,14 +486,10 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						height: wrapHeight
 					});
 				} else {
-					if (!o.vertical) {
-						shaftWidth = (wrapWidth+o.margin)*size - o.margin;
-						shaftHeight = wrapHeight;
-					} else {
-						shaftWidth = wrapWidth;
-						shaftHeight = (wrapHeight+o.margin)*size - o.margin;
-					}
-					shaft.css({width: shaftWidth, height: shaftHeight});
+					shaftSize = (wrapSize+o.margin)*size - o.margin;
+					shaftSize2 = wrapSize2;
+
+					shaft.css(_size, shaftSize).css(_size2, shaftSize2).data(_size, shaftSize).data(_size2, shaftSize2).data({'minPos': -(shaftSize - wrapSize), 'maxPos': 0});
 				}
 				if (o.thumbs) {
 					if (o.thumbsPreview || !o.vertical) {
@@ -461,7 +513,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					showImg(activeImg, false, false, true);
 				}
 
-				wrapIsSetFlag = true;
+				wrapIsSetFLAG = true;
 			}
 			if (forceResize) {
 				var activeIndex = imgFrame.index(activeImg);
@@ -490,7 +542,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		function setFotoramaState(state, index, time) {
 			clearTimeout(stateIconPositionTimeout);
 			function stateIconPosition() {
-				if (wrapIsSetFlag) {
+				if (wrapIsSetFLAG) {
 					if (!o.touchStyle) {
 						index = 0;
 					}
@@ -505,7 +557,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					stateIconPosition();
 					fotorama.addClass('fotorama_loading').removeClass('fotorama_error');
 					clearInterval(stateIconSpinnerInterval);
-					if (BASE64Flag) {
+					if (BASE64FLAG) {
 						stateIcon.css({backgroundImage: 'url('+_SPINNER+')'});
 						stateIconSpinnerInterval = setInterval(stateIconSpinner,100);
 					} else {
@@ -517,7 +569,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					stateIconPosition();
 					fotorama.addClass('fotorama_error').removeClass('fotorama_loading');
 					clearInterval(stateIconSpinnerInterval);
-					if (BASE64Flag) {
+					if (BASE64FLAG) {
 						stateIcon.css({backgroundImage: 'url('+_ERROR+')', backgroundPosition: '24px 24px'});
 					} else {
 						stateIcon.text('?');
@@ -536,8 +588,12 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		}
 
 		// Прокручиваем ленту превьюшек
-		function slideThumbsShaft(time, x) {
+		function slideThumbsShaft(time, x, auto) {
 			if (thumbsShaftSize) {
+				if (!auto) {
+					thumbsShaftDraggedFLAG = false;
+				}
+
 				var thumbPos = activeThumb.position()[_pos];
 				var thumbSize = activeThumb.data()[_size];
 				if (!thumbSize) {
@@ -573,8 +629,16 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 						var minPos = -(thumbsShaftSize-wrapSize);
 						var newPos = Math.round(-(thumbCenter - thumbPlace) + o.thumbMargin);
 
+						//console.log(, );
+
 						if ((direction > 0 && newPos > thumbsShaftPos) || (direction < 0 && newPos < thumbsShaftPos)) {
-							newPos = thumbsShaftPos;
+							if (thumbPos + thumbsShaftPos < o.thumbMargin) {
+								newPos = -(thumbPos - o.thumbMargin);
+							} else if(thumbPos + thumbsShaftPos + thumbSize > wrapSize) {
+								newPos = -(thumbPos - wrapSize + thumbSize + o.thumbMargin);
+							} else {
+								newPos = thumbsShaftPos;
+							}
 						}
 
 						if (newPos <= minPos) {
@@ -597,21 +661,35 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 										.removeClass('fotorama__thumbs_shadow_no-left fotorama__thumbs_shadow_no-right');
 							}
 						}
+						thumbsShaft.data({minPos: -(thumbsShaftSize - wrapSize)});
 
-						thumbsShaftPos = newPos;
+						if (!thumbsShaftMouseDownFLAG) {
+							thumbsShaft.data({maxPos: o.thumbMargin});
+						}
+					} else {
+						newPos = wrapSize/2 - thumbsShaftSize/2;
+						thumbsShaft.data({minPos: newPos});
+						if (!thumbsShaftMouseDownFLAG) {
+							thumbsShaft.data({maxPos: newPos});
+						}
+					}
+
+					console.log(thumbsShaftDraggedFLAG);
+
+					if (!thumbsShaftDraggedFLAG) {
 						if (csstrFLAG) {
 							thumbsShaft.css(getDuration(time));
-							setTimeout(function(){
+							thumbsShaft.removeClass('fotorama__thumbs-shaft_out');
+							setTimeout(function() {
 								thumbsShaft.css(getTranslate(newPos, o.vertical));
-							},1);
+							}, 1);
 						} else {
 							thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
 						}
+
+						thumbsShaftPos = newPos;
 					} else {
-						if (csstrFLAG) {
-							thumbsShaft.css(getDuration(0));
-						}
-						thumbsShaft.css(getTranslate(wrapSize/2 - thumbsShaftSize/2, o.vertical));
+						thumbsShaftJerkFLAG = true;
 					}
 
 					var thumbBorderSize = thumbSize - (quirksFLAG ? 0 : o.thumbBorderWidth*2);
@@ -642,7 +720,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				}
 			}
 
-			slideThumbsShaft(0, false);
+			slideThumbsShaft(0, false, true);
 		}
 
 		function setImgSize(thisImgFrame, index) {
@@ -744,7 +822,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 						if (type == 'thumb') {
 							thumbsShaftSize += o__thumbSize + o.thumbMargin;
-							thumbsShaft.css(_size, thumbsShaftSize);
+							thumbsShaft.css(_size, thumbsShaftSize).data(_size, thumbsShaftSize);
 							container.css(_size, o__thumbSize).data(_size, o__thumbSize);
 							setThumbsShadow();
 						}
@@ -763,7 +841,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					srcState[src] = 'error';
 					$thisImgNew.unbind('error load');
 					if (_srcI < _src.length && primary) {
-						loadScope(_src[_srcI]/* + '?' + timestamp*/);
+						loadScope(_src[_srcI]);
 						_srcI++;
 					} else {
 						container.trigger('fotoramaError').data({'state': 'error'});
@@ -819,7 +897,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					$thisImgNew.addClass('fotorama__img');
 					newImg.data({'img': $thisImgNew, 'imgWidth': imgWidth, 'imgHeight': imgHeight, 'imgRatio': imgRatio});
 
-					if ((!wrapWidth || !wrapHeight) && !wrapIsSetFlag) {
+					if ((!wrapWidth || !wrapHeight) && !wrapIsSetFLAG) {
 						//Задаём размер всей Фотораме по первой загруженной картинке, если он не задан в опциях
 						wrapWidth = imgWidth;
 						wrapHeight = imgHeight;
@@ -1155,7 +1233,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 				index = 0
 			}
 
-			if (!o.touchStyle || !mouseDownFlag) {
+			if (!o.touchStyle || !shaftMouseDownFLAG) {
 				showImg(imgFrame.eq(index), e, false);
 			}
 		});
@@ -1184,7 +1262,7 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 
 		if (o.thumbs) {
 			// Клик по тумбсам
-			thumb.click(function(e){
+			function onThumbClick(e) {
 				e.stopPropagation();
 				var thisThumb = $(this);
 				if (!thisThumb.data('disabled')) {
@@ -1192,7 +1270,8 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 					var x = e[_coo] - thumbs.offset()[_pos];
 					showImg(imgFrame.eq(i), e, x);
 				}
-			});
+			}
+			thumb.bind('click', onThumbClick);
 		}
 
 		if (o.arrows) {
@@ -1223,295 +1302,335 @@ var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
 		}
 
 		if (o.touchStyle || touchFLAG) {
-			function onMouseDown(e) {
-				if ((touchFLAG || e.which < 2) && activeImg) {
-					function act() {
-						mouseDownFlag = true;
-						downTime = new Date().getTime();
-						downPos = coo;
-						downPos2 = coo2;
-						movePos = [[downTime, coo]];
-						shaftPos = shaft.position()[_pos];
-						if (csstrFLAG) {
-							shaft
-									.css(getDuration(0))
-									.css(getTranslate(shaftPos, o.vertical));
-						} else {
-							shaft.stop();
+			function touch(el, mouseDown, mouseMove, mouseUp) {
+				var elPos,
+				coo,
+				coo2,
+				downPos,
+				downPos2,
+				downElPos,
+				downTime,
+				moveCoo = [],
+				moveTime,
+				directionLast,
+				upTime,
+				upTimeLast = 0;
+
+				var movableFLAG = false;
+				var checkedDirectionFLAG = false;
+				var limitFLAG = false;
+				function onMouseDown(e) {
+					if ((touchFLAG || e.which < 2) && activeImg) {
+						function act() {
+							downTime = new Date().getTime();
+							downPos = coo;
+							downPos2 = coo2;
+							moveCoo = [[downTime, coo]];
+							elPos = el.position()[_pos];
+							//console.log(elPos, downPos);
+							if (csstrFLAG) {
+								el
+										.css(getDuration(0))
+										.css(getTranslate(elPos, o.vertical));
+							} else {
+								el.stop();
+							}
+							downElPos = elPos;
+
+							mouseDown();
 						}
-						downShaftPos = shaftPos;
+						if (!touchFLAG) {
+							coo = e[_coo];
+							e.preventDefault();
+							act();
+							$document.mousemove(onMouseMove);
+							$document.mouseup(onMouseUp);
+						} else if (touchFLAG && e.targetTouches.length == 1) {
+							coo = e.targetTouches[0][_coo];
+							coo2 = e.targetTouches[0][_coo2];
+							act();
+							el[0].addEventListener('touchmove', onMouseMove, false);
+							el[0].addEventListener('touchend', onMouseUp, false);
+						} else if (touchFLAG && e.targetTouches.length > 1) {
+							return false;
+						}
+					}
+				}
+
+				function onMouseMove(e) {
+					function act() {
+						e.preventDefault();
+
+						moveTime = new Date().getTime();
+						moveCoo.push([moveTime, coo]);
+
+						var pos = downPos - coo;
+						//console.log(pos);
+						/*var minPos;
+						if (!o.vertical) {
+							minPos = -(el.data('width') - wrapWidth);
+						} else {
+							minPos = -(el.data('height') - wrapHeight);
+						}*/
+
+						elPos = downElPos-pos;
+						//console.log(elPos, coo, el.data('maxPos'));
+
+
+						if (elPos > el.data('maxPos')) {
+							elPos = Math.round(elPos + ((el.data('maxPos') - elPos)/1.25));
+							limitFLAG = true;
+							if (o.shadows) {
+								wrap
+										.addClass('fotorama__wrap_shadow_no-left')
+										.removeClass('fotorama__wrap_shadow_no-right');
+							}
+						} else if (elPos < el.data('minPos')) {
+							elPos = Math.round(elPos + ((el.data('minPos') - elPos) / 1.25));
+							limitFLAG = true;
+							if (o.shadows) {
+								wrap
+										.addClass('fotorama__wrap_shadow_no-right')
+										.removeClass('fotorama__wrap_shadow_no-left');
+							}
+						} else {
+							limitFLAG = false;
+							if (o.shadows) {
+								wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
+							}
+						}
+
+						//console.log(elPos);
+
+						if (o.touchStyle) {
+							el.css(getTranslate(elPos, o.vertical));
+						}
+
+						mouseMove();
 					}
 					if (!touchFLAG) {
 						coo = e[_coo];
-						e.preventDefault();
 						act();
-						$document.mousemove(onMouseMove);
-						$document.mouseup(onMouseUp);
 					} else if (touchFLAG && e.targetTouches.length == 1) {
 						coo = e.targetTouches[0][_coo];
 						coo2 = e.targetTouches[0][_coo2];
-						act();
-						shaftEl.addEventListener('touchmove', onMouseMove, false);
-						shaftEl.addEventListener('touchend', onMouseUp, false);
-					} else if (touchFLAG && e.targetTouches.length > 1) {
-						return false;
+
+						if (!checkedDirectionFLAG) {
+							if (Math.abs(coo-downPos) - Math.abs(coo2-downPos2) >= -5) {
+								movableFLAG = true;
+								e.preventDefault();
+							}
+							checkedDirectionFLAG = true;
+						} else if (movableFLAG) {
+							act();
+						}
 					}
 				}
-			}
 
-			function onMouseMove(e) {
-				function act() {
-					e.preventDefault();
-					if (!grabbingFlag) {
+				function onMouseUp(e) {
+					if (!touchFLAG || !e.targetTouches.length) {
+						movableFLAG = false;
+						checkedDirectionFLAG = false;
+
+						if (!touchFLAG) {
+							$document.unbind('mouseup');
+							$document.unbind('mousemove');
+						} else {
+							el[0].removeEventListener('touchmove', onMouseMove, false);
+							el[0].removeEventListener('touchend', onMouseUp, false);
+						}
 						if (o.shadows) {
-							wrap.addClass('fotorama__wrap_shadow');
+							wrap.removeClass('fotorama__wrap_shadow');
 						}
 						if (!touchFLAG) {
-							shaft.addClass('fotorama__shaft_grabbing');
+							el.removeClass('fotorama__shaft_grabbing');
 						}
-					}
-					grabbingFlag = true;
-					clearTimeout(setGrabbingFlagTimeout);
-					moveTime = new Date().getTime();
-					movePos.push([moveTime, coo]);
 
-					var pos =  downPos - coo;
-					var minPos;
-					if (!o.vertical) {
-						minPos = -(shaftWidth - wrapWidth);
-					} else {
-						minPos = -(shaftHeight - wrapHeight);
-					}
+						upTime = new Date().getTime();
+						var dirtyLeft = -elPos;
 
-					shaftPos = downShaftPos-pos;
+						var _backTimeIdeal = upTime - o__dragTimeout;
+						var _diff, _diffMin, backTime, backCoo;
+						for (i=0;i<moveCoo.length;i++) {
+							_diff = Math.abs(_backTimeIdeal - moveCoo[i][0]);
 
-					if (shaftPos > 0) {
-						shaftPos = Math.round(shaftPos - (shaftPos/1.25));
-						limitFlag = true;
-						if (o.shadows) {
-							wrap
-									.addClass('fotorama__wrap_shadow_no-left')
-									.removeClass('fotorama__wrap_shadow_no-right');
+							if (i == 0) {
+								_diffMin = _diff;
+								backTime = upTime - moveCoo[i][0];
+								backCoo = moveCoo[i][1];
+							}
+							if (_diff <= _diffMin) {
+								_diffMin = _diff;
+								backTime = moveCoo[i][0];
+								backCoo = moveCoo[i][1];
+							}
 						}
-					} else if (shaftPos < minPos ) {
-						shaftPos = Math.round(shaftPos + ((minPos - shaftPos) / 1.25));
-						limitFlag = true;
-						if (o.shadows) {
-							wrap
-									.addClass('fotorama__wrap_shadow_no-right')
-									.removeClass('fotorama__wrap_shadow_no-left');
-						}
-					} else {
-						limitFlag = false;
-						if (o.shadows) {
-							wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
-						}
-					}
 
-					if (o.touchStyle) {
-						shaft.css(getTranslate(shaftPos, o.vertical));
+						var posDiff = backCoo - coo;
+						var direction = posDiff >= 0;
+						var timeDiff = upTime - backTime;
+						var isSwipe = timeDiff <= o__dragTimeout;
+						var timeFromLast = upTime - upTimeLast;
+						var sameDirection = direction === directionLast;
+
+						mouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, timeFromLast, e);
+
+						upTimeLast = upTime;
+						directionLast = direction;
 					}
 				}
+
 				if (!touchFLAG) {
-					coo = e[_coo];
-					act();
-				} else if (touchFLAG && e.targetTouches.length == 1) {
-					coo = e.targetTouches[0][_coo];
-					coo2 = e.targetTouches[0][_coo2];
-
-					if (!checkedDirectionFlag) {
-						if (Math.abs(coo-downPos) - Math.abs(coo2-downPos2) >= -5) {
-							movableFlag = true;
-							e.preventDefault();
-						}
-						checkedDirectionFlag = true;
-					} else if (movableFlag) {
-						act();
-					}
+					el.mousedown(onMouseDown);
+				} else {
+					el[0].addEventListener('touchstart', onMouseDown, false);
 				}
 			}
-
-			function onMouseUp(e) {
-				if (!touchFLAG || !e.targetTouches.length) {
-					mouseDownFlag = false;
-					movableFlag = false;
-					checkedDirectionFlag = false;
-					setGrabbingFlagTimeout = setTimeout(function() {
-						grabbingFlag = false;
-						if (!touchFLAG) {
-							wrapLeave();
-						}
-					}, o__dragTimeout);
-
-					if (!touchFLAG) {
-						$document.unbind('mouseup');
-						$document.unbind('mousemove');
-					} else {
-						shaftEl.removeEventListener('touchmove', onMouseMove, false);
-						shaftEl.removeEventListener('touchend', onMouseUp, false);
-					}
+			
+			touch(shaft, shaftOnMouseDown, shaftOnMouseMove, shaftOnMouseUp);
+			function shaftOnMouseDown() {
+				shaftMouseDownFLAG = true;
+			}
+			function shaftOnMouseMove() {
+				if (!shaftGrabbingFLAG) {
 					if (o.shadows) {
-						wrap.removeClass('fotorama__wrap_shadow');
+						wrap.addClass('fotorama__wrap_shadow');
 					}
 					if (!touchFLAG) {
-						shaft.removeClass('fotorama__shaft_grabbing');
+						shaft.addClass('fotorama__shaft_grabbing');
 					}
-
-					upTime = new Date().getTime();
-					var dirtyLeft = -shaftPos;
-					var forceLeft = false;
-					var forceRight = false;
-
-					var _backTimeIdeal = upTime - o__dragTimeout;
-					var _diff, _diffMin, backTime, backLeft;
-					for (i=0;i<movePos.length;i++) {
-						_diff = Math.abs(_backTimeIdeal - movePos[i][0]);
-
-						if (i == 0) {
-							_diffMin = _diff;
-							backTime = upTime - movePos[i][0];
-							backLeft = movePos[i][1];
-						}
-						if (_diff <= _diffMin) {
-							_diffMin = _diff;
-							backTime = movePos[i][0];
-							backLeft = movePos[i][1];
-						}
+				}
+				clearTimeout(setShaftGrabbingFLAGTimeout);
+				shaftGrabbingFLAG = true;
+			}
+			function shaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, timeFromLast, e) {
+				shaftMouseDownFLAG = false;
+				setShaftGrabbingFLAGTimeout = setTimeout(function() {
+					shaftGrabbingFLAG = false;
+					if (!touchFLAG) {
+						wrapLeave();
 					}
+				}, o__dragTimeout);
 
-					var timeDiff = upTime - backTime;
-					var isFlicked = timeDiff <= o__dragTimeout;
+				var forceLeft = false;
+				var forceRight = false;
 
-					//////console.log(e);
+				if (o.touchStyle) {
+					if (touchFLAG || shaftGrabbingFLAG) {
+						if (isSwipe) {
+							if (posDiff <= -10) {
+								forceLeft = true;
+							} else if (posDiff >= 10) {
+								forceRight = true;
+							}
+						}
 
-					var isDoubleSwipe = upTime - upTimeLast <= 1000;
-
-					var direction = backLeft - coo;
-
-					if (o.touchStyle) {
-						if (touchFLAG || movePos.length > 1 || grabbingFlag) {
-							if (isFlicked) {
-								if (direction <= -10) {
-									forceLeft = true;
-								} else if (direction >= 10) {
-									forceRight = true;
+						var index = undefined;
+						if (!forceLeft && !forceRight) {
+							index = Math.round(dirtyLeft / wrapSize);
+						} else {
+							if (!(timeFromLast <= o.transitionDuration && sameDirection)) {
+								if (forceLeft) {
+									index = Math.round((dirtyLeft - wrapSize / 2) / wrapSize);
+								} else if (forceRight) {
+									index = Math.round((dirtyLeft + wrapSize / 2) / wrapSize);
+								}
+							} else {
+								if (forceLeft) {
+									callShowImg(-1, e, false);
+								} else if (forceRight) {
+									callShowImg(+1, e, false);
 								}
 							}
-
-							var index = undefined;
-							if (!forceLeft && !forceRight) {
-								index = Math.round(dirtyLeft / wrapSize);
-							} else {
-								if (!isDoubleSwipe) {
-									if (forceLeft) {
-										index = Math.round((dirtyLeft - wrapSize / 2) / wrapSize);
-									} else if (forceRight) {
-										index = Math.round((dirtyLeft + wrapSize / 2) / wrapSize);
-									}
-								} else {
-									if (forceLeft) {
-										callShowImg(-1, e, false);
-									} else if (forceRight) {
-										callShowImg(+1, e, false);
-									}
-								}
-							}
-
-							if (index != undefined) {
-								if (index < 0) index = 0;
-								if (index > size - 1) index = size - 1;
-								showImg(imgFrame.eq(index), e, false);
-							}
-						} else if (o.pseudoClick) {
-							if (!e.shiftKey) {
-								// Если клик без шифта
-								callShowImg(+1, e, true);
-							} else {
-								// Если с шифтом
-								callShowImg(-1, e, true);
-							}
 						}
-					} else {
-						if (direction >= 0) {
+
+						if (index != undefined) {
+							if (index < 0) index = 0;
+							if (index > size - 1) index = size - 1;
+							showImg(imgFrame.eq(index), e, false);
+						}
+					} else if (o.pseudoClick) {
+						if (!e.shiftKey) {
+							// Если клик без шифта
 							callShowImg(+1, e, true);
-						} else if (direction < 0) {
+						} else {
+							// Если с шифтом
 							callShowImg(-1, e, true);
 						}
 					}
-
-					upTimeLast = upTime;
+				} else {
+					if (direction >= 0) {
+						callShowImg(+1, e, true);
+					} else if (direction < 0) {
+						callShowImg(-1, e, true);
+					}
 				}
 			}
 
-			if (!touchFLAG) {
-				shaft.mousedown(onMouseDown);
-			} else {
-				shaftEl.addEventListener('touchstart', onMouseDown, false);
+			touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
+			function thumbsShaftOnMouseDown() {
+				thumbsShaftMouseDownFLAG = true;
+				thumbsShaftDraggedFLAG = true;
+			}
+			function thumbsShaftOnMouseMove() {
+				if (!thumbsShaftGrabbingFLAG) {
+					thumb.unbind('click', onThumbClick);
+				}
+				clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
+				thumbsShaftGrabbingFLAG = true;
+			}
+			function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, timeFromLast, e) {
+				thumbsShaftMouseDownFLAG = false;
+
+				setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
+					thumbsShaftGrabbingFLAG = false;
+					thumb.bind('click', onThumbClick);
+				}, o__dragTimeout);
+
+				dirtyLeft = -dirtyLeft;
+
+				var newPos = dirtyLeft;
+				var time = 0;
+
+				if (thumbsShaftJerkFLAG) {
+					slideThumbsShaft(0, false, true);
+					thumbsShaftJerkFLAG = false;
+				}
+
+				if (dirtyLeft > thumbsShaft.data('maxPos')) {
+					newPos = thumbsShaft.data('maxPos');
+					time = o.transitionDuration;
+				} else if (dirtyLeft < thumbsShaft.data('minPos')) {
+					newPos = thumbsShaft.data('minPos');
+					time = o.transitionDuration;
+				} else {
+					if (isSwipe) {
+						posDiff = -posDiff;
+						var speed = posDiff/timeDiff;
+						time = o.transitionDuration*3;
+						var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
+						newPos = Math.round(dirtyLeft + speed*200 + speed*booster);
+						if (newPos > thumbsShaft.data('maxPos')) {
+							newPos = thumbsShaft.data('maxPos');
+							time = o.transitionDuration;
+						} else if (newPos < thumbsShaft.data('minPos')) {
+							newPos = thumbsShaft.data('minPos');
+							time = o.transitionDuration;
+						}
+					}
+				}
+
+				thumbsShaftPos = newPos;
+				if (csstrFLAG) {
+					thumbsShaft.css(getDuration(time));
+					thumbsShaft.addClass('fotorama__thumbs-shaft_out');
+					setTimeout(function() {
+						thumbsShaft.css(getTranslate(newPos, o.vertical));
+					}, 1);
+				} else {
+					thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
+				}
 			}
 		}
 	}
 })(jQuery);
-
-function getTranslate(pos, vertical) {
-	if (csstrFLAG) {
-		var value;
-		if (!vertical) {
-			value = 'translate3d(' + pos + 'px,0,0)';
-		} else {
-			value = 'translate3d(0,' + pos + 'px,0)';
-		}
-		return {
-			'-moz-transform': value,
-			'-webkit-transform': value,
-			'-o-transform': value,
-			transform: value
-		}
-	} else {
-		if (!vertical) {
-			return {left: pos};
-		} else {
-			return {top: pos};
-		}
-	}
-}
-
-function getDuration(time) {
-	var value = time+'ms';
-	return {
-		'-moz-transition-duration': value,
-		'-webkit-transition-duration': value,
-		'-o-transition-duration': value,
-		'transition-duration': value
-	}
-}
-
-function getBoxShadowColor(color) {
-	var value = '0 0 10px ' + color;
-	return {
-		'-moz-box-shadow': value,
-		'-webkit-box-shadow': value,
-		'-o-box-shadow': value,
-		'box-shadow': value
-	}
-}
-
-function disableSelection(target) {
-	target
-		.mousemove(function(e){
-			e.preventDefault();
-		})
-		.mousedown(function(e){
-			e.preventDefault();
-		});
-}
-
-var _SPINNER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAGoCAMAAAAQMBfHAAABtlBMVEX///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8cWrVBAAAAkXRSTlMAKUfghaPCZkAlPw7nsHiUy1w3VBcoLEoiNsAw/EbdoYNlGSYIFEUdDEgS2yENIMi9CnfkLhUnkhutW5/5gGSCAgsyaZlEsVA4yQQfAxM9Khh/AWEPm7nVEfNCtB4kNDnGSU+JM5dznmAtXkuQO3JnTlhiWp2nIwf2rtgcPha7UYxf4avt0DUGpjp1eXwvTBBjhUW/zwAABtxJREFUeF7tmtlXE0kUxm/2zr5gwhI3QiAsCXtCQFED4gKCIKIgoo7ruI0zOjNuo7Pva/7jqTq3iy9dOc05eclT/94434/qk6fbt74mK6GLF0N0EJF6PXKgUBcgAJfLzcJyHvkjz/VOXQhXXAWVX/Z4PCOdViHsEqgz1q+zAYHzyjKZdB4VxtEbIpiq16dEPuiShEkCIyGSoUhkSAh7Ik6bOYwx/BlUORhIJNYg1ILBErWP7Fm/5GzWGgxfcEsuDFPUz0StguFmDJo1hVmrEDKFEKX4iGjKKvTzEUY/tY/pjY00gkLy+z1r3n3M54tD+CIQ6O3Tc9+MSIqLi0UWlIH8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';
-var _ERROR = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAAAAABWESUoAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAJ0Uk5TAEQHIkixAAABv0lEQVQYGWXBQWcjcRzH4d+L+xpDRVRYETGXqt5W9FI9xFIVvfae64i11IgosfoGeqtaZawcwlgrlxE1Qvx99j+zk5lUn8fU6N48pmtc+vpwrZapNkgKGtvFUDVTJYgdH+xnJ6qYStEbn6wGKpm8wYZSHl+fS9Hl9w2l7bk8k9TP8HZ3oQ4mG7w8kmRSuKIyU6uzxHsLJZOm1CY6kuDFkqlfAE9vwH6kI0vADWRaAH86/Q2QR2p1MiCRdQrgVrrYAauuWjdAcWoTIAskjfGeAzWCDBjbHJipNMWbqxUDc/sFjFRZ4t2rMQJSy4EvqoQvgLvSQQ/IbQ8u0H+9DHg/Uy1w4MyBC1Q7eweynmp72FsO9HRw5YCXUJUusLUUGKlxj/dTlRGQ2hyI1UrwpirNgIWNgXWgRvCMN5a3BiZ2WgDf1OqugN2FNAaKjikBso5aUQ5s+p01sJBp4IBHHfm6B9InoOjLpBjvQUcm1KaSSWGKtzxRa0ZlFUomKcrx1mMdhHc7vKwvyeRdbCn9jS+H0vl1nFPaDOWZStGaT35HKpkqJz8cH7g4VMVUGz4WNHbJUDVTo3uTvKaOLF3enqrxD+aQUnwgKhDtAAAAAElFTkSuQmCC';
-var base64Test = new Image();
-var BASE64Flag = true;
-base64Test.onerror = function(){
-	if(this.width != 1 || this.height != 1){
-		BASE64Flag = false;
-	}
-}
-base64Test.src = _ERROR;
