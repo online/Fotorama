@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1196) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1197) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -137,6 +137,10 @@
 		} else {
 			fotorama.addClass('fotorama_vertical');
 		}
+
+		$('a', fotorama).live('click', function(e){
+			e.preventDefault();
+		});
 
 
 		// Все изображения
@@ -436,17 +440,20 @@
 		function getRatioWidthHeight() {
 			if (!wrapRatio) {
 				wrapRatio = wrapWidth / wrapHeight * 1000;
+				wrapRatioIdeal = wrapRatio;
 			}
 			if (o.thumbs && !thumbsSize2) {
 				thumbsSize2 = o.vertical ? thumbs.width() : thumbs.height();
 			}
 			if (o.resize) {
+				wrapRatio = wrapRatioIdeal;
 				var windowHeight = $window.height();
 				wrapWidth = fotorama.width() - (o.vertical && thumbsSize2  ? thumbsSize2 : 0);
 				wrapHeight = Math.round(wrapWidth / wrapRatio * 1000);
 				if (wrapHeight > windowHeight - 40 - (!o.vertical && thumbsSize2 ? thumbsSize2 : 0)) {
 					wrapHeight = windowHeight - 40 - (!o.vertical && thumbsSize2 ? thumbsSize2 : 0);
-					wrapWidth = Math.round(wrapHeight * wrapRatio / 1000);
+					wrapRatio = wrapWidth / wrapHeight * 1000;
+					//wrapWidth = Math.round(wrapHeight * wrapRatio / 1000);
 				}
 			}
 		}
@@ -1520,8 +1527,11 @@
 				var forceLeft = false;
 				var forceRight = false;
 
+				var target = $(e.target);
+				var a = target.filter('a') || target.parents('a');
+
 				if (o.touchStyle) {
-					if (touchFLAG || shaftGrabbingFLAG) {
+					if (shaftGrabbingFLAG) {
 						if (isSwipe) {
 							if (posDiff <= -10) {
 								forceLeft = true;
@@ -1554,6 +1564,8 @@
 							if (index > size - 1) index = size - 1;
 							showImg(imgFrame.eq(index), e, false);
 						}
+					} else if (a.length) {
+						document.location = a.attr('href');
 					} else if (o.pseudoClick) {
 						if (!e.shiftKey) {
 							// Если клик без шифта
@@ -1564,9 +1576,11 @@
 						}
 					}
 				} else {
-					if (direction >= 0) {
+					if (posDiff == 0 && a.length) {
+						document.location = a.attr('href');
+					} else if (posDiff >= 0) {
 						callShowImg(+1, e, true);
-					} else if (direction < 0) {
+					} else if (posDiff < 0) {
 						callShowImg(-1, e, true);
 					}
 				}
