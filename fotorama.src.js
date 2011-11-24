@@ -1,4 +1,4 @@
-/* Fotorama 1.3 (v1197) http://fotoramajs.com/ */
+/* Fotorama 1.3 (v1198) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -185,7 +185,7 @@
 		var wrapSize, wrapSize2;
 		var wrapWidth = o.width;
 		var wrapHeight = o.height;
-		var wrapRatio;
+		var wrapRatio, wrapRatioIdeal;
 		var wrapIsSetFLAG = false;
 		var loadTimeout;
 
@@ -1499,7 +1499,6 @@
 		}
 
 		if (o.touchStyle || touchFLAG) {
-			touch(shaft, shaftOnMouseDown, shaftOnMouseMove, shaftOnMouseUp);
 			function shaftOnMouseDown() {
 				shaftMouseDownFLAG = true;
 			}
@@ -1585,73 +1584,75 @@
 					}
 				}
 			}
+
+			touch(shaft, shaftOnMouseDown, shaftOnMouseMove, shaftOnMouseUp);
 		}
 
-		if (1 == 2) {
-			touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
-			function thumbsShaftOnMouseDown() {
-				thumbsShaftMouseDownFLAG = true;
-				thumbsShaftDraggedFLAG = true;
-			}
-			function thumbsShaftOnMouseMove() {
-				if (!thumbsShaftGrabbingFLAG) {
-					thumb.unbind('click', onThumbClick);
-				}
-				clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
-				thumbsShaftGrabbingFLAG = true;
-			}
-			function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
-				thumbsShaftMouseDownFLAG = false;
-
-				setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
-					thumbsShaftGrabbingFLAG = false;
-					thumb.bind('click', onThumbClick);
-				}, o__dragTimeout);
-
-				dirtyLeft = -dirtyLeft;
-
-				var newPos = dirtyLeft;
-				var time = 0;
-
-				if (thumbsShaftJerkFLAG) {
-					slideThumbsShaft(0, false, true);
-					thumbsShaftJerkFLAG = false;
-				}
-
-				if (dirtyLeft > thumbsShaft.data('maxPos')) {
-					newPos = thumbsShaft.data('maxPos');
-					time = o.transitionDuration;
-				} else if (dirtyLeft < thumbsShaft.data('minPos')) {
-					newPos = thumbsShaft.data('minPos');
-					time = o.transitionDuration;
-				} else {
-					if (isSwipe) {
-						posDiff = -posDiff;
-						var speed = posDiff/timeDiff;
-						time = o.transitionDuration*3;
-						var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
-						newPos = Math.round(dirtyLeft + speed*200 + speed*booster);
-						if (newPos > thumbsShaft.data('maxPos')) {
-							newPos = thumbsShaft.data('maxPos');
-							time = o.transitionDuration;
-						} else if (newPos < thumbsShaft.data('minPos')) {
-							newPos = thumbsShaft.data('minPos');
-							time = o.transitionDuration;
-						}
-					}
-				}
-
-				thumbsShaftPos = newPos;
-				if (csstrFLAG) {
-					thumbsShaft.css(getDuration(time));
-					thumbsShaft.addClass('fotorama__thumbs-shaft_out');
-					setTimeout(function() {
-						thumbsShaft.css(getTranslate(newPos, o.vertical));
-					}, 1);
-				} else {
-					thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
-				}
-			}
-		}
+//		if (1 == 2) {
+//			touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
+//			function thumbsShaftOnMouseDown() {
+//				thumbsShaftMouseDownFLAG = true;
+//				thumbsShaftDraggedFLAG = true;
+//			}
+//			function thumbsShaftOnMouseMove() {
+//				if (!thumbsShaftGrabbingFLAG) {
+//					thumb.unbind('click', onThumbClick);
+//				}
+//				clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
+//				thumbsShaftGrabbingFLAG = true;
+//			}
+//			function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
+//				thumbsShaftMouseDownFLAG = false;
+//
+//				setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
+//					thumbsShaftGrabbingFLAG = false;
+//					thumb.bind('click', onThumbClick);
+//				}, o__dragTimeout);
+//
+//				dirtyLeft = -dirtyLeft;
+//
+//				var newPos = dirtyLeft;
+//				var time = 0;
+//
+//				if (thumbsShaftJerkFLAG) {
+//					slideThumbsShaft(0, false, true);
+//					thumbsShaftJerkFLAG = false;
+//				}
+//
+//				if (dirtyLeft > thumbsShaft.data('maxPos')) {
+//					newPos = thumbsShaft.data('maxPos');
+//					time = o.transitionDuration;
+//				} else if (dirtyLeft < thumbsShaft.data('minPos')) {
+//					newPos = thumbsShaft.data('minPos');
+//					time = o.transitionDuration;
+//				} else {
+//					if (isSwipe) {
+//						posDiff = -posDiff;
+//						var speed = posDiff/timeDiff;
+//						time = o.transitionDuration*3;
+//						var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
+//						newPos = Math.round(dirtyLeft + speed*200 + speed*booster);
+//						if (newPos > thumbsShaft.data('maxPos')) {
+//							newPos = thumbsShaft.data('maxPos');
+//							time = o.transitionDuration;
+//						} else if (newPos < thumbsShaft.data('minPos')) {
+//							newPos = thumbsShaft.data('minPos');
+//							time = o.transitionDuration;
+//						}
+//					}
+//				}
+//
+//				thumbsShaftPos = newPos;
+//				if (csstrFLAG) {
+//					thumbsShaft.css(getDuration(time));
+//					thumbsShaft.addClass('fotorama__thumbs-shaft_out');
+//					setTimeout(function() {
+//						thumbsShaft.css(getTranslate(newPos, o.vertical));
+//					}, 1);
+//				} else {
+//					thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
+//				}
+//			}
+//		}
 	}
 })(jQuery);
