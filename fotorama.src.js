@@ -1,15 +1,15 @@
-/* Fotorama 1.3 (v1198) http://fotoramajs.com/ */
+/* Fotorama 1.4 (v1199) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
  */
-;window.Modernizr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="modernizr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
+;window.Mdrnzr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="Mdrnzr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
 
 (function($){
 	var touchFLAG = ('ontouchstart' in document);
-	var csstrFLAG = Modernizr.csstransforms3d && Modernizr.csstransitions;
+	var csstrFLAG = Mdrnzr.csstransforms3d && Mdrnzr.csstransitions;
 	var ieFLAG = $.browser.msie;
-	var o__dragTimeout = 200;
+	var o__dragTimeout = 300;
 	var quirksFLAG = document.compatMode != 'CSS1Compat' && ieFLAG;
 
 	//alert(quirksFLAG);
@@ -92,15 +92,15 @@
 		}
 	}
 
-	function getBoxShadowColor(color) {
-		var value = '0 0 10px ' + color;
-		return {
-			'-moz-box-shadow': value,
-			'-webkit-box-shadow': value,
-			'-o-box-shadow': value,
-			'box-shadow': value
-		}
-	}
+//	function getBoxShadowColor(color) {
+//		var value = '0 0 10px ' + color;
+//		return {
+//			'-moz-box-shadow': value,
+//			'-webkit-box-shadow': value,
+//			'-o-box-shadow': value,
+//			'box-shadow': value
+//		}
+//	}
 
 	function disableSelection(target) {
 		target
@@ -389,7 +389,7 @@
 							_thumbSize = Math.round(o__thumbSize / thumbRatio * 1000);
 						}
 						
-						if (Modernizr.canvas) {
+						if (Mdrnzr.canvas) {
 							$thisThumbNew.remove();
 							$thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
 							$thisThumbNew.appendTo(thumb.eq(i));
@@ -402,7 +402,7 @@
 								.css(_size, _thumbSize)
 								.css(_size2, o__thumbSize)
 								.css('visibility', 'visible');
-						if (Modernizr.canvas) {
+						if (Mdrnzr.canvas) {
 							var ctx = $thisThumbNew[0].getContext('2d');
 							if (!o.vertical) {
 								ctx.drawImage(thisThumbNew, 0, 0, _thumbSize, o__thumbSize);
@@ -418,7 +418,7 @@
 						thumbsShaft.css(_size, thumbsShaftSize);
 						thumb.eq(i).css(_size, _thumbSize).data(_size, _thumbSize);
 
-						setThumbsShadow();
+						setThumbsShaft();
 					}
 
 					// Если включены превьюшки, придётся загружать все картинки разом
@@ -515,7 +515,7 @@
 					stateIcon.css(_pos2, wrapSize2 / 2);
 				}
 
-				setThumbsShadow();
+				setThumbsShaft();
 				if (activeImg) {
 					showImg(activeImg, false, false, true);
 				}
@@ -526,7 +526,7 @@
 				var activeIndex = imgFrame.index(activeImg);
 				setImgSize(activeImg, activeIndex);
 				var interval = 0;
-				//////console.log('resize!');
+				////////console.log('resize!');
 				$(resizeStack).each(function(){
 					clearTimeout(this);
 				});
@@ -536,7 +536,7 @@
 						var thisImg = $(this);
 						//Ресайзим порциями, чтобы не падали слабенькие Айпады
 						var timeout = setTimeout(function() {
-							//////console.log(i);
+							////////console.log(i);
 							setImgSize(thisImg, i);
 						}, interval*50+50);
 						resizeStack.push(timeout);
@@ -615,7 +615,7 @@
 						if (thumbsShaftPos == undefined) {
 							thumbsShaftPos = thumbsShaft.position()[_pos];
 						}
-						if (x && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
+						if (x && x > 24 && x < wrapSize - 24 && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
 							var i;
 							if (direction > 0) {
 								i = index + 1;
@@ -636,13 +636,11 @@
 						var minPos = -(thumbsShaftSize-wrapSize);
 						var newPos = Math.round(-(thumbCenter - thumbPlace) + o.thumbMargin);
 
-						////console.log(, );
-
 						if ((direction > 0 && newPos > thumbsShaftPos) || (direction < 0 && newPos < thumbsShaftPos)) {
 							if (thumbPos + thumbsShaftPos < o.thumbMargin) {
 								newPos = -(thumbPos - o.thumbMargin);
 							} else if(thumbPos + thumbsShaftPos + thumbSize > wrapSize) {
-								newPos = -(thumbPos - wrapSize + thumbSize + o.thumbMargin);
+								newPos = -(thumbPos*2 - wrapSize + thumbSize + o.thumbMargin);
 							} else {
 								newPos = thumbsShaftPos;
 							}
@@ -650,25 +648,11 @@
 
 						if (newPos <= minPos) {
 							newPos = minPos;
-							if (o.shadows) {
-								thumbs
-										.removeClass('fotorama__thumbs_shadow_no-left')
-										.addClass('fotorama__thumbs_shadow_no-right');
-							}
 						} else if (newPos >= o.thumbMargin) {
 							newPos = o.thumbMargin;
-							if (o.shadows) {
-								thumbs
-										.removeClass('fotorama__thumbs_shadow_no-right')
-										.addClass('fotorama__thumbs_shadow_no-left');
-							}
-						} else {
-							if (o.shadows) {
-								thumbs
-										.removeClass('fotorama__thumbs_shadow_no-left fotorama__thumbs_shadow_no-right');
-							}
 						}
-						thumbsShaft.data({minPos: -(thumbsShaftSize - wrapSize)});
+						thumbsShaft.data({minPos: minPos});
+						setThumbsShadow(newPos);
 
 						if (!thumbsShaftMouseDownFLAG) {
 							thumbsShaft.data({maxPos: o.thumbMargin});
@@ -681,7 +665,7 @@
 						}
 					}
 
-					//console.log(thumbsShaftDraggedFLAG);
+					////console.log(thumbsShaftDraggedFLAG);
 
 					if (!thumbsShaftDraggedFLAG) {
 						if (csstrFLAG) {
@@ -720,12 +704,31 @@
 			}
 		}
 
-		function setThumbsShadow() {
+		function setThumbsShadow(pos) {
 			if (o.shadows) {
 				if (thumbsShaftSize > wrapSize) {
 					thumbs.addClass('fotorama__thumbs_shadow');
 				}
+				if (pos) {
+					var minPos = thumbsShaft.data('minPos');
+					if (pos <= minPos) {
+							thumbs
+									.removeClass('fotorama__thumbs_shadow_no-left')
+									.addClass('fotorama__thumbs_shadow_no-right');
+					} else if (pos >= o.thumbMargin) {
+							thumbs
+									.removeClass('fotorama__thumbs_shadow_no-right')
+									.addClass('fotorama__thumbs_shadow_no-left');
+					} else {
+							thumbs
+									.removeClass('fotorama__thumbs_shadow_no-left fotorama__thumbs_shadow_no-right');
+					}
+				}
 			}
+		}
+
+		function setThumbsShaft() {
+			setThumbsShadow();
 
 			slideThumbsShaft(0, false, true);
 		}
@@ -831,7 +834,7 @@
 							thumbsShaftSize += o__thumbSize + o.thumbMargin;
 							thumbsShaft.css(_size, thumbsShaftSize).data(_size, thumbsShaftSize);
 							container.css(_size, o__thumbSize).data(_size, o__thumbSize);
-							setThumbsShadow();
+							slideThumbsShaft(0, false, true);
 						}
 					}
 				}
@@ -1142,9 +1145,9 @@
 			if (o.thumbsBackgroundColor) {
 				// Если переназначен фон под тумбсами или превьюшками
 				thumbs.css('background-color', o.thumbsBackgroundColor);
-				if (o.thumbsPreview && o.shadows) {
-					thumbsShadow.css(getBoxShadowColor(o.thumbsBackgroundColor));
-				}
+//				if (o.thumbsPreview && o.shadows) {
+//					thumbsShadow.css(getBoxShadowColor(o.thumbsBackgroundColor));
+//				}
 			}
 
 			if (o.thumbsPreview) {
@@ -1337,7 +1340,7 @@
 						downPos2 = coo2;
 						moveCoo = [[downTime, coo]];
 						elPos = el.position()[_pos];
-						////console.log(elPos, downPos);
+						//////console.log(elPos, downPos);
 						if (csstrFLAG) {
 							el
 									.css(getDuration(0))
@@ -1375,7 +1378,7 @@
 					moveCoo.push([moveTime, coo]);
 
 					var pos = downPos - coo;
-					////console.log(pos);
+					//////console.log(pos);
 					/*var minPos;
 					if (!o.vertical) {
 						minPos = -(el.data('width') - wrapWidth);
@@ -1384,7 +1387,7 @@
 					}*/
 
 					elPos = downElPos-pos;
-					////console.log(elPos, coo, el.data('maxPos'));
+					//////console.log(elPos, coo, el.data('maxPos'));
 
 
 					if (elPos > el.data('maxPos')) {
@@ -1410,13 +1413,13 @@
 						}
 					}
 
-					////console.log(elPos);
+					//////console.log(elPos);
 
 					if (o.touchStyle) {
 						el.css(getTranslate(elPos, o.vertical));
 					}
 
-					mouseMove();
+					mouseMove(elPos, pos);
 				}
 				if (!touchFLAG) {
 					coo = e[_coo];
@@ -1502,7 +1505,7 @@
 			function shaftOnMouseDown() {
 				shaftMouseDownFLAG = true;
 			}
-			function shaftOnMouseMove() {
+			function shaftOnMouseMove(pos, posDiff) {
 				if (!shaftGrabbingFLAG) {
 					if (o.shadows) {
 						wrap.addClass('fotorama__wrap_shadow');
@@ -1510,9 +1513,9 @@
 					if (!touchFLAG) {
 						shaft.addClass('fotorama__shaft_grabbing');
 					}
+					clearTimeout(setShaftGrabbingFLAGTimeout);
+					shaftGrabbingFLAG = true;
 				}
-				clearTimeout(setShaftGrabbingFLAGTimeout);
-				shaftGrabbingFLAG = true;
 			}
 			function shaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
 				shaftMouseDownFLAG = false;
@@ -1588,71 +1591,81 @@
 			touch(shaft, shaftOnMouseDown, shaftOnMouseMove, shaftOnMouseUp);
 		}
 
-//		if (1 == 2) {
-//			touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
-//			function thumbsShaftOnMouseDown() {
-//				thumbsShaftMouseDownFLAG = true;
-//				thumbsShaftDraggedFLAG = true;
-//			}
-//			function thumbsShaftOnMouseMove() {
-//				if (!thumbsShaftGrabbingFLAG) {
-//					thumb.unbind('click', onThumbClick);
-//				}
-//				clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
-//				thumbsShaftGrabbingFLAG = true;
-//			}
-//			function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
-//				thumbsShaftMouseDownFLAG = false;
-//
-//				setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
-//					thumbsShaftGrabbingFLAG = false;
-//					thumb.bind('click', onThumbClick);
-//				}, o__dragTimeout);
-//
-//				dirtyLeft = -dirtyLeft;
-//
-//				var newPos = dirtyLeft;
-//				var time = 0;
-//
-//				if (thumbsShaftJerkFLAG) {
-//					slideThumbsShaft(0, false, true);
-//					thumbsShaftJerkFLAG = false;
-//				}
-//
-//				if (dirtyLeft > thumbsShaft.data('maxPos')) {
-//					newPos = thumbsShaft.data('maxPos');
-//					time = o.transitionDuration;
-//				} else if (dirtyLeft < thumbsShaft.data('minPos')) {
-//					newPos = thumbsShaft.data('minPos');
-//					time = o.transitionDuration;
-//				} else {
-//					if (isSwipe) {
-//						posDiff = -posDiff;
-//						var speed = posDiff/timeDiff;
-//						time = o.transitionDuration*3;
-//						var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
-//						newPos = Math.round(dirtyLeft + speed*200 + speed*booster);
-//						if (newPos > thumbsShaft.data('maxPos')) {
-//							newPos = thumbsShaft.data('maxPos');
-//							time = o.transitionDuration;
-//						} else if (newPos < thumbsShaft.data('minPos')) {
-//							newPos = thumbsShaft.data('minPos');
-//							time = o.transitionDuration;
-//						}
-//					}
-//				}
-//
-//				thumbsShaftPos = newPos;
-//				if (csstrFLAG) {
-//					thumbsShaft.css(getDuration(time));
-//					thumbsShaft.addClass('fotorama__thumbs-shaft_out');
-//					setTimeout(function() {
-//						thumbsShaft.css(getTranslate(newPos, o.vertical));
-//					}, 1);
-//				} else {
-//					thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
-//				}
-//			}
-//		}
+		if (o.thumbs && o.thumbsPreview) {
+			touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
+			function thumbsShaftOnMouseDown() {
+				thumbsShaftMouseDownFLAG = true;
+				thumbsShaftDraggedFLAG = true;
+			}
+			function thumbsShaftOnMouseMove(pos, posDiff) {
+				//console.log(posDiff);
+				if (!thumbsShaftGrabbingFLAG && Math.abs(posDiff) >= 5) {
+
+					thumb.unbind('click', onThumbClick);
+					clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
+					thumbsShaftGrabbingFLAG = true;
+				}
+
+				setThumbsShadow(pos);
+			}
+			function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
+				thumbsShaftMouseDownFLAG = false;
+
+				setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
+					thumbsShaftGrabbingFLAG = false;
+					thumb.bind('click', onThumbClick);
+				}, o__dragTimeout);
+
+				dirtyLeft = -dirtyLeft;
+
+				var newPos = dirtyLeft;
+				var time = o.transitionDuration*2;
+
+				if (thumbsShaftJerkFLAG) {
+					slideThumbsShaft(0, false, true);
+					thumbsShaftJerkFLAG = false;
+				}
+
+				if (dirtyLeft > thumbsShaft.data('maxPos')) {
+					newPos = thumbsShaft.data('maxPos');
+					time = time/2;
+				} else if (dirtyLeft < thumbsShaft.data('minPos')) {
+					newPos = thumbsShaft.data('minPos');
+					time = time/2;
+				} else {
+					if (isSwipe) {
+						posDiff = -posDiff;
+						var speed = posDiff/timeDiff;
+						//var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
+						newPos = Math.round(dirtyLeft + speed*200);
+						if (newPos > thumbsShaft.data('maxPos')) {
+							time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('maxPos')))));
+							newPos = thumbsShaft.data('maxPos');
+						} else if (newPos < thumbsShaft.data('minPos')) {
+							time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('minPos')))));
+							//console.log(speed*200, newPos, thumbsShaft.data('minPos'));
+							newPos = thumbsShaft.data('minPos');
+						}
+						//console.log('time: '+time);
+					}
+				}
+
+				if (e.altKey) {
+					time = time*10;
+				}
+
+				thumbsShaftPos = newPos;
+				if (csstrFLAG) {
+					thumbsShaft.css(getDuration(time));
+					thumbsShaft.addClass('fotorama__thumbs-shaft_out');
+					setTimeout(function() {
+						thumbsShaft.css(getTranslate(newPos, o.vertical));
+					}, 1);
+				} else {
+					thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
+				}
+				setThumbsShadow(newPos);
+			}
+		}
 	}
 })(jQuery);

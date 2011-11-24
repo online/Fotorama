@@ -1,9 +1,9 @@
 @import "compass";
 
-/* Fotorama 1.3 (v1198) http://fotoramajs.com/ */
+/* Fotorama 1.4 (v1199) http://fotoramajs.com/ */
 
 $transitionDuration: 333ms;
-$backgroundColor: #222120;
+$backgroundColor: #323130;
 $bezier: cubic-bezier(.1, 0, .25, 1);
 $bezier2: cubic-bezier(0, 0, .25, 1);
 
@@ -486,7 +486,7 @@ $arrHeight: 24px*3;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	background-color: $backgroundColor;
-	background-color: rgba(34,33,32,.75);
+	//background-color: rgba(34,33,32,.75);
 	background-position: 24px 24px;
 	text-align: center;
 	display: none;
