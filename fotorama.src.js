@@ -1,4 +1,4 @@
-/* Fotorama 1.4 (v1199) http://fotoramajs.com/ */
+/* Fotorama 1.5 (v1200) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -46,6 +46,7 @@
 			thumbBorderWidth: 3,
 			thumbBorderColor: null,
 			caption: false,
+			html: null,
 			onShowImg: null,
 			shadows: true,
 			detachSiblings: true
@@ -388,7 +389,7 @@
 						} else {
 							_thumbSize = Math.round(o__thumbSize / thumbRatio * 1000);
 						}
-						
+
 						if (Mdrnzr.canvas) {
 							$thisThumbNew.remove();
 							$thisThumbNew = $('<canvas class="fotorama__thumb__img"></canvas>');
@@ -594,6 +595,18 @@
 			fotoramaState = state;
 		}
 
+		function animate(block, pos, time) {
+			if (csstrFLAG) {
+				block.css(getDuration(time));
+				//block.removeClass('fotorama__thumbs-shaft_out');
+				setTimeout(function() {
+					block.css(getTranslate(pos, o.vertical));
+				}, 1);
+			} else {
+				block.stop().animate(getTranslate(pos, o.vertical), time);
+			}
+		}
+
 		// Прокручиваем ленту превьюшек
 		function slideThumbsShaft(time, x, auto) {
 			if (thumbsShaftSize) {
@@ -615,7 +628,7 @@
 						if (thumbsShaftPos == undefined) {
 							thumbsShaftPos = thumbsShaft.position()[_pos];
 						}
-						if (x && x > 24 && x < wrapSize - 24 && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
+						if (x && x > Math.max(24, o.thumbMargin*2) && x < wrapSize - Math.max(24, o.thumbMargin*2) && ((direction > 0 && x > thumbPlace * .75) || (direction < 0 && x < thumbPlace * 1.25))) {
 							var i;
 							if (direction > 0) {
 								i = index + 1;
@@ -668,15 +681,7 @@
 					////console.log(thumbsShaftDraggedFLAG);
 
 					if (!thumbsShaftDraggedFLAG) {
-						if (csstrFLAG) {
-							thumbsShaft.css(getDuration(time));
-							thumbsShaft.removeClass('fotorama__thumbs-shaft_out');
-							setTimeout(function() {
-								thumbsShaft.css(getTranslate(newPos, o.vertical));
-							}, 1);
-						} else {
-							thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
-						}
+						animate(thumbsShaft, newPos, time);
 
 						thumbsShaftPos = newPos;
 					} else {
@@ -923,6 +928,11 @@
 				newImg.data({'wraped': true});
 
 				loadImg(index, newImg, onLoad, 'img');
+
+				if ((dataFLAG && img[index].html && img[index].html.length) || (o.html && o.html[index] && o.html[index].length)) {
+					var html = img[index].html || o.html[index];
+					newImg.append(html);
+				}
 			} else if (o.detachSiblings && newImg.data('detached')) {
 				newImg.data({'detached': false}).appendTo(shaft);
 			}
@@ -1076,14 +1086,7 @@
 				} else {
 					pos = -indexNew*(wrapHeight+o.margin);
 				}
-				if (csstrFLAG) {
-					shaft.css(getDuration(time));
-					setTimeout(function(){
-						shaft.css(getTranslate(pos, o.vertical));
-					},1);
-				} else {
-					shaft.stop().animate(getTranslate(pos, o.vertical), time);
-				}
+				animate(shaft, pos, time);
 			} else {
 				if (csstrFLAG) {
 					if (!activeImg) {
@@ -1589,82 +1592,76 @@
 			}
 
 			touch(shaft, shaftOnMouseDown, shaftOnMouseMove, shaftOnMouseUp);
-		}
 
-		if (o.thumbs && o.thumbsPreview) {
-			touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
-			function thumbsShaftOnMouseDown() {
-				thumbsShaftMouseDownFLAG = true;
-				thumbsShaftDraggedFLAG = true;
-			}
-			function thumbsShaftOnMouseMove(pos, posDiff) {
-				//console.log(posDiff);
-				if (!thumbsShaftGrabbingFLAG && Math.abs(posDiff) >= 5) {
-
-					thumb.unbind('click', onThumbClick);
-					clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
-					thumbsShaftGrabbingFLAG = true;
+			if (o.touchStyle && o.thumbs && o.thumbsPreview) {
+				function thumbsShaftOnMouseDown() {
+					thumbsShaftMouseDownFLAG = true;
+					thumbsShaftDraggedFLAG = true;
 				}
+				function thumbsShaftOnMouseMove(pos, posDiff) {
+					//console.log(posDiff);
+					if (!thumbsShaftGrabbingFLAG && Math.abs(posDiff) >= 5) {
 
-				setThumbsShadow(pos);
-			}
-			function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
-				thumbsShaftMouseDownFLAG = false;
-
-				setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
-					thumbsShaftGrabbingFLAG = false;
-					thumb.bind('click', onThumbClick);
-				}, o__dragTimeout);
-
-				dirtyLeft = -dirtyLeft;
-
-				var newPos = dirtyLeft;
-				var time = o.transitionDuration*2;
-
-				if (thumbsShaftJerkFLAG) {
-					slideThumbsShaft(0, false, true);
-					thumbsShaftJerkFLAG = false;
-				}
-
-				if (dirtyLeft > thumbsShaft.data('maxPos')) {
-					newPos = thumbsShaft.data('maxPos');
-					time = time/2;
-				} else if (dirtyLeft < thumbsShaft.data('minPos')) {
-					newPos = thumbsShaft.data('minPos');
-					time = time/2;
-				} else {
-					if (isSwipe) {
-						posDiff = -posDiff;
-						var speed = posDiff/timeDiff;
-						//var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
-						newPos = Math.round(dirtyLeft + speed*200);
-						if (newPos > thumbsShaft.data('maxPos')) {
-							time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('maxPos')))));
-							newPos = thumbsShaft.data('maxPos');
-						} else if (newPos < thumbsShaft.data('minPos')) {
-							time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('minPos')))));
-							//console.log(speed*200, newPos, thumbsShaft.data('minPos'));
-							newPos = thumbsShaft.data('minPos');
-						}
-						//console.log('time: '+time);
+						thumb.unbind('click', onThumbClick);
+						clearTimeout(setThumbsShaftGrabbingFLAGTimeout);
+						thumbsShaftGrabbingFLAG = true;
 					}
+
+					setThumbsShadow(pos);
+				}
+				function thumbsShaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
+					thumbsShaftMouseDownFLAG = false;
+
+					setThumbsShaftGrabbingFLAGTimeout = setTimeout(function() {
+						thumbsShaftGrabbingFLAG = false;
+						thumb.bind('click', onThumbClick);
+					}, o__dragTimeout);
+
+					dirtyLeft = -dirtyLeft;
+
+					var newPos = dirtyLeft;
+					var time = o.transitionDuration*2;
+
+					if (thumbsShaftJerkFLAG) {
+						slideThumbsShaft(0, false, true);
+						thumbsShaftJerkFLAG = false;
+					}
+
+					if (dirtyLeft > thumbsShaft.data('maxPos')) {
+						newPos = thumbsShaft.data('maxPos');
+						time = time/2;
+					} else if (dirtyLeft < thumbsShaft.data('minPos')) {
+						newPos = thumbsShaft.data('minPos');
+						time = time/2;
+					} else {
+						if (isSwipe) {
+							posDiff = -posDiff;
+							var speed = posDiff/timeDiff;
+							//var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
+							newPos = Math.round(dirtyLeft + speed*200);
+							if (newPos > thumbsShaft.data('maxPos')) {
+								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('maxPos')))));
+								newPos = thumbsShaft.data('maxPos');
+							} else if (newPos < thumbsShaft.data('minPos')) {
+								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('minPos')))));
+								//console.log(speed*200, newPos, thumbsShaft.data('minPos'));
+								newPos = thumbsShaft.data('minPos');
+							}
+							//console.log('time: '+time);
+						}
+					}
+
+					if (e.altKey) {
+						time = time*10;
+					}
+
+					thumbsShaftPos = newPos;
+					//thumbsShaft.addClass('fotorama__thumbs-shaft_out');
+					animate(thumbsShaft, newPos, time);
+					setThumbsShadow(newPos);
 				}
 
-				if (e.altKey) {
-					time = time*10;
-				}
-
-				thumbsShaftPos = newPos;
-				if (csstrFLAG) {
-					thumbsShaft.css(getDuration(time));
-					thumbsShaft.addClass('fotorama__thumbs-shaft_out');
-					setTimeout(function() {
-						thumbsShaft.css(getTranslate(newPos, o.vertical));
-					}, 1);
-				} else {
-					thumbsShaft.stop().animate(getTranslate(newPos, o.vertical), time);
-				}
-				setThumbsShadow(newPos);
+				touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
 			}
 		}
 	}

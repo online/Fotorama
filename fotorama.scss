@@ -1,6 +1,6 @@
 @import "compass";
 
-/* Fotorama 1.4 (v1199) http://fotoramajs.com/ */
+/* Fotorama 1.5 (v1200) http://fotoramajs.com/ */
 
 $transitionDuration: 333ms;
 $backgroundColor: #323130;
@@ -289,7 +289,7 @@ $bezier2: cubic-bezier(0, 0, .25, 1);
 			@include transform(translate3d(0,0,0));
 		}
 		.fotorama__thumbs-shaft_out {
-			@include transition-timing-function($bezier2);
+			//@include transition-timing-function($bezier2);
 		}
 		.fotorama__thumb-border {
 			@include transition-property(all);
@@ -331,6 +331,7 @@ $bezier2: cubic-bezier(0, 0, .25, 1);
 
 .fotorama__img {
 	position: relative;
+	margin: 0 !important;
 }
 
 $arrWidth: 24px + 20;
