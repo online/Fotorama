@@ -1,16 +1,31 @@
-/* Fotorama 1.5 (v1200) http://fotoramajs.com/ */
+/* Fotorama 1.5 (v1201) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
  */
 ;window.Mdrnzr=function(a,b,c){function B(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+n.join(c+" ")+c).split(" ");return A(d,b)}function A(a,b){for(var d in a)if(j[a[d]]!==c)return b=="pfx"?a[d]:!0;return!1}function z(a,b){return!!~(""+a).indexOf(b)}function y(a,b){return typeof a===b}function x(a,b){return w(m.join(a+";")+(b||""))}function w(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="Mdrnzr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),n="Webkit Moz O ms Khtml".split(" "),o={},p={},q={},r=[],s=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},t,u={}.hasOwnProperty,v;!y(u,c)&&!y(u.call,c)?v=function(a,b){return u.call(a,b)}:v=function(a,b){return b in a&&y(a.constructor.prototype[b],c)};var C=function(a,c){var d=a.join(""),f=c.length;s(d,function(a,c){var d=b.styleSheets[b.styleSheets.length-1],g=d.cssRules&&d.cssRules[0]?d.cssRules[0].cssText:d.cssText||"",h=a.childNodes,i={};while(f--)i[h[f].id]=h[f];e.csstransforms3d=i.csstransforms3d.offsetLeft===9},f,c)}([,["@media (",m.join("transform-3d),("),h,")","{#csstransforms3d{left:9px;position:absolute}}"].join("")],[,"csstransforms3d"]);o.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},o.csstransforms3d=function(){var a=!!A(["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"]);a&&"webkitPerspective"in f.style&&(a=e.csstransforms3d);return a},o.csstransitions=function(){return B("transitionProperty")};for(var D in o)v(o,D)&&(t=D.toLowerCase(),e[t]=o[D](),r.push((e[t]?"":"no-")+t));w(""),i=k=null,e._version=d,e._prefixes=m,e._domPrefixes=n,e.testProp=function(a){return A([a])},e.testAllProps=B,e.testStyles=s;return e}(this,this.document);
 
+/*!
+ * Bez v1.0.10-g5ae0136
+ * http://github.com/rdallasgray/bez
+ *
+ * A plugin to convert CSS3 cubic-bezier co-ordinates to jQuery-compatible easing functions
+ *
+ * With thanks to Nikolay Nemshilov for clarification on the cubic-bezier maths
+ * See http://st-on-it.blogspot.com/2011/05/calculating-cubic-bezier-function.html
+ *
+ * Copyright 2011 Robert Dallas Gray. All rights reserved.
+ * Provided under the FreeBSD license: https://github.com/rdallasgray/bez/blob/master/LICENSE.txt
+*/jQuery.extend({bez:function(a){var b="bez_"+$.makeArray(arguments).join("_").replace(".","p");if(typeof jQuery.easing[b]!="function"){var c=function(a,b){var c=[null,null],d=[null,null],e=[null,null],f=function(f,g){return e[g]=3*a[g],d[g]=3*(b[g]-a[g])-e[g],c[g]=1-e[g]-d[g],f*(e[g]+f*(d[g]+f*c[g]))},g=function(a){return e[0]+a*(2*d[0]+3*c[0]*a)},h=function(a){var b=a,c=0,d;while(++c<14){d=f(b,0)-a;if(Math.abs(d)<.001)break;b-=d/g(b)}return b};return function(a){return f(h(a),1)}};jQuery.easing[b]=function(b,d,e,f,g){return f*c([a[0],a[1]],[a[2],a[3]])(d/g)+e}}return b}});
+
 (function($){
 	var touchFLAG = ('ontouchstart' in document);
 	var csstrFLAG = Mdrnzr.csstransforms3d && Mdrnzr.csstransitions;
 	var ieFLAG = $.browser.msie;
-	var o__dragTimeout = 300;
 	var quirksFLAG = document.compatMode != 'CSS1Compat' && ieFLAG;
+
+	var o__dragTimeout = 300;
+	var o__bezier = $.bez([.1,0,.25,1]);
 
 	//alert(quirksFLAG);
 
@@ -527,7 +542,7 @@
 				var activeIndex = imgFrame.index(activeImg);
 				setImgSize(activeImg, activeIndex);
 				var interval = 0;
-				////////console.log('resize!');
+				////////////console.log('resize!');
 				$(resizeStack).each(function(){
 					clearTimeout(this);
 				});
@@ -537,7 +552,7 @@
 						var thisImg = $(this);
 						//Ресайзим порциями, чтобы не падали слабенькие Айпады
 						var timeout = setTimeout(function() {
-							////////console.log(i);
+							////////////console.log(i);
 							setImgSize(thisImg, i);
 						}, interval*50+50);
 						resizeStack.push(timeout);
@@ -595,15 +610,30 @@
 			fotoramaState = state;
 		}
 
-		function animate(block, pos, time) {
+
+		function clearBackAnimate(block) {
+			clearTimeout(block.data('backAnimate'));
+		}
+
+		function animate(block, pos, time, overPos) {
+			//console.log(block.attr('class'));
+			var POS = pos;
+			clearBackAnimate(block);
+			if (overPos) {
+				POS = overPos;
+				block.data({
+					backAnimate: setTimeout(function(){
+						animate(block, pos, Math.max(o.transitionDuration, time/2));
+					}, time)
+				});
+			}
 			if (csstrFLAG) {
 				block.css(getDuration(time));
-				//block.removeClass('fotorama__thumbs-shaft_out');
 				setTimeout(function() {
-					block.css(getTranslate(pos, o.vertical));
+					block.css(getTranslate(POS, o.vertical));
 				}, 1);
 			} else {
-				block.stop().animate(getTranslate(pos, o.vertical), time);
+				block.animate(getTranslate(POS, o.vertical), time, o__bezier);
 			}
 		}
 
@@ -678,7 +708,7 @@
 						}
 					}
 
-					////console.log(thumbsShaftDraggedFLAG);
+					////////console.log(thumbsShaftDraggedFLAG);
 
 					if (!thumbsShaftDraggedFLAG) {
 						animate(thumbsShaft, newPos, time);
@@ -700,9 +730,9 @@
 						},1);
 					} else {
 						if (!o.vertical) {
-							thumbBorder.stop().animate({left: thumbBorderPos, width: thumbBorderSize}, time);
+							thumbBorder.stop().animate({left: thumbBorderPos, width: thumbBorderSize}, time, o__bezier);
 						} else {
-							thumbBorder.stop().animate({top: thumbBorderPos, height: thumbBorderSize}, time);
+							thumbBorder.stop().animate({top: thumbBorderPos, height: thumbBorderSize}, time, o__bezier);
 						}
 					}
 				}
@@ -992,7 +1022,7 @@
 		}
 
 		// Показываем картинки, выделяем тумбсы
-		function showImg(newImg, e, x, reset) {
+		function showImg(newImg, e, x, reset, time, overPos) {
 			var prevActiveImg, prevActiveThumb;
 			var captionText;
 			var indexPrev;
@@ -1002,14 +1032,18 @@
 				$(this).unbind('fotoramaLoad fotoramaError');
 			});
 
-			var time = 0;
 
-			if (!reset) {
-				time = o.transitionDuration;
-				if (e && e.altKey) {
-					// Как на маке: клик с шифтом замедляет анимацию
-					time = time*10;
+			if (!time) {
+				if (reset) {
+					time = 0;
+				} else {
+					time = o.transitionDuration;
 				}
+			}
+
+			if (!reset && e && e.altKey) {
+				// Как на маке: клик с шифтом замедляет анимацию
+				time = time*10;
 			}
 
 			function setCaption() {
@@ -1080,13 +1114,8 @@
 			}
 
 			if (o.touchStyle) {
-				var pos;
-				if (!o.vertical) {
-					pos = -indexNew*(wrapWidth+o.margin);
-				} else {
-					pos = -indexNew*(wrapHeight+o.margin);
-				}
-				animate(shaft, pos, time);
+				var pos = -indexNew*(wrapSize+o.margin);
+				animate(shaft, pos, time, overPos);
 			} else {
 				if (csstrFLAG) {
 					if (!activeImg) {
@@ -1343,7 +1372,8 @@
 						downPos2 = coo2;
 						moveCoo = [[downTime, coo]];
 						elPos = el.position()[_pos];
-						//////console.log(elPos, downPos);
+						//////////console.log(elPos, downPos);
+						clearBackAnimate(el);
 						if (csstrFLAG) {
 							el
 									.css(getDuration(0))
@@ -1381,7 +1411,7 @@
 					moveCoo.push([moveTime, coo]);
 
 					var pos = downPos - coo;
-					//////console.log(pos);
+					//////////console.log(pos);
 					/*var minPos;
 					if (!o.vertical) {
 						minPos = -(el.data('width') - wrapWidth);
@@ -1390,39 +1420,27 @@
 					}*/
 
 					elPos = downElPos-pos;
-					//////console.log(elPos, coo, el.data('maxPos'));
+					//////////console.log(elPos, coo, el.data('maxPos'));
 
 
 					if (elPos > el.data('maxPos')) {
 						elPos = Math.round(elPos + ((el.data('maxPos') - elPos)/1.25));
-						limitFLAG = true;
-						if (o.shadows) {
-							wrap
-									.addClass('fotorama__wrap_shadow_no-left')
-									.removeClass('fotorama__wrap_shadow_no-right');
-						}
+						limitFLAG = 'left';
+
 					} else if (elPos < el.data('minPos')) {
 						elPos = Math.round(elPos + ((el.data('minPos') - elPos) / 1.25));
-						limitFLAG = true;
-						if (o.shadows) {
-							wrap
-									.addClass('fotorama__wrap_shadow_no-right')
-									.removeClass('fotorama__wrap_shadow_no-left');
-						}
+						limitFLAG = 'right';
 					} else {
 						limitFLAG = false;
-						if (o.shadows) {
-							wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
-						}
 					}
 
-					//////console.log(elPos);
+					//////////console.log(elPos);
 
 					if (o.touchStyle) {
 						el.css(getTranslate(elPos, o.vertical));
 					}
 
-					mouseMove(elPos, pos);
+					mouseMove(elPos, pos, limitFLAG);
 				}
 				if (!touchFLAG) {
 					coo = e[_coo];
@@ -1454,12 +1472,6 @@
 					} else {
 						el[0].removeEventListener('touchmove', onMouseMove, false);
 						el[0].removeEventListener('touchend', onMouseUp, false);
-					}
-					if (o.shadows) {
-						wrap.removeClass('fotorama__wrap_shadow');
-					}
-					if (!touchFLAG) {
-						el.removeClass('fotorama__shaft_grabbing');
 					}
 
 					upTime = new Date().getTime();
@@ -1508,7 +1520,7 @@
 			function shaftOnMouseDown() {
 				shaftMouseDownFLAG = true;
 			}
-			function shaftOnMouseMove(pos, posDiff) {
+			function shaftOnMouseMove(pos, posDiff, limitFLAG) {
 				if (!shaftGrabbingFLAG) {
 					if (o.shadows) {
 						wrap.addClass('fotorama__wrap_shadow');
@@ -1519,6 +1531,21 @@
 					clearTimeout(setShaftGrabbingFLAGTimeout);
 					shaftGrabbingFLAG = true;
 				}
+
+				if (o.shadows) {
+					if (limitFLAG) {
+						var antiLimit = limitFLAG == 'left' ? 'right' : 'left';
+						//////console.log(limitFLAG, antiLimit);
+						wrap
+								.addClass('fotorama__wrap_shadow_no-' + limitFLAG)
+								.removeClass('fotorama__wrap_shadow_no-' + antiLimit);
+					} else {
+						if (o.shadows) {
+							wrap.removeClass('fotorama__wrap_shadow_no-left fotorama__wrap_shadow_no-right');
+						}
+					}
+				}
+
 			}
 			function shaftOnMouseUp(dirtyLeft, timeDiff, isSwipe, timeFromLast, sameDirection, posDiff, e) {
 				shaftMouseDownFLAG = false;
@@ -1527,7 +1554,15 @@
 					if (!touchFLAG) {
 						wrapLeave();
 					}
+					if (!touchFLAG) {
+						shaft.removeClass('fotorama__shaft_grabbing');
+					}
 				}, o__dragTimeout);
+
+				if (o.shadows) {
+						wrap.removeClass('fotorama__wrap_shadow');
+					}
+
 
 				var forceLeft = false;
 				var forceRight = false;
@@ -1545,33 +1580,69 @@
 							}
 						}
 
+						var time = o.transitionDuration;
+
 						var index = undefined;
 						if (!forceLeft && !forceRight) {
 							index = Math.round(dirtyLeft / wrapSize);
+							////console.log('Свайпа не было, смотрим ближайщую картинку');
 						} else {
-							if (!(timeFromLast <= o.transitionDuration && sameDirection)) {
+//							if (!(timeFromLast <= o.transitionDuration && sameDirection)) {
+								posDiff = -posDiff;
+								var speed = posDiff/timeDiff;
+								var virtualPos = Math.round(-dirtyLeft + speed*200);
+								var newPos, maxPos, overPos;
+								//animate(shaft, virtualPos, o.transitionDuration);
 								if (forceLeft) {
-									index = Math.round((dirtyLeft - wrapSize / 2) / wrapSize);
+									index = Math.ceil(dirtyLeft / wrapSize)-1;
+									newPos = -index*(wrapSize+o.margin);
+									if (virtualPos > newPos) {
+										overPos = Math.abs(virtualPos - newPos);
+										time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.98)));
+										overPos = newPos + overPos*.02;
+									}
+									////console.log('Свайп влево');
 								} else if (forceRight) {
-									index = Math.round((dirtyLeft + wrapSize / 2) / wrapSize);
+									index = Math.floor(dirtyLeft / wrapSize)+1;
+									newPos = -index*(wrapSize+o.margin);
+									if (virtualPos < newPos) {
+										overPos = Math.abs(virtualPos - newPos);
+										time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.98)));
+										overPos = newPos - overPos*.02;
+									}
+
+									////console.log('Свайп вправо');
 								}
-							} else {
+							/*}*/ /*else {
 								if (forceLeft) {
 									callShowImg(-1, e, false);
+									////console.log('Двойной свайп влево');
 								} else if (forceRight) {
 									callShowImg(+1, e, false);
+									////console.log('Двойной свайп вправо');
 								}
-							}
+							}*/
 						}
 
+						////console.log(time);
+
+
 						if (index != undefined) {
-							if (index < 0) index = 0;
-							if (index > size - 1) index = size - 1;
-							showImg(imgFrame.eq(index), e, false);
+							if (index < 0) {
+								index = 0;
+								overPos = false;
+								time = o.transitionDuration;
+							}
+							if (index > size - 1) {
+								index = size - 1;
+								overPos = false;
+								time = o.transitionDuration;
+							}
+							showImg(imgFrame.eq(index), e, false, false, time, overPos);
 						}
 					} else if (a.length) {
 						document.location = a.attr('href');
-					} else if (o.pseudoClick) {
+					} else if (o.pseudoClick && !touchFLAG) {
 						if (!e.shiftKey) {
 							// Если клик без шифта
 							callShowImg(+1, e, true);
@@ -1599,7 +1670,7 @@
 					thumbsShaftDraggedFLAG = true;
 				}
 				function thumbsShaftOnMouseMove(pos, posDiff) {
-					//console.log(posDiff);
+					//////console.log(posDiff);
 					if (!thumbsShaftGrabbingFLAG && Math.abs(posDiff) >= 5) {
 
 						thumb.unbind('click', onThumbClick);
@@ -1620,6 +1691,7 @@
 					dirtyLeft = -dirtyLeft;
 
 					var newPos = dirtyLeft;
+					var overPos;
 					var time = o.transitionDuration*2;
 
 					if (thumbsShaftJerkFLAG) {
@@ -1637,17 +1709,23 @@
 						if (isSwipe) {
 							posDiff = -posDiff;
 							var speed = posDiff/timeDiff;
-							//var booster = timeFromLast <= time && sameDirection ? timeFromLast/time : 0;
 							newPos = Math.round(dirtyLeft + speed*200);
 							if (newPos > thumbsShaft.data('maxPos')) {
-								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('maxPos')))));
+								overPos = Math.abs(newPos - thumbsShaft.data('maxPos'));
+								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.96)));
 								newPos = thumbsShaft.data('maxPos');
+								overPos = newPos + overPos*.04;
+								//newPos = overPos;
+
 							} else if (newPos < thumbsShaft.data('minPos')) {
-								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - Math.abs(newPos - thumbsShaft.data('minPos')))));
-								//console.log(speed*200, newPos, thumbsShaft.data('minPos'));
+								overPos = Math.abs(newPos - thumbsShaft.data('minPos'));
+								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.96)));
+								//////console.log(speed*200, newPos, thumbsShaft.data('minPos'));
 								newPos = thumbsShaft.data('minPos');
+								overPos = newPos - overPos*.04;
+								//newPos = overPos;
 							}
-							//console.log('time: '+time);
+							//////console.log('time: '+time);
 						}
 					}
 
@@ -1656,9 +1734,11 @@
 					}
 
 					thumbsShaftPos = newPos;
-					//thumbsShaft.addClass('fotorama__thumbs-shaft_out');
-					animate(thumbsShaft, newPos, time);
-					setThumbsShadow(newPos);
+
+					if (newPos != dirtyLeft) {
+						animate(thumbsShaft, newPos, time, overPos);
+						setThumbsShadow(newPos);
+					}
 				}
 
 				touch(thumbsShaft, thumbsShaftOnMouseDown, thumbsShaftOnMouseMove, thumbsShaftOnMouseUp);
