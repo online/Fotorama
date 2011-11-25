@@ -1,4 +1,4 @@
-/* Fotorama 1.5 (v1201) http://fotoramajs.com/ */
+/* Fotorama 1.5 (v1203) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -74,6 +74,10 @@
 			}
 		});
 	}
+
+
+	// Авто-инициализация по классу.
+	$('.fotorama_auto').fotorama();
 
 	function getTranslate(pos, vertical) {
 		if (csstrFLAG) {
@@ -258,7 +262,7 @@
 		}
 
 		if (touchFLAG) {
-			wrap.addClass('fotorama__wrap_touch');
+			fotorama.addClass('fotorama_touch');
 			o.shadows = false;
 		}
 		if (o.touchStyle) {
@@ -426,9 +430,9 @@
 								ctx.drawImage(thisThumbNew, 0, 0, o__thumbSize, _thumbSize);
 							}
 						}
-						if (!touchFLAG && i != 0) {
-							$thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
-						}
+						//if (!touchFLAG && i != 0) {
+							//$thisThumbNew.stop().fadeTo(0, o.thumbOpacity);
+						//}
 
 						thumbsShaftSize += _thumbSize + o.thumbMargin - (o__thumbSize + o.thumbMargin);
 						thumbsShaft.css(_size, thumbsShaftSize);
@@ -1099,10 +1103,10 @@
 				activeThumb
 						.addClass('fotorama__thumb_selected')
 						.data('disabled', true);
-				if (o.thumbsPreview && !touchFLAG) {
-					prevActiveThumb.children().stop().fadeTo(time, o.thumbOpacity);
-					activeThumb.children().stop().fadeTo(time, o.thumbOpacityActive);
-				}
+//				if (o.thumbsPreview && !touchFLAG) {
+//					prevActiveThumb.children().stop().fadeTo(time, o.thumbOpacity);
+//					activeThumb.children().stop().fadeTo(time, o.thumbOpacityActive);
+//				}
 			}
 			if (o.shadows) {
 				prevActiveImg.removeClass('fotorama__frame_active');
@@ -1188,22 +1192,22 @@
 					thumbBorder.css({'border-color': o.thumbBorderColor});
 				}
 
-				if (!touchFLAG) {
-					thumb.hover(
-							function() {
-								var thisThumb = $(this);
-								if (!thisThumb.hasClass('fotorama__thumb_selected')) {
-									thisThumb.children().stop().fadeTo(o.transitionDuration / 2, o.thumbOpacityActive);
-								}
-							},
-							function() {
-								var thisThumb = $(this);
-								if (!thisThumb.hasClass('fotorama__thumb_selected')) {
-									thisThumb.children().stop().fadeTo(o.transitionDuration * 2, o.thumbOpacity);
-								}
-							}
-					);
-				}
+//				if (!touchFLAG) {
+//					thumb.hover(
+//							function() {
+//								var thisThumb = $(this);
+//								if (!thisThumb.hasClass('fotorama__thumb_selected')) {
+//									thisThumb.children().stop().fadeTo(o.transitionDuration / 2, o.thumbOpacityActive);
+//								}
+//							},
+//							function() {
+//								var thisThumb = $(this);
+//								if (!thisThumb.hasClass('fotorama__thumb_selected')) {
+//									thisThumb.children().stop().fadeTo(o.transitionDuration * 2, o.thumbOpacity);
+//								}
+//							}
+//					);
+//				}
 			}
 		}
 
@@ -1371,16 +1375,16 @@
 						downPos = coo;
 						downPos2 = coo2;
 						moveCoo = [[downTime, coo]];
-						elPos = el.position()[_pos];
+
 						//////////console.log(elPos, downPos);
 						clearBackAnimate(el);
 						if (csstrFLAG) {
-							el
-									.css(getDuration(0))
-									.css(getTranslate(elPos, o.vertical));
+							el.css(getDuration(0));
 						} else {
 							el.stop();
 						}
+						elPos = el.position()[_pos];
+						el.css(getTranslate(elPos, o.vertical));
 						downElPos = elPos;
 
 						mouseDown();
@@ -1437,6 +1441,7 @@
 					//////////console.log(elPos);
 
 					if (o.touchStyle) {
+//						 рол 
 						el.css(getTranslate(elPos, o.vertical));
 					}
 
@@ -1598,8 +1603,8 @@
 									newPos = -index*(wrapSize+o.margin);
 									if (virtualPos > newPos) {
 										overPos = Math.abs(virtualPos - newPos);
-										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.98)));
-										overPos = newPos + overPos*.02;
+										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.97)));
+										overPos = newPos + overPos*.03;
 									}
 									////console.log('Свайп влево');
 								} else if (forceRight) {
@@ -1607,8 +1612,8 @@
 									newPos = -index*(wrapSize+o.margin);
 									if (virtualPos < newPos) {
 										overPos = Math.abs(virtualPos - newPos);
-										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.98)));
-										overPos = newPos - overPos*.02;
+										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.97)));
+										overPos = newPos - overPos*.03;
 									}
 
 									////console.log('Свайп вправо');
