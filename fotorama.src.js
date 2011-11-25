@@ -1590,7 +1590,7 @@
 //							if (!(timeFromLast <= o.transitionDuration && sameDirection)) {
 								posDiff = -posDiff;
 								var speed = posDiff/timeDiff;
-								var virtualPos = Math.round(-dirtyLeft + speed*200);
+								var virtualPos = Math.round(-dirtyLeft + speed*250);
 								var newPos, maxPos, overPos;
 								//animate(shaft, virtualPos, o.transitionDuration);
 								if (forceLeft) {
@@ -1598,7 +1598,7 @@
 									newPos = -index*(wrapSize+o.margin);
 									if (virtualPos > newPos) {
 										overPos = Math.abs(virtualPos - newPos);
-										time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.98)));
+										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.98)));
 										overPos = newPos + overPos*.02;
 									}
 									////console.log('Свайп влево');
@@ -1607,7 +1607,7 @@
 									newPos = -index*(wrapSize+o.margin);
 									if (virtualPos < newPos) {
 										overPos = Math.abs(virtualPos - newPos);
-										time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.98)));
+										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.98)));
 										overPos = newPos - overPos*.02;
 									}
 
@@ -1709,18 +1709,18 @@
 						if (isSwipe) {
 							posDiff = -posDiff;
 							var speed = posDiff/timeDiff;
-							newPos = Math.round(dirtyLeft + speed*200);
+							newPos = Math.round(dirtyLeft + speed*250);
 							if (newPos > thumbsShaft.data('maxPos')) {
 								overPos = Math.abs(newPos - thumbsShaft.data('maxPos'));
-								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.96)));
+								time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.96)));
 								newPos = thumbsShaft.data('maxPos');
 								overPos = newPos + overPos*.04;
 								//newPos = overPos;
 
 							} else if (newPos < thumbsShaft.data('minPos')) {
 								overPos = Math.abs(newPos - thumbsShaft.data('minPos'));
-								time = Math.abs(time/((speed*200)/(Math.abs(speed*200) - overPos*.96)));
-								//////console.log(speed*200, newPos, thumbsShaft.data('minPos'));
+								time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.96)));
+								//////console.log(speed*250, newPos, thumbsShaft.data('minPos'));
 								newPos = thumbsShaft.data('minPos');
 								overPos = newPos - overPos*.04;
 								//newPos = overPos;
