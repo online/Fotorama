@@ -1,4 +1,4 @@
-/* Fotorama 1.5 (v1203) http://fotoramajs.com/ */
+/* Fotorama 1.5 (v1205) http://fotoramajs.com/ */
 
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-csstransforms3d-csstransitions-canvas-teststyles-testprop-testallprops-prefixes-domprefixes
@@ -48,6 +48,7 @@
 			preload: 3,
 			resize: false,
 			zoomToFit: true,
+			cropToFit: false,
 			vertical: false,
 			verticalThumbsRight: false,
 			arrows: true,
@@ -546,7 +547,7 @@
 				var activeIndex = imgFrame.index(activeImg);
 				setImgSize(activeImg, activeIndex);
 				var interval = 0;
-				////////////console.log('resize!');
+				//////////////console.log('resize!');
 				$(resizeStack).each(function(){
 					clearTimeout(this);
 				});
@@ -556,7 +557,7 @@
 						var thisImg = $(this);
 						//Ресайзим порциями, чтобы не падали слабенькие Айпады
 						var timeout = setTimeout(function() {
-							////////////console.log(i);
+							//////////////console.log(i);
 							setImgSize(thisImg, i);
 						}, interval*50+50);
 						resizeStack.push(timeout);
@@ -620,7 +621,7 @@
 		}
 
 		function animate(block, pos, time, overPos) {
-			//console.log(block.attr('class'));
+			////console.log(block.attr('class'));
 			var POS = pos;
 			clearBackAnimate(block);
 			if (overPos) {
@@ -712,7 +713,7 @@
 						}
 					}
 
-					////////console.log(thumbsShaftDraggedFLAG);
+					//////////console.log(thumbsShaftDraggedFLAG);
 
 					if (!thumbsShaftDraggedFLAG) {
 						animate(thumbsShaft, newPos, time);
@@ -746,21 +747,23 @@
 		function setThumbsShadow(pos) {
 			if (o.shadows) {
 				if (thumbsShaftSize > wrapSize) {
+					// TODO: Тут могут возникнуть проблемы если превьюшек мало, но их дотащить до края (тени не будет, а должна). Передумать.
+
 					thumbs.addClass('fotorama__thumbs_shadow');
-				}
-				if (pos) {
-					var minPos = thumbsShaft.data('minPos');
-					if (pos <= minPos) {
-							thumbs
-									.removeClass('fotorama__thumbs_shadow_no-left')
-									.addClass('fotorama__thumbs_shadow_no-right');
-					} else if (pos >= o.thumbMargin) {
-							thumbs
-									.removeClass('fotorama__thumbs_shadow_no-right')
-									.addClass('fotorama__thumbs_shadow_no-left');
-					} else {
-							thumbs
-									.removeClass('fotorama__thumbs_shadow_no-left fotorama__thumbs_shadow_no-right');
+
+					if (pos) {
+						if (pos <= thumbsShaft.data('minPos')) {
+								thumbs
+										.removeClass('fotorama__thumbs_shadow_no-left')
+										.addClass('fotorama__thumbs_shadow_no-right');
+						} else if (pos >= o.thumbMargin) {
+								thumbs
+										.removeClass('fotorama__thumbs_shadow_no-right')
+										.addClass('fotorama__thumbs_shadow_no-left');
+						} else {
+								thumbs
+										.removeClass('fotorama__thumbs_shadow_no-left fotorama__thumbs_shadow_no-right');
+						}
 					}
 				}
 			}
@@ -779,7 +782,7 @@
 				var thisImgWidth = thisImgFrame.data('imgWidth');
 				var thisImgHeight = thisImgFrame.data('imgHeight');
 				var thisImgRatio = thisImgFrame.data('imgRatio');
-				var thisImgTop = 0
+				var thisImgTop = 0, thisImgLeft;
 				if (o.touchStyle) {
 					if (!o.vertical) {
 						thisImgFrame.css({left: index * (wrapWidth + o.margin)});
@@ -795,11 +798,25 @@
 					}
 
 					if (thisImgRatio >= wrapRatio) {
-						thisImgWidth = Math.round(wrapWidth - minPadding) < thisImgWidth || o.zoomToFit ? Math.round(wrapWidth - minPadding) : thisImgWidth;
-						thisImgHeight = Math.round((thisImgWidth) / thisImgRatio * 1000);
+						////console.log('Горизонтальная фотка');
+						if (!o.cropToFit) {
+							thisImgWidth = Math.round(wrapWidth - minPadding) < thisImgWidth || o.zoomToFit ? Math.round(wrapWidth - minPadding) : thisImgWidth;
+							thisImgHeight = Math.round((thisImgWidth) / thisImgRatio * 1000);
+						} else {
+							thisImgHeight = wrapHeight;
+							thisImgWidth = Math.round((thisImgHeight) * thisImgRatio / 1000);
+						}
+
 					} else {
-						thisImgHeight = Math.round(wrapHeight - minPadding) < thisImgHeight || o.zoomToFit ? Math.round(wrapHeight - minPadding) : thisImgHeight;
-						thisImgWidth = Math.round((thisImgHeight) * thisImgRatio / 1000);
+						////console.log('Вертикальная фотка');
+						if (!o.cropToFit) {
+							thisImgHeight = Math.round(wrapHeight - minPadding) < thisImgHeight || o.zoomToFit ? Math.round(wrapHeight - minPadding) : thisImgHeight;
+							thisImgWidth = Math.round((thisImgHeight) * thisImgRatio / 1000);
+						} else {
+							thisImgWidth = wrapWidth;
+							thisImgHeight = Math.round((thisImgWidth) / thisImgRatio * 1000);
+						}
+
 					}
 				}
 				thisImg
@@ -812,12 +829,17 @@
 							height: thisImgHeight,
 							visibility: 'visible'
 						});
-				if (thisImgHeight < wrapHeight) {
-					thisImgTop = Math.round((wrapHeight - thisImgHeight) / 2)
+				if (thisImgHeight != wrapHeight) {
+					thisImgTop = Math.round((wrapHeight - thisImgHeight) / 2);
+					//console.log('thisImgTop: ' + thisImgTop);
+				}
+				if (thisImgWidth > wrapWidth) {
+					thisImgLeft = Math.round((wrapWidth - thisImgWidth) / 2);
 				}
 				thisImg
 					.css({
-						top: thisImgTop
+						top: thisImgTop,
+						left: thisImgLeft
 					});
 			}
 		}
@@ -1376,7 +1398,7 @@
 						downPos2 = coo2;
 						moveCoo = [[downTime, coo]];
 
-						//////////console.log(elPos, downPos);
+						////////////console.log(elPos, downPos);
 						clearBackAnimate(el);
 						if (csstrFLAG) {
 							el.css(getDuration(0));
@@ -1415,7 +1437,7 @@
 					moveCoo.push([moveTime, coo]);
 
 					var pos = downPos - coo;
-					//////////console.log(pos);
+					////////////console.log(pos);
 					/*var minPos;
 					if (!o.vertical) {
 						minPos = -(el.data('width') - wrapWidth);
@@ -1424,7 +1446,7 @@
 					}*/
 
 					elPos = downElPos-pos;
-					//////////console.log(elPos, coo, el.data('maxPos'));
+					////////////console.log(elPos, coo, el.data('maxPos'));
 
 
 					if (elPos > el.data('maxPos')) {
@@ -1438,7 +1460,7 @@
 						limitFLAG = false;
 					}
 
-					//////////console.log(elPos);
+					////////////console.log(elPos);
 
 					if (o.touchStyle) {
 //						 рол 
@@ -1526,6 +1548,8 @@
 				shaftMouseDownFLAG = true;
 			}
 			function shaftOnMouseMove(pos, posDiff, limitFLAG) {
+				clearTimeout(setShaftGrabbingFLAGTimeout);
+
 				if (!shaftGrabbingFLAG) {
 					if (o.shadows) {
 						wrap.addClass('fotorama__wrap_shadow');
@@ -1533,14 +1557,15 @@
 					if (!touchFLAG) {
 						shaft.addClass('fotorama__shaft_grabbing');
 					}
-					clearTimeout(setShaftGrabbingFLAGTimeout);
 					shaftGrabbingFLAG = true;
 				}
+
+
 
 				if (o.shadows) {
 					if (limitFLAG) {
 						var antiLimit = limitFLAG == 'left' ? 'right' : 'left';
-						//////console.log(limitFLAG, antiLimit);
+						////////console.log(limitFLAG, antiLimit);
 						wrap
 								.addClass('fotorama__wrap_shadow_no-' + limitFLAG)
 								.removeClass('fotorama__wrap_shadow_no-' + antiLimit);
@@ -1559,21 +1584,23 @@
 					if (!touchFLAG) {
 						wrapLeave();
 					}
-					if (!touchFLAG) {
-						shaft.removeClass('fotorama__shaft_grabbing');
-					}
+
 				}, o__dragTimeout);
 
+				if (!touchFLAG) {
+					shaft.removeClass('fotorama__shaft_grabbing');
+				}
+
 				if (o.shadows) {
-						wrap.removeClass('fotorama__wrap_shadow');
-					}
+					wrap.removeClass('fotorama__wrap_shadow');
+				}
 
 
 				var forceLeft = false;
 				var forceRight = false;
 
-				var target = $(e.target);
-				var a = target.filter('a') || target.parents('a');
+				var $target = $(e.target);
+				var a = $target.filter('a') || $target.parents('a');
 
 				if (o.touchStyle) {
 					if (shaftGrabbingFLAG) {
@@ -1590,7 +1617,7 @@
 						var index = undefined;
 						if (!forceLeft && !forceRight) {
 							index = Math.round(dirtyLeft / wrapSize);
-							////console.log('Свайпа не было, смотрим ближайщую картинку');
+							//////console.log('Свайпа не было, смотрим ближайщую картинку');
 						} else {
 //							if (!(timeFromLast <= o.transitionDuration && sameDirection)) {
 								posDiff = -posDiff;
@@ -1606,7 +1633,7 @@
 										time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.97)));
 										overPos = newPos + overPos*.03;
 									}
-									////console.log('Свайп влево');
+									//////console.log('Свайп влево');
 								} else if (forceRight) {
 									index = Math.floor(dirtyLeft / wrapSize)+1;
 									newPos = -index*(wrapSize+o.margin);
@@ -1616,20 +1643,20 @@
 										overPos = newPos - overPos*.03;
 									}
 
-									////console.log('Свайп вправо');
+									//////console.log('Свайп вправо');
 								}
 							/*}*/ /*else {
 								if (forceLeft) {
 									callShowImg(-1, e, false);
-									////console.log('Двойной свайп влево');
+									//////console.log('Двойной свайп влево');
 								} else if (forceRight) {
 									callShowImg(+1, e, false);
-									////console.log('Двойной свайп вправо');
+									//////console.log('Двойной свайп вправо');
 								}
 							}*/
 						}
 
-						////console.log(time);
+						//////console.log(time);
 
 
 						if (index != undefined) {
@@ -1675,7 +1702,7 @@
 					thumbsShaftDraggedFLAG = true;
 				}
 				function thumbsShaftOnMouseMove(pos, posDiff) {
-					//////console.log(posDiff);
+					////////console.log(posDiff);
 					if (!thumbsShaftGrabbingFLAG && Math.abs(posDiff) >= 5) {
 
 						thumb.unbind('click', onThumbClick);
@@ -1725,12 +1752,12 @@
 							} else if (newPos < thumbsShaft.data('minPos')) {
 								overPos = Math.abs(newPos - thumbsShaft.data('minPos'));
 								time = Math.abs(time/((speed*250)/(Math.abs(speed*250) - overPos*.96)));
-								//////console.log(speed*250, newPos, thumbsShaft.data('minPos'));
+								////////console.log(speed*250, newPos, thumbsShaft.data('minPos'));
 								newPos = thumbsShaft.data('minPos');
 								overPos = newPos - overPos*.04;
 								//newPos = overPos;
 							}
-							//////console.log('time: '+time);
+							////////console.log('time: '+time);
 						}
 					}
 
